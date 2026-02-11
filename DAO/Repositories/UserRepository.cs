@@ -352,6 +352,9 @@ namespace DAO.Repositories
                             var insertQuery = @"INSERT INTO UserRoles (UserId, RoleId, AssignedAt, AssignedBy) 
                                                VALUES (@UserId, @RoleId, @AssignedAt, @AssignedBy)";
                             
+                            var assignedAt = DateTime.Now;
+                            var assignedBy = SessionContext.CurrentUserId;
+                            
                             using (var insertCommand = new SqlCommand(insertQuery, connection, transaction))
                             {
                                 insertCommand.Parameters.Add("@UserId", SqlDbType.Int);
@@ -363,8 +366,8 @@ namespace DAO.Repositories
                                 {
                                     insertCommand.Parameters["@UserId"].Value = userId;
                                     insertCommand.Parameters["@RoleId"].Value = roleId;
-                                    insertCommand.Parameters["@AssignedAt"].Value = DateTime.Now;
-                                    insertCommand.Parameters["@AssignedBy"].Value = SessionContext.CurrentUserId;
+                                    insertCommand.Parameters["@AssignedAt"].Value = assignedAt;
+                                    insertCommand.Parameters["@AssignedBy"].Value = assignedBy;
                                     insertCommand.ExecuteNonQuery();
                                 }
                             }
