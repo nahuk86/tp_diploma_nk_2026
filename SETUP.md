@@ -251,23 +251,32 @@ sqllocaldb start MSSQLLocalDB
 
 La primera vez que ejecute la aplicación:
 
-1. El sistema detectará que `admin` tiene password placeholder
-2. Implementar en el código de inicio:
-
-```csharp
-// En Program.cs o LoginForm
-var authService = new AuthenticationService(userRepo, logService);
-var admin = userRepo.GetByUsername("admin");
-
-if (admin != null && admin.PasswordHash == "HASH_PLACEHOLDER_WILL_BE_GENERATED_BY_APP")
-{
-    // Mostrar diálogo para configurar contraseña
-    var password = PromptForNewPassword(); // Implementar UI
-    authService.InitializeAdminPassword("admin", password);
-}
-```
+1. El sistema detectará automáticamente que `admin` tiene password placeholder
+2. Se mostrará el formulario "Configuración Inicial" para configurar la contraseña
+3. La contraseña debe cumplir los siguientes requisitos:
+   - Mínimo 8 caracteres
+   - Al menos una letra mayúscula
+   - Al menos un número
+4. Confirme la contraseña ingresándola dos veces
+5. Haga clic en "Configurar"
+6. Una vez configurada, podrá iniciar sesión con:
+   - **Usuario**: admin
+   - **Contraseña**: La que configuró
 
 **Contraseña Sugerida**: `Admin123!`
+
+### Si necesita reinicializar la contraseña admin manualmente
+
+Ejecute este SQL script en la base de datos:
+
+```sql
+UPDATE Users 
+SET PasswordHash = 'HASH_PLACEHOLDER_WILL_BE_GENERATED_BY_APP',
+    PasswordSalt = 'SALT_PLACEHOLDER_WILL_BE_GENERATED_BY_APP'
+WHERE Username = 'admin';
+```
+
+La próxima vez que inicie la aplicación, verá nuevamente el formulario de configuración inicial.
 
 ## Configuración Adicional
 

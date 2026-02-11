@@ -181,7 +181,12 @@ Username: admin
 Password: (debe ser configurado en primera ejecución)
 ```
 
-El sistema detectará que el hash es un placeholder y solicitará configurar la contraseña.
+El sistema detectará automáticamente que el password no está configurado y mostrará un formulario de "Configuración Inicial" donde podrá:
+- Configurar la contraseña del administrador
+- La contraseña debe tener mínimo 8 caracteres, una mayúscula y un número
+- Ejemplo de contraseña válida: `Admin123!`
+
+Una vez configurada la contraseña, podrá iniciar sesión normalmente.
 
 ## Funcionalidades Implementadas
 
