@@ -40,14 +40,22 @@ namespace UI.Forms
 
                 if (string.IsNullOrWhiteSpace(username))
                 {
-                    MessageBox.Show("Por favor ingrese su usuario.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(
+                        _localizationService.GetString("Login.UsernameRequired") ?? "Por favor ingrese su usuario.",
+                        _localizationService.GetString("Common.Validation") ?? "Validación",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
                     txtUsername.Focus();
                     return;
                 }
 
                 if (string.IsNullOrWhiteSpace(password))
                 {
-                    MessageBox.Show("Por favor ingrese su contraseña.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(
+                        _localizationService.GetString("Login.PasswordRequired") ?? "Por favor ingrese su contraseña.",
+                        _localizationService.GetString("Common.Validation") ?? "Validación",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
                     txtPassword.Focus();
                     return;
                 }
@@ -70,7 +78,11 @@ namespace UI.Forms
                 }
                 else
                 {
-                    MessageBox.Show("Usuario o contraseña incorrectos.", "Error de Autenticación", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(
+                        _localizationService.GetString("Login.InvalidCredentials") ?? "Usuario o contraseña incorrectos.",
+                        _localizationService.GetString("Login.AuthError") ?? "Error de Autenticación",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
                     txtPassword.Clear();
                     txtPassword.Focus();
                 }
@@ -78,7 +90,11 @@ namespace UI.Forms
             catch (Exception ex)
             {
                 _logService.Error("Error during login", ex);
-                MessageBox.Show($"Error al iniciar sesión: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    $"{_localizationService.GetString("Login.Error") ?? "Error al iniciar sesión"}: {ex.Message}",
+                    _localizationService.GetString("Common.Error") ?? "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
             finally
             {

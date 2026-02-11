@@ -123,6 +123,22 @@ namespace SERVICES.Implementations
             _translations["Common.Yes|en"] = "Yes";
             _translations["Common.No|es"] = "No";
             _translations["Common.No|en"] = "No";
+            _translations["Common.Error|es"] = "Error";
+            _translations["Common.Error|en"] = "Error";
+            _translations["Common.Validation|es"] = "Validación";
+            _translations["Common.Validation|en"] = "Validation";
+            
+            // Login translations
+            _translations["Login.UsernameRequired|es"] = "Por favor ingrese su usuario.";
+            _translations["Login.UsernameRequired|en"] = "Please enter your username.";
+            _translations["Login.PasswordRequired|es"] = "Por favor ingrese su contraseña.";
+            _translations["Login.PasswordRequired|en"] = "Please enter your password.";
+            _translations["Login.InvalidCredentials|es"] = "Usuario o contraseña incorrectos.";
+            _translations["Login.InvalidCredentials|en"] = "Invalid username or password.";
+            _translations["Login.AuthError|es"] = "Error de Autenticación";
+            _translations["Login.AuthError|en"] = "Authentication Error";
+            _translations["Login.Error|es"] = "Error al iniciar sesión";
+            _translations["Login.Error|en"] = "Login error";
             
             // Menu translations
             _translations["Menu.Users|es"] = "Usuarios";
