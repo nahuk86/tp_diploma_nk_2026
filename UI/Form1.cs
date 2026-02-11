@@ -30,7 +30,7 @@ namespace UI
 
         private void ApplyLocalization()
         {
-            this.Text = $"{_localizationService.GetString("App.Title") ?? "Stock Manager"} - {SessionContext.CurrentUsername}";
+            this.Text = $"{_localizationService.GetString("App.Title") ?? "Stock Manager"} - {SessionContext.CurrentUsername ?? "Usuario"}";
         }
 
         private void InitializeMainForm()
@@ -39,7 +39,7 @@ namespace UI
             this.WindowState = FormWindowState.Maximized;
             this.IsMdiContainer = true;
             
-            _logService.Info($"Main form initialized for user: {SessionContext.CurrentUsername}");
+            _logService.Info($"Main form initialized for user: {SessionContext.CurrentUsername ?? "Unknown"}");
         }
     }
 }
