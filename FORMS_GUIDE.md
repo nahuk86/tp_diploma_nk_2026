@@ -125,6 +125,48 @@ Se han implementado los formularios principales para soportar las funcionalidade
 - Los productos con cantidad menor o igual al stock mínimo se resaltan en color rojo claro
 - Formato de fecha/hora en español
 
+### 5. UsersForm
+
+**Descripción**: Formulario CRUD para la gestión de usuarios del sistema.
+
+**Características**:
+- Lista de usuarios activos en DataGridView
+- Formulario de detalles con los siguientes campos:
+  - Usuario/Username (único, requerido, 3-50 caracteres)
+  - Nombre Completo
+  - Email (validación de formato)
+  - Contraseña (solo en creación)
+- Operaciones CRUD completas:
+  - **Nuevo**: Crear un nuevo usuario con contraseña
+  - **Editar**: Modificar datos del usuario (no cambia contraseña)
+  - **Eliminar**: Soft delete del usuario
+  - **Cambiar Contraseña**: Actualizar contraseña de un usuario
+  - **Guardar**: Guardar cambios
+  - **Cancelar**: Descartar cambios
+
+**Validaciones**:
+- Usuario requerido (3-50 caracteres)
+- Usuario único en el sistema
+- Email con formato válido (si se proporciona)
+- Email único en el sistema (si se proporciona)
+- Contraseña requerida en creación
+- Contraseña debe tener mínimo 8 caracteres
+- Contraseña debe tener al menos una mayúscula
+- Contraseña debe tener al menos un número
+- No se puede eliminar el usuario "admin"
+
+**Permisos Requeridos**:
+- `Users.View`: Ver usuarios
+- `Users.Create`: Crear usuarios
+- `Users.Edit`: Editar usuarios
+- `Users.Delete`: Eliminar usuarios
+
+**Funcionalidades Especiales**:
+- La contraseña se oculta con PasswordChar = '*'
+- El campo usuario es de solo lectura al editar
+- El botón "Cambiar Contraseña" permite actualizar la contraseña de cualquier usuario
+- Hash automático de contraseñas con PBKDF2
+
 ## Servicios BLL Implementados
 
 ### WarehouseService
@@ -143,6 +185,30 @@ Se han implementado los formularios principales para soportar las funcionalidade
 - Código único y requerido
 - Nombre requerido
 - Longitudes máximas de campos
+- Auditoría automática de cambios
+
+### UserService
+
+**Descripción**: Servicio de lógica de negocio para la gestión de usuarios.
+
+**Métodos**:
+- `GetAllUsers()`: Obtiene todos los usuarios
+- `GetActiveUsers()`: Obtiene solo usuarios activos
+- `GetUserById(int id)`: Obtiene un usuario por ID
+- `CreateUser(User, string password)`: Crea un nuevo usuario con contraseña hasheada
+- `UpdateUser(User)`: Actualiza un usuario existente (no actualiza password)
+- `DeleteUser(int id)`: Soft delete de un usuario
+- `ChangePassword(int userId, string newPassword)`: Cambia la contraseña de un usuario
+- `AssignRolesToUser(int userId, List<int> roleIds)`: Asigna roles a un usuario
+
+**Validaciones**:
+- Usuario único y requerido (3-50 caracteres)
+- Email con formato válido y único (si se proporciona)
+- Contraseña mínimo 8 caracteres
+- Contraseña debe tener al menos una mayúscula
+- Contraseña debe tener al menos un número
+- No se puede eliminar el usuario "admin"
+- Hash automático de contraseñas con PBKDF2
 - Auditoría automática de cambios
 
 ## Arquitectura de los Formularios
@@ -242,16 +308,11 @@ El cambio de idioma se realiza desde el menú principal: **Configuración > Idio
 
 Los siguientes formularios están pendientes y aparecen como "En desarrollo" en el menú:
 
-1. **UsersForm**: Gestión de usuarios del sistema
-   - CRUD de usuarios
-   - Asignación de roles
-   - Cambio de contraseña
-
-2. **RolesForm**: Gestión de roles y permisos
+1. **RolesForm**: Gestión de roles y permisos
    - CRUD de roles
    - Asignación de permisos a roles
 
-3. **StockMovementForm**: Registro de movimientos de stock
+2. **StockMovementForm**: Registro de movimientos de stock
    - Entrada de mercadería
    - Salida de mercadería
    - Transferencias entre almacenes

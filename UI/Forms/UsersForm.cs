@@ -239,6 +239,8 @@ namespace UI.Forms
 
             var user = (User)dgvUsers.CurrentRow.DataBoundItem;
             
+            // TODO: Replace InputBox with custom password dialog that masks input
+            // Current implementation shows password in plain text which is a security concern
             string newPassword = Microsoft.VisualBasic.Interaction.InputBox(
                 _localizationService.GetString("Users.EnterNewPassword") ?? "Ingrese la nueva contraseña (mínimo 8 caracteres, 1 mayúscula, 1 número):",
                 _localizationService.GetString("Users.ChangePassword") ?? "Cambiar Contraseña",

@@ -158,6 +158,8 @@ namespace UI.Forms
             }
 
             // Highlight low stock items
+            // Note: This uses N+1 queries. For better performance, modify StockRepository 
+            // to include MinStockLevel in the Stock query via JOIN with Products table
             foreach (DataGridViewRow row in dgvStock.Rows)
             {
                 if (row.DataBoundItem is Stock stock)
