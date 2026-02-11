@@ -35,9 +35,10 @@
 ## 🔲 Remaining Components
 
 ### 1. Business Logic Layer (BLL)
-The BLL layer orchestrates business rules and validations. Here's what needs to be implemented:
 
-#### UserService
+Most BLL services have been implemented. Only complex stock movement service remains:
+
+#### StockMovementService (Pending - Complex)
 ```csharp
 public class UserService
 {
@@ -55,7 +56,7 @@ public class UserService
 }
 ```
 
-#### ProductService
+#### ProductService ✅ (Implemented)
 ```csharp
 public class ProductService
 {
@@ -63,7 +64,7 @@ public class ProductService
     private readonly ILogService _logService;
     private readonly IAuditLogRepository _auditRepo;
 
-    // Key methods to implement:
+    // Key methods implemented:
     - ValidateProduct(Product product) // SKU unique, price > 0, etc.
     - CreateProduct(Product product)
     - UpdateProduct(Product product)
@@ -72,6 +73,43 @@ public class ProductService
     - SearchProducts(string searchTerm)
 }
 ```
+
+#### WarehouseService ✅ (Implemented)
+```csharp
+public class WarehouseService
+{
+    private readonly IWarehouseRepository _warehouseRepo;
+    private readonly ILogService _logService;
+    private readonly IAuditLogRepository _auditRepo;
+
+    // Key methods implemented:
+    - ValidateWarehouse(Warehouse warehouse) // Code unique, etc.
+    - CreateWarehouse(Warehouse warehouse)
+    - UpdateWarehouse(Warehouse warehouse)
+    - DeleteWarehouse(int warehouseId) // Soft delete
+    - GetActiveWarehouses()
+}
+```
+
+#### UserService ✅ (Implemented)
+```csharp
+public class UserService
+{
+    private readonly IUserRepository _userRepo;
+    private readonly ILogService _logService;
+    private readonly IAuthenticationService _authService;
+
+    // Key methods implemented:
+    - ValidateUser(User user) // Email format, username length, etc.
+    - CreateUser(User user, string password)
+    - UpdateUser(User user)
+    - DeleteUser(int userId) // Soft delete
+    - ChangePassword(int userId, string newPassword)
+    - AssignRolesToUser(int userId, List<int> roleIds)
+}
+```
+
+#### ProductService (Still needed: only example shown)
 
 #### StockMovementService
 ```csharp
@@ -99,9 +137,9 @@ public class StockMovementService
 
 ### 2. UI Layer (WinForms)
 
-#### Forms to Create
+#### Forms Implemented ✅
 
-**LoginForm.cs**
+**LoginForm.cs** ✅ (Already existed)
 ```csharp
 public partial class LoginForm : Form
 {
@@ -116,7 +154,7 @@ public partial class LoginForm : Form
 }
 ```
 
-**MainForm.cs** (MDI Container)
+**MainForm.cs** (Form1.cs - MDI Container) ✅
 ```csharp
 public partial class MainForm : Form
 {
