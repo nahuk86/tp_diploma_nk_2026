@@ -42,11 +42,13 @@ namespace UI
                 }
                 
                 // Show LoginForm as a dialog
-                var loginForm = new LoginForm(authService, logService, localizationService);
-                if (loginForm.ShowDialog() == DialogResult.OK)
+                using (var loginForm = new LoginForm(authService, logService, localizationService))
                 {
-                    // Login successful, show main form
-                    Application.Run(new Form1(localizationService, logService));
+                    if (loginForm.ShowDialog() == DialogResult.OK)
+                    {
+                        // Login successful, show main form
+                        Application.Run(new Form1(localizationService, logService));
+                    }
                 }
             }
             catch (Exception ex)
