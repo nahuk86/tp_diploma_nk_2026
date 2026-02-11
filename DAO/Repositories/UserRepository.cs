@@ -334,30 +334,48 @@ namespace DAO.Repositories
             {
                 connection.Open();
                 
-                // First, remove all existing roles for this user
-                var deleteQuery = "DELETE FROM UserRoles WHERE UserId = @UserId";
-                using (var deleteCommand = new SqlCommand(deleteQuery, connection))
+                using (var transaction = connection.BeginTransaction())
                 {
-                    deleteCommand.Parameters.Add(DatabaseHelper.CreateParameter("@UserId", userId));
-                    deleteCommand.ExecuteNonQuery();
-                }
-                
-                // Then, assign the new roles
-                if (roleIds != null && roleIds.Count > 0)
-                {
-                    var insertQuery = @"INSERT INTO UserRoles (UserId, RoleId, AssignedAt, AssignedBy) 
-                                       VALUES (@UserId, @RoleId, @AssignedAt, @AssignedBy)";
-                    
-                    foreach (var roleId in roleIds)
+                    try
                     {
-                        using (var insertCommand = new SqlCommand(insertQuery, connection))
+                        // First, remove all existing roles for this user
+                        var deleteQuery = "DELETE FROM UserRoles WHERE UserId = @UserId";
+                        using (var deleteCommand = new SqlCommand(deleteQuery, connection, transaction))
                         {
-                            insertCommand.Parameters.Add(DatabaseHelper.CreateParameter("@UserId", userId));
-                            insertCommand.Parameters.Add(DatabaseHelper.CreateParameter("@RoleId", roleId));
-                            insertCommand.Parameters.Add(DatabaseHelper.CreateParameter("@AssignedAt", DateTime.Now));
-                            insertCommand.Parameters.Add(DatabaseHelper.CreateParameter("@AssignedBy", SessionContext.CurrentUserId));
-                            insertCommand.ExecuteNonQuery();
+                            deleteCommand.Parameters.Add(DatabaseHelper.CreateParameter("@UserId", userId));
+                            deleteCommand.ExecuteNonQuery();
                         }
+                        
+                        // Then, assign the new roles
+                        if (roleIds != null && roleIds.Count > 0)
+                        {
+                            var insertQuery = @"INSERT INTO UserRoles (UserId, RoleId, AssignedAt, AssignedBy) 
+                                               VALUES (@UserId, @RoleId, @AssignedAt, @AssignedBy)";
+                            
+                            using (var insertCommand = new SqlCommand(insertQuery, connection, transaction))
+                            {
+                                insertCommand.Parameters.Add("@UserId", SqlDbType.Int);
+                                insertCommand.Parameters.Add("@RoleId", SqlDbType.Int);
+                                insertCommand.Parameters.Add("@AssignedAt", SqlDbType.DateTime);
+                                insertCommand.Parameters.Add("@AssignedBy", SqlDbType.Int);
+                                
+                                foreach (var roleId in roleIds)
+                                {
+                                    insertCommand.Parameters["@UserId"].Value = userId;
+                                    insertCommand.Parameters["@RoleId"].Value = roleId;
+                                    insertCommand.Parameters["@AssignedAt"].Value = DateTime.Now;
+                                    insertCommand.Parameters["@AssignedBy"].Value = SessionContext.CurrentUserId;
+                                    insertCommand.ExecuteNonQuery();
+                                }
+                            }
+                        }
+                        
+                        transaction.Commit();
+                    }
+                    catch
+                    {
+                        transaction.Rollback();
+                        throw;
                     }
                 }
             }
