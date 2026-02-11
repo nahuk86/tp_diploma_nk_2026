@@ -30,7 +30,7 @@ namespace UI
 
         private void ApplyLocalization()
         {
-            this.Text = $"{_localizationService.GetString("App.Title") ?? "Stock Manager"} - {SessionContext.CurrentUsername ?? "Usuario"}";
+            this.Text = $"{_localizationService.GetString("App.Title") ?? "Stock Manager"} - {SessionContext.CurrentUsername ?? "User"}";
         }
 
         private void InitializeMainForm()
