@@ -95,30 +95,34 @@ El sistema está organizado en capas siguiendo principios de arquitectura limpia
 ### 4. BLL (Business Logic Layer)
 **Propósito**: Lógica de negocio, validaciones, orquestación.
 
-**Estado**: Pendiente de implementación completa.
+**Estado**: Implementación mayormente completa.
 
-**Debe Incluir**:
-- `UserService`: Validaciones de usuarios (username único, formato email, etc.)
+**Servicios Implementados** ✅:
+- `ProductService` ✅: Validaciones de productos (SKU único, precio > 0, etc.)
+- `WarehouseService` ✅: Gestión de almacenes (código único, validaciones)
+- `UserService` ✅: Validaciones de usuarios (username único, formato email, cambio de contraseña)
+
+**Servicios Pendientes**:
 - `RoleService`: Gestión de roles y asignación de permisos
-- `ProductService`: Validaciones de productos (SKU único, precio > 0, etc.)
-- `WarehouseService`: Gestión de almacenes
-- `StockService`: Validaciones de stock (no negativo, mínimo, etc.)
 - `StockMovementService`: Lógica compleja de movimientos con transacciones
 
 ### 5. UI (WinForms)
 **Propósito**: Interfaz de usuario.
 
-**Estado**: Estructura básica creada. Pendiente de implementación completa.
+**Estado**: Formularios principales implementados.
 
-**Forms a Implementar**:
-- `LoginForm`: Autenticación
-- `MainForm`: MDI Container con menú
-- `UsersForm`: ABM de usuarios
+**Forms Implementados** ✅:
+- `LoginForm` ✅: Autenticación de usuarios
+- `AdminPasswordInitForm` ✅: Inicialización de contraseña admin
+- `MainForm` (Form1) ✅: MDI Container con menú basado en permisos
+- `UsersForm` ✅: ABM de usuarios con cambio de contraseña
+- `ProductsForm` ✅: ABM de productos con búsqueda
+- `WarehousesForm` ✅: ABM de almacenes
+- `StockQueryForm` ✅: Consulta de stock actual con filtros
+
+**Forms Pendientes**:
 - `RolesForm`: ABM de roles con asignación de permisos
-- `ProductsForm`: ABM de productos
-- `WarehousesForm`: ABM de almacenes
-- `StockMovementForm`: Registro de movimientos
-- `StockQueryForm`: Consulta de stock actual
+- `StockMovementForm`: Registro de movimientos (entrada, salida, transferencia, ajuste)
 
 ## Base de Datos
 
@@ -201,18 +205,25 @@ Una vez configurada la contraseña, podrá iniciar sesión normalmente.
 - [x] Servicio de autorización (RBAC)
 - [x] Servicio de localización (ES/EN)
 - [x] Servicio de manejo de errores
-- [x] Repositorios: User, Role, Permission, Product
+- [x] Repositorios: User, Role, Permission, Product, Warehouse, Stock, StockMovement, AuditLog
 - [x] Helper de base de datos
+- [x] Servicios BLL: ProductService, WarehouseService, UserService
+- [x] Formulario principal (MainForm) con menú MDI y control de permisos
+- [x] LoginForm y AdminPasswordInitForm
+- [x] ProductsForm con búsqueda y CRUD completo
+- [x] WarehousesForm con CRUD completo
+- [x] UsersForm con gestión de usuarios y cambio de contraseña
+- [x] StockQueryForm para consultar inventario actual
 
 ### 🔲 Pendientes
 
-- [ ] Completar repositorios faltantes (Warehouse, Stock, StockMovement, AuditLog)
-- [ ] Implementar capa BLL completa
-- [ ] Crear formularios WinForms
+- [ ] Implementar RoleService
+- [ ] Implementar StockMovementService (con transacciones!)
+- [ ] Crear RolesForm para gestión de roles y permisos
+- [ ] Crear StockMovementForm para registrar movimientos
 - [ ] Implementar transacciones para movimientos de stock
-- [ ] Sistema de auditoría automática
-- [ ] Implementar control de permisos en UI
-- [ ] Configuración de idioma en runtime
+- [ ] Implementar control de permisos en runtime (cambio de idioma)
+- [ ] Agregar reportes (PDF, Excel)
 
 ## Permisos del Sistema
 
