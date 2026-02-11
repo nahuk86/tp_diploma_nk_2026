@@ -60,6 +60,31 @@ namespace DAO.Repositories
             return null;
         }
 
+        public User GetByEmail(string email)
+        {
+            using (var connection = DatabaseHelper.GetConnection())
+            {
+                var query = @"SELECT UserId, Username, PasswordHash, PasswordSalt, FullName, Email, IsActive, 
+                             CreatedAt, CreatedBy, UpdatedAt, UpdatedBy, LastLogin 
+                             FROM Users WHERE Email = @Email";
+                
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.Add(DatabaseHelper.CreateParameter("@Email", email));
+                    connection.Open();
+                    
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return MapUser(reader);
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
         public List<User> GetAll()
         {
             var users = new List<User>();
@@ -299,6 +324,62 @@ namespace DAO.Repositories
                     
                     connection.Open();
                     command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void AssignRoles(int userId, List<int> roleIds)
+        {
+            using (var connection = DatabaseHelper.GetConnection())
+            {
+                connection.Open();
+                
+                using (var transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        // First, remove all existing roles for this user
+                        var deleteQuery = "DELETE FROM UserRoles WHERE UserId = @UserId";
+                        using (var deleteCommand = new SqlCommand(deleteQuery, connection, transaction))
+                        {
+                            deleteCommand.Parameters.Add(DatabaseHelper.CreateParameter("@UserId", userId));
+                            deleteCommand.ExecuteNonQuery();
+                        }
+                        
+                        // Then, assign the new roles
+                        if (roleIds != null && roleIds.Count > 0)
+                        {
+                            var insertQuery = @"INSERT INTO UserRoles (UserId, RoleId, AssignedAt, AssignedBy) 
+                                               VALUES (@UserId, @RoleId, @AssignedAt, @AssignedBy)";
+                            
+                            var assignedAt = DateTime.Now;
+                            var assignedBy = SessionContext.CurrentUserId;
+                            
+                            using (var insertCommand = new SqlCommand(insertQuery, connection, transaction))
+                            {
+                                insertCommand.Parameters.Add("@UserId", SqlDbType.Int);
+                                insertCommand.Parameters.Add("@RoleId", SqlDbType.Int);
+                                insertCommand.Parameters.Add("@AssignedAt", SqlDbType.DateTime);
+                                insertCommand.Parameters.Add("@AssignedBy", SqlDbType.Int);
+                                
+                                foreach (var roleId in roleIds)
+                                {
+                                    insertCommand.Parameters["@UserId"].Value = userId;
+                                    insertCommand.Parameters["@RoleId"].Value = roleId;
+                                    insertCommand.Parameters["@AssignedAt"].Value = assignedAt;
+                                    insertCommand.Parameters["@AssignedBy"].Value = assignedBy;
+                                    insertCommand.ExecuteNonQuery();
+                                }
+                            }
+                        }
+                        
+                        transaction.Commit();
+                    }
+                    catch
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
                 }
             }
         }
