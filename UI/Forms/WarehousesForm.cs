@@ -32,7 +32,7 @@ namespace UI.Forms
             var permissionRepo = new PermissionRepository();
             _authorizationService = new AuthorizationService(permissionRepo, _logService);
             _localizationService = new LocalizationService();
-            _errorHandler = new ErrorHandlerService(_localizationService, _logService);
+            _errorHandler = new ErrorHandlerService(_logService, _localizationService);
 
             ApplyLocalization();
             ConfigurePermissions();
