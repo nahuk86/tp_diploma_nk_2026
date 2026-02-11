@@ -20,14 +20,38 @@ namespace UI
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             
-            // Initialize services
-            var logService = new FileLogService();
-            var userRepository = new UserRepository();
-            var authService = new AuthenticationService(userRepository, logService);
-            var localizationService = new LocalizationService();
-            
-            // Start with LoginForm
-            Application.Run(new LoginForm(authService, logService, localizationService));
+            try
+            {
+                // Initialize services
+                var logService = new FileLogService();
+                var userRepository = new UserRepository();
+                var authService = new AuthenticationService(userRepository, logService);
+                var localizationService = new LocalizationService();
+                
+                // Check if admin password needs initialization
+                var adminUser = userRepository.GetByUsername("admin");
+                if (adminUser != null && adminUser.PasswordHash == "HASH_PLACEHOLDER_WILL_BE_GENERATED_BY_APP")
+                {
+                    // Show admin password initialization form
+                    var initForm = new AdminPasswordInitForm(authService, logService, localizationService);
+                    if (initForm.ShowDialog() != DialogResult.OK)
+                    {
+                        // User cancelled initialization, exit application
+                        return;
+                    }
+                }
+                
+                // Start with LoginForm
+                Application.Run(new LoginForm(authService, logService, localizationService));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Error al iniciar la aplicación: {ex.Message}\n\nPor favor, asegúrese de que la base de datos esté configurada correctamente.",
+                    "Error de Inicio",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
         }
     }
 }
