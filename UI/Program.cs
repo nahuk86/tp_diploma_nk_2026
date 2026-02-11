@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DAO.Repositories;
+using SERVICES.Implementations;
+using UI.Forms;
 
 namespace UI
 {
@@ -16,7 +19,15 @@ namespace UI
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            
+            // Initialize services
+            var logService = new FileLogService();
+            var userRepository = new UserRepository();
+            var authService = new AuthenticationService(userRepository, logService);
+            var localizationService = new LocalizationService();
+            
+            // Start with LoginForm
+            Application.Run(new LoginForm(authService, logService, localizationService));
         }
     }
 }
