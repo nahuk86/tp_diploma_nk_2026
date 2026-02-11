@@ -28,7 +28,7 @@ namespace UI.Forms
             _productRepo = new ProductRepository();
             _warehouseRepo = new WarehouseRepository();
             _localizationService = new LocalizationService();
-            _errorHandler = new ErrorHandlerService(_localizationService, _logService);
+            _errorHandler = new ErrorHandlerService(_logService, _localizationService);
 
             ApplyLocalization();
             LoadWarehouses();
