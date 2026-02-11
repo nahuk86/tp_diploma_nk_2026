@@ -32,23 +32,28 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System"/>
-    
+    <Reference Include="System.Configuration"/>
     <Reference Include="System.Core"/>
     <Reference Include="System.Xml.Linq"/>
     <Reference Include="System.Data.DataSetExtensions"/>
-    
-    
     <Reference Include="Microsoft.CSharp"/>
-    
     <Reference Include="System.Data"/>
-    
     <Reference Include="System.Net.Http"/>
-    
     <Reference Include="System.Xml"/>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="Helpers\DatabaseHelper.cs" />
+    <Compile Include="Repositories\UserRepository.cs" />
+    <Compile Include="Repositories\RoleRepository.cs" />
+    <Compile Include="Repositories\PermissionRepository.cs" />
+    <Compile Include="Repositories\ProductRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DOMAIN\DOMAIN.csproj">
+      <Project>{919bb719-a785-4507-bd0f-b2a2ebf3fb14}</Project>
+      <Name>DOMAIN</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
  </Project>

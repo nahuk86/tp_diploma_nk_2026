@@ -32,23 +32,30 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System"/>
-    
     <Reference Include="System.Core"/>
     <Reference Include="System.Xml.Linq"/>
     <Reference Include="System.Data.DataSetExtensions"/>
-    
-    
     <Reference Include="Microsoft.CSharp"/>
-    
     <Reference Include="System.Data"/>
-    
     <Reference Include="System.Net.Http"/>
-    
     <Reference Include="System.Xml"/>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DOMAIN\DOMAIN.csproj">
+      <Project>{919bb719-a785-4507-bd0f-b2a2ebf3fb14}</Project>
+      <Name>DOMAIN</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DAO\DAO.csproj">
+      <Project>{00d0fe13-86c0-45be-9ef9-154e355b0470}</Project>
+      <Name>DAO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SERVICES\SERVICES.csproj">
+      <Project>{b543fe76-e9b5-408b-ac0d-bb5dd553445c}</Project>
+      <Name>SERVICES</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
  </Project>

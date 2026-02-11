@@ -32,23 +32,35 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System"/>
-    
+    <Reference Include="System.Configuration"/>
     <Reference Include="System.Core"/>
+    <Reference Include="System.Windows.Forms"/>
     <Reference Include="System.Xml.Linq"/>
     <Reference Include="System.Data.DataSetExtensions"/>
-    
-    
     <Reference Include="Microsoft.CSharp"/>
-    
     <Reference Include="System.Data"/>
-    
     <Reference Include="System.Net.Http"/>
-    
     <Reference Include="System.Xml"/>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="Interfaces\ILogService.cs" />
+    <Compile Include="Interfaces\IAuthenticationService.cs" />
+    <Compile Include="Interfaces\IAuthorizationService.cs" />
+    <Compile Include="Interfaces\ILocalizationService.cs" />
+    <Compile Include="Interfaces\IErrorHandlerService.cs" />
+    <Compile Include="Implementations\FileLogService.cs" />
+    <Compile Include="Implementations\AuthenticationService.cs" />
+    <Compile Include="Implementations\AuthorizationService.cs" />
+    <Compile Include="Implementations\LocalizationService.cs" />
+    <Compile Include="Implementations\ErrorHandlerService.cs" />
+    <Compile Include="SessionContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DOMAIN\DOMAIN.csproj">
+      <Project>{919bb719-a785-4507-bd0f-b2a2ebf3fb14}</Project>
+      <Name>DOMAIN</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
  </Project>
