@@ -130,7 +130,9 @@ namespace UI
             if (!CheckPermission("Users.View", "No tiene permisos para ver usuarios."))
                 return;
 
-            MessageBox.Show("El formulario de Usuarios estará disponible próximamente.", "En desarrollo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            var usersForm = new Forms.UsersForm();
+            usersForm.MdiParent = this;
+            usersForm.Show();
         }
 
         private void menuRoles_Click(object sender, EventArgs e)
