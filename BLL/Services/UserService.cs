@@ -84,7 +84,8 @@ namespace BLL.Services
                 }
 
                 // Hash password
-                var (hash, salt) = _authService.HashPassword(password);
+                string salt;
+                var hash = _authService.HashPassword(password, out salt);
                 user.PasswordHash = hash;
                 user.PasswordSalt = salt;
 
@@ -211,7 +212,8 @@ namespace BLL.Services
                 }
 
                 // Hash new password
-                var (hash, salt) = _authService.HashPassword(newPassword);
+                string salt;
+                var hash = _authService.HashPassword(newPassword, out salt);
                 user.PasswordHash = hash;
                 user.PasswordSalt = salt;
                 user.UpdatedAt = DateTime.Now;

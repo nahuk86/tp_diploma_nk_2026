@@ -60,6 +60,31 @@ namespace DAO.Repositories
             return null;
         }
 
+        public User GetByEmail(string email)
+        {
+            using (var connection = DatabaseHelper.GetConnection())
+            {
+                var query = @"SELECT UserId, Username, PasswordHash, PasswordSalt, FullName, Email, IsActive, 
+                             CreatedAt, CreatedBy, UpdatedAt, UpdatedBy, LastLogin 
+                             FROM Users WHERE Email = @Email";
+                
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.Add(DatabaseHelper.CreateParameter("@Email", email));
+                    connection.Open();
+                    
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return MapUser(reader);
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
         public List<User> GetAll()
         {
             var users = new List<User>();
@@ -299,6 +324,41 @@ namespace DAO.Repositories
                     
                     connection.Open();
                     command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void AssignRoles(int userId, List<int> roleIds)
+        {
+            using (var connection = DatabaseHelper.GetConnection())
+            {
+                connection.Open();
+                
+                // First, remove all existing roles for this user
+                var deleteQuery = "DELETE FROM UserRoles WHERE UserId = @UserId";
+                using (var deleteCommand = new SqlCommand(deleteQuery, connection))
+                {
+                    deleteCommand.Parameters.Add(DatabaseHelper.CreateParameter("@UserId", userId));
+                    deleteCommand.ExecuteNonQuery();
+                }
+                
+                // Then, assign the new roles
+                if (roleIds != null && roleIds.Count > 0)
+                {
+                    var insertQuery = @"INSERT INTO UserRoles (UserId, RoleId, AssignedAt, AssignedBy) 
+                                       VALUES (@UserId, @RoleId, @AssignedAt, @AssignedBy)";
+                    
+                    foreach (var roleId in roleIds)
+                    {
+                        using (var insertCommand = new SqlCommand(insertQuery, connection))
+                        {
+                            insertCommand.Parameters.Add(DatabaseHelper.CreateParameter("@UserId", userId));
+                            insertCommand.Parameters.Add(DatabaseHelper.CreateParameter("@RoleId", roleId));
+                            insertCommand.Parameters.Add(DatabaseHelper.CreateParameter("@AssignedAt", DateTime.Now));
+                            insertCommand.Parameters.Add(DatabaseHelper.CreateParameter("@AssignedBy", SessionContext.CurrentUserId));
+                            insertCommand.ExecuteNonQuery();
+                        }
+                    }
                 }
             }
         }
