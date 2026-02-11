@@ -47,7 +47,27 @@
     <Reference Include="System.Xml"/>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="Entities\User.cs" />
+    <Compile Include="Entities\Role.cs" />
+    <Compile Include="Entities\Permission.cs" />
+    <Compile Include="Entities\Product.cs" />
+    <Compile Include="Entities\Warehouse.cs" />
+    <Compile Include="Entities\Stock.cs" />
+    <Compile Include="Entities\StockMovement.cs" />
+    <Compile Include="Entities\StockMovementLine.cs" />
+    <Compile Include="Entities\AuditLog.cs" />
+    <Compile Include="Enums\MovementType.cs" />
+    <Compile Include="Enums\LogLevel.cs" />
+    <Compile Include="Enums\AuditAction.cs" />
+    <Compile Include="Contracts\IRepository.cs" />
+    <Compile Include="Contracts\IUserRepository.cs" />
+    <Compile Include="Contracts\IRoleRepository.cs" />
+    <Compile Include="Contracts\IPermissionRepository.cs" />
+    <Compile Include="Contracts\IProductRepository.cs" />
+    <Compile Include="Contracts\IWarehouseRepository.cs" />
+    <Compile Include="Contracts\IStockRepository.cs" />
+    <Compile Include="Contracts\IStockMovementRepository.cs" />
+    <Compile Include="Contracts\IAuditLogRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
