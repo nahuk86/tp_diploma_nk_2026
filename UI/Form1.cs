@@ -140,7 +140,9 @@ namespace UI
             if (!CheckPermission("Roles.View", "No tiene permisos para ver roles."))
                 return;
 
-            MessageBox.Show("El formulario de Roles estará disponible próximamente.", "En desarrollo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            var rolesForm = new Forms.RolesForm();
+            rolesForm.MdiParent = this;
+            rolesForm.Show();
         }
 
         private void menuProducts_Click(object sender, EventArgs e)
