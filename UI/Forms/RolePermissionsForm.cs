@@ -49,15 +49,11 @@ namespace UI.Forms
                         displayText += $" - {permission.Description}";
                     }
                     
-                    var index = clbPermissions.Items.Add(permission);
-                    clbPermissions.DisplayMember = "DisplayText";
-                    
-                    // Set display text
-                    clbPermissions.Items[index] = new PermissionItem
+                    var index = clbPermissions.Items.Add(new PermissionItem
                     {
                         Permission = permission,
                         DisplayText = displayText
-                    };
+                    });
                     
                     // Check if this permission is already assigned to the role
                     if (_rolePermissions.Any(rp => rp.PermissionId == permission.PermissionId))

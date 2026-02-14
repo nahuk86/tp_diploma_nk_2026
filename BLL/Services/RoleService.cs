@@ -16,6 +16,9 @@ namespace BLL.Services
         private readonly IAuditLogRepository _auditRepo;
         private readonly ILogService _logService;
 
+        // System role names that cannot be deleted
+        private static readonly string[] SystemRoleNames = { "Admin", "User" };
+
         public RoleService(IRoleRepository roleRepo, IPermissionRepository permissionRepo, IAuditLogRepository auditRepo, ILogService logService)
         {
             _roleRepo = roleRepo ?? throw new ArgumentNullException(nameof(roleRepo));
@@ -176,11 +179,10 @@ namespace BLL.Services
                     throw new InvalidOperationException($"Role with ID {roleId} not found.");
                 }
 
-                // Prevent deleting system roles (admin, user)
-                if (role.RoleName.Equals("Admin", StringComparison.OrdinalIgnoreCase) ||
-                    role.RoleName.Equals("User", StringComparison.OrdinalIgnoreCase))
+                // Prevent deleting system roles
+                if (Array.Exists(SystemRoleNames, systemRole => systemRole.Equals(role.RoleName, StringComparison.OrdinalIgnoreCase)))
                 {
-                    throw new InvalidOperationException("Cannot delete system roles (Admin, User).");
+                    throw new InvalidOperationException($"Cannot delete system role '{role.RoleName}'.");
                 }
 
                 // Soft delete
