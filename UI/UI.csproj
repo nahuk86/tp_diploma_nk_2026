@@ -78,6 +78,12 @@
     <Compile Include="Forms\WarehousesForm.Designer.cs">
       <DependentUpon>WarehousesForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\ClientsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ClientsForm.Designer.cs">
+      <DependentUpon>ClientsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\StockQueryForm.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -52,6 +52,7 @@
     <Compile Include="Entities\Permission.cs" />
     <Compile Include="Entities\Product.cs" />
     <Compile Include="Entities\Warehouse.cs" />
+    <Compile Include="Entities\Client.cs" />
     <Compile Include="Entities\Stock.cs" />
     <Compile Include="Entities\StockMovement.cs" />
     <Compile Include="Entities\StockMovementLine.cs" />
@@ -65,6 +66,7 @@
     <Compile Include="Contracts\IPermissionRepository.cs" />
     <Compile Include="Contracts\IProductRepository.cs" />
     <Compile Include="Contracts\IWarehouseRepository.cs" />
+    <Compile Include="Contracts\IClientRepository.cs" />
     <Compile Include="Contracts\IStockRepository.cs" />
     <Compile Include="Contracts\IStockMovementRepository.cs" />
     <Compile Include="Contracts\IAuditLogRepository.cs" />
