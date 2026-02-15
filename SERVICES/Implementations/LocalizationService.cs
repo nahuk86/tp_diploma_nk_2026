@@ -68,11 +68,14 @@ namespace SERVICES.Implementations
 
         public void SetLanguage(string language)
         {
-            if (AvailableLanguages.Contains(language))
+            if (AvailableLanguages.Contains(language) && _currentLanguage != language)
             {
                 _currentLanguage = language;
-                // Reload translations to ensure we have the latest
-                LoadAllTranslations();
+                // Only reload if translations haven't been loaded yet
+                if (!_languageTranslations.ContainsKey(language))
+                {
+                    LoadAllTranslations();
+                }
                 // Notify subscribers that the language has changed
                 OnLanguageChanged();
             }
@@ -120,9 +123,15 @@ namespace SERVICES.Implementations
                     }
                 }
             }
-            catch
+            catch (IOException ex)
             {
-                // If JSON loading fails, continue with other sources
+                // Log file I/O errors but continue with other sources
+                System.Diagnostics.Debug.WriteLine($"Error loading JSON translations: {ex.Message}");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                // Log permission errors but continue with other sources
+                System.Diagnostics.Debug.WriteLine($"Access denied loading JSON translations: {ex.Message}");
             }
         }
 
@@ -131,7 +140,7 @@ namespace SERVICES.Implementations
             var translations = new Dictionary<string, string>();
             
             // Simple line-by-line parser for our specific two-level nested structure
-            var lines = jsonContent.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            var lines = jsonContent.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
             string currentCategory = null;
             
             foreach (var rawLine in lines)
@@ -172,13 +181,33 @@ namespace SERVICES.Implementations
                     
                     var key = line.Substring(keyStart, keyEnd - keyStart);
                     
-                    // Find the value
-                    var valueStart = line.IndexOf('"', keyEnd + 1) + 1;
-                    var valueEnd = line.LastIndexOf('"');
-                    if (valueEnd <= valueStart)
+                    // Find the value (handle potential commas at end)
+                    var colonIndex = line.IndexOf(':', keyEnd);
+                    var valueStart = line.IndexOf('"', colonIndex) + 1;
+                    
+                    // Find the closing quote, handling escaped quotes
+                    var valueEnd = valueStart;
+                    while (valueEnd < line.Length)
+                    {
+                        valueEnd = line.IndexOf('"', valueEnd);
+                        if (valueEnd == -1)
+                            break;
+                        
+                        // Check if this quote is escaped
+                        if (valueEnd > 0 && line[valueEnd - 1] == '\\')
+                        {
+                            valueEnd++; // Skip escaped quote
+                            continue;
+                        }
+                        break; // Found unescaped closing quote
+                    }
+                    
+                    if (valueEnd <= valueStart || valueEnd == -1)
                         continue;
                     
                     var value = line.Substring(valueStart, valueEnd - valueStart);
+                    // Unescape the value
+                    value = value.Replace("\\\"", "\"").Replace("\\\\", "\\");
                     
                     // Build full key
                     var fullKey = currentCategory != null ? $"{currentCategory}.{key}" : key;
@@ -221,9 +250,15 @@ namespace SERVICES.Implementations
                     }
                 }
             }
-            catch
+            catch (SqlException ex)
             {
-                // If database access fails, continue with JSON translations
+                // Log database errors but continue with JSON translations
+                System.Diagnostics.Debug.WriteLine($"Database error loading translations: {ex.Message}");
+            }
+            catch (InvalidOperationException ex)
+            {
+                // Log connection errors but continue with JSON translations
+                System.Diagnostics.Debug.WriteLine($"Connection error loading translations: {ex.Message}");
             }
         }
 
