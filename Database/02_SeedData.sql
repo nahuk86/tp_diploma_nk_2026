@@ -84,6 +84,23 @@ IF NOT EXISTS (SELECT 1 FROM [dbo].[Permissions] WHERE [PermissionCode] = 'Wareh
     INSERT INTO [dbo].[Permissions] ([PermissionCode], [PermissionName], [Description], [Module]) 
     VALUES ('Warehouses.Delete', 'Delete Warehouses', 'Delete warehouses (soft delete)', 'Warehouses');
 
+-- Client Management Permissions
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Permissions] WHERE [PermissionCode] = 'Clients.View')
+    INSERT INTO [dbo].[Permissions] ([PermissionCode], [PermissionName], [Description], [Module]) 
+    VALUES ('Clients.View', 'View Clients', 'View client list and details', 'Clients');
+
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Permissions] WHERE [PermissionCode] = 'Clients.Create')
+    INSERT INTO [dbo].[Permissions] ([PermissionCode], [PermissionName], [Description], [Module]) 
+    VALUES ('Clients.Create', 'Create Clients', 'Create new clients', 'Clients');
+
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Permissions] WHERE [PermissionCode] = 'Clients.Edit')
+    INSERT INTO [dbo].[Permissions] ([PermissionCode], [PermissionName], [Description], [Module]) 
+    VALUES ('Clients.Edit', 'Edit Clients', 'Edit existing clients', 'Clients');
+
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Permissions] WHERE [PermissionCode] = 'Clients.Delete')
+    INSERT INTO [dbo].[Permissions] ([PermissionCode], [PermissionName], [Description], [Module]) 
+    VALUES ('Clients.Delete', 'Delete Clients', 'Delete clients (soft delete)', 'Clients');
+
 -- Stock Management Permissions
 IF NOT EXISTS (SELECT 1 FROM [dbo].[Permissions] WHERE [PermissionCode] = 'Stock.View')
     INSERT INTO [dbo].[Permissions] ([PermissionCode], [PermissionName], [Description], [Module]) 
@@ -177,6 +194,7 @@ FROM [dbo].[Permissions]
 WHERE [PermissionCode] IN (
     'Products.View', 'Products.Create', 'Products.Edit', 'Products.Delete',
     'Warehouses.View', 'Warehouses.Create', 'Warehouses.Edit', 'Warehouses.Delete',
+    'Clients.View', 'Clients.Create', 'Clients.Edit', 'Clients.Delete',
     'Stock.View', 'Stock.Receive', 'Stock.Issue', 'Stock.Transfer', 'Stock.Adjust',
     'Audit.View'
 )
@@ -228,6 +246,7 @@ FROM [dbo].[Permissions]
 WHERE [PermissionCode] IN (
     'Products.View',
     'Warehouses.View',
+    'Clients.View',
     'Stock.View',
     'Audit.View'
 )
