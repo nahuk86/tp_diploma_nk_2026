@@ -84,6 +84,12 @@
     <Compile Include="Forms\StockQueryForm.Designer.cs">
       <DependentUpon>StockQueryForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\StockMovementForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\StockMovementForm.Designer.cs">
+      <DependentUpon>StockMovementForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\UsersForm.cs">
       <SubType>Form</SubType>
     </Compile>
