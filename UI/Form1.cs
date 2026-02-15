@@ -170,7 +170,9 @@ namespace UI
             if (!CheckPermission("Stock.View", "No tiene permisos para registrar movimientos."))
                 return;
 
-            MessageBox.Show("El formulario de Movimientos estará disponible próximamente.", "En desarrollo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            var stockMovementForm = new Forms.StockMovementForm();
+            stockMovementForm.MdiParent = this;
+            stockMovementForm.Show();
         }
 
         private void menuStockQuery_Click(object sender, EventArgs e)
