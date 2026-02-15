@@ -141,6 +141,7 @@ Se han implementado los formularios principales para soportar las funcionalidade
   - **Editar**: Modificar datos del usuario (no cambia contraseña)
   - **Eliminar**: Soft delete del usuario
   - **Cambiar Contraseña**: Actualizar contraseña de un usuario
+  - **Asignar Roles**: Asignar/desasignar roles al usuario
   - **Guardar**: Guardar cambios
   - **Cancelar**: Descartar cambios
 
@@ -158,14 +159,22 @@ Se han implementado los formularios principales para soportar las funcionalidade
 **Permisos Requeridos**:
 - `Users.View`: Ver usuarios
 - `Users.Create`: Crear usuarios
-- `Users.Edit`: Editar usuarios
+- `Users.Edit`: Editar usuarios (también requerido para asignar roles)
 - `Users.Delete`: Eliminar usuarios
 
 **Funcionalidades Especiales**:
 - La contraseña se oculta con PasswordChar = '*'
 - El campo usuario es de solo lectura al editar
 - El botón "Cambiar Contraseña" permite actualizar la contraseña de cualquier usuario
+- El botón "Asignar Roles" abre un diálogo para asignar/desasignar roles
 - Hash automático de contraseñas con PBKDF2
+
+**Formulario de Asignación de Roles**:
+- Diálogo modal con lista de todos los roles disponibles
+- CheckedListBox para selección múltiple
+- Muestra roles actualmente asignados al usuario
+- Permite asignar/desasignar roles con un solo clic
+- Los cambios se guardan en la tabla UserRoles
 
 ### 6. RolesForm
 
@@ -241,6 +250,7 @@ Se han implementado los formularios principales para soportar las funcionalidade
 - `UpdateUser(User)`: Actualiza un usuario existente (no actualiza password)
 - `DeleteUser(int id)`: Soft delete de un usuario
 - `ChangePassword(int userId, string newPassword)`: Cambia la contraseña de un usuario
+- `GetUserRoles(int userId)`: Obtiene los roles asignados a un usuario
 - `AssignRolesToUser(int userId, List<int> roleIds)`: Asigna roles a un usuario
 
 **Validaciones**:
