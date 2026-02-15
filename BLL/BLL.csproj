@@ -45,6 +45,7 @@
     <Compile Include="Services\WarehouseService.cs" />
     <Compile Include="Services\UserService.cs" />
     <Compile Include="Services\RoleService.cs" />
+    <Compile Include="Services\StockMovementService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
