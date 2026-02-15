@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
+using Newtonsoft.Json.Linq;
 using SERVICES.Interfaces;
 
 namespace SERVICES.Implementations
@@ -10,15 +12,22 @@ namespace SERVICES.Implementations
     public class LocalizationService : ILocalizationService
     {
         private readonly string _connectionString;
-        private Dictionary<string, string> _translations;
+        private Dictionary<string, Dictionary<string, string>> _languageTranslations;
         private string _currentLanguage;
+        private string _translationsPath;
+
+        public event EventHandler LanguageChanged;
 
         public LocalizationService()
         {
             _connectionString = ConfigurationManager.ConnectionStrings["StockManagerDB"]?.ConnectionString;
             _currentLanguage = ConfigurationManager.AppSettings["DefaultLanguage"] ?? "es";
-            _translations = new Dictionary<string, string>();
-            LoadTranslations();
+            _languageTranslations = new Dictionary<string, Dictionary<string, string>>();
+            
+            // Determine translations path (UI/Translations or SERVICES/Translations)
+            _translationsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Translations");
+            
+            LoadAllTranslations();
         }
 
         public string CurrentLanguage
@@ -38,18 +47,19 @@ namespace SERVICES.Implementations
 
         public string GetString(string key, string language)
         {
-            var lookupKey = $"{key}|{language}";
-            
-            if (_translations.ContainsKey(lookupKey))
+            // Try to get from JSON translations first
+            if (_languageTranslations.ContainsKey(language) && 
+                _languageTranslations[language].ContainsKey(key))
             {
-                return _translations[lookupKey];
+                return _languageTranslations[language][key];
             }
 
             // Fallback to Spanish if translation not found
-            var fallbackKey = $"{key}|es";
-            if (language != "es" && _translations.ContainsKey(fallbackKey))
+            if (language != "es" && 
+                _languageTranslations.ContainsKey("es") && 
+                _languageTranslations["es"].ContainsKey(key))
             {
-                return _translations[fallbackKey];
+                return _languageTranslations["es"][key];
             }
 
             return key; // Return the key itself if no translation found
@@ -60,17 +70,94 @@ namespace SERVICES.Implementations
             if (AvailableLanguages.Contains(language))
             {
                 _currentLanguage = language;
+                // Reload translations to ensure we have the latest
+                LoadAllTranslations();
+                // Notify subscribers that the language has changed
+                OnLanguageChanged();
             }
         }
 
-        private void LoadTranslations()
+        protected virtual void OnLanguageChanged()
+        {
+            LanguageChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void LoadAllTranslations()
+        {
+            _languageTranslations.Clear();
+            
+            // Load from JSON files first
+            LoadTranslationsFromJson();
+            
+            // Load from database if configured (will override JSON if present)
+            LoadTranslationsFromDatabase();
+            
+            // If no translations loaded, use defaults
+            if (_languageTranslations.Count == 0)
+            {
+                LoadDefaultTranslations();
+            }
+        }
+
+        private void LoadTranslationsFromJson()
+        {
+            try
+            {
+                if (!Directory.Exists(_translationsPath))
+                {
+                    return;
+                }
+
+                foreach (var language in AvailableLanguages)
+                {
+                    var jsonFile = Path.Combine(_translationsPath, $"{language}.json");
+                    if (File.Exists(jsonFile))
+                    {
+                        var jsonContent = File.ReadAllText(jsonFile);
+                        var translations = ParseJsonTranslations(jsonContent);
+                        _languageTranslations[language] = translations;
+                    }
+                }
+            }
+            catch
+            {
+                // If JSON loading fails, continue with other sources
+            }
+        }
+
+        private Dictionary<string, string> ParseJsonTranslations(string jsonContent)
+        {
+            var translations = new Dictionary<string, string>();
+            var json = JObject.Parse(jsonContent);
+            
+            // Flatten the JSON structure to key-value pairs
+            FlattenJson(json, "", translations);
+            
+            return translations;
+        }
+
+        private void FlattenJson(JToken token, string prefix, Dictionary<string, string> result)
+        {
+            if (token.Type == JTokenType.Object)
+            {
+                foreach (var property in ((JObject)token).Properties())
+                {
+                    var key = string.IsNullOrEmpty(prefix) ? property.Name : $"{prefix}.{property.Name}";
+                    FlattenJson(property.Value, key, result);
+                }
+            }
+            else if (token.Type == JTokenType.String)
+            {
+                result[prefix] = token.ToString();
+            }
+        }
+
+        private void LoadTranslationsFromDatabase()
         {
             try
             {
                 if (string.IsNullOrEmpty(_connectionString))
                 {
-                    // Use default translations if database not configured
-                    LoadDefaultTranslations();
                     return;
                 }
 
@@ -83,76 +170,87 @@ namespace SERVICES.Implementations
                     {
                         while (reader.Read())
                         {
-                            var key = $"{reader["ResourceKey"]}|{reader["Language"]}";
-                            _translations[key] = reader["ResourceValue"].ToString();
+                            var key = reader["ResourceKey"].ToString();
+                            var language = reader["Language"].ToString();
+                            var value = reader["ResourceValue"].ToString();
+                            
+                            if (!_languageTranslations.ContainsKey(language))
+                            {
+                                _languageTranslations[language] = new Dictionary<string, string>();
+                            }
+                            
+                            _languageTranslations[language][key] = value;
                         }
                     }
                 }
             }
             catch
             {
-                // If database access fails, use default translations
-                LoadDefaultTranslations();
+                // If database access fails, continue with JSON translations
             }
         }
 
         private void LoadDefaultTranslations()
         {
+            // Initialize dictionaries for each language
+            _languageTranslations["es"] = new Dictionary<string, string>();
+            _languageTranslations["en"] = new Dictionary<string, string>();
+            
             // Common translations
-            _translations["Common.Login|es"] = "Iniciar Sesión";
-            _translations["Common.Login|en"] = "Login";
-            _translations["Common.Username|es"] = "Usuario";
-            _translations["Common.Username|en"] = "Username";
-            _translations["Common.Password|es"] = "Contraseña";
-            _translations["Common.Password|en"] = "Password";
-            _translations["Common.Save|es"] = "Guardar";
-            _translations["Common.Save|en"] = "Save";
-            _translations["Common.Cancel|es"] = "Cancelar";
-            _translations["Common.Cancel|en"] = "Cancel";
-            _translations["Common.Delete|es"] = "Eliminar";
-            _translations["Common.Delete|en"] = "Delete";
-            _translations["Common.Edit|es"] = "Editar";
-            _translations["Common.Edit|en"] = "Edit";
-            _translations["Common.New|es"] = "Nuevo";
-            _translations["Common.New|en"] = "New";
-            _translations["Common.Search|es"] = "Buscar";
-            _translations["Common.Search|en"] = "Search";
-            _translations["Common.Close|es"] = "Cerrar";
-            _translations["Common.Close|en"] = "Close";
-            _translations["Common.Yes|es"] = "Sí";
-            _translations["Common.Yes|en"] = "Yes";
-            _translations["Common.No|es"] = "No";
-            _translations["Common.No|en"] = "No";
-            _translations["Common.Error|es"] = "Error";
-            _translations["Common.Error|en"] = "Error";
-            _translations["Common.Validation|es"] = "Validación";
-            _translations["Common.Validation|en"] = "Validation";
+            _languageTranslations["es"]["Common.Login"] = "Iniciar Sesión";
+            _languageTranslations["en"]["Common.Login"] = "Login";
+            _languageTranslations["es"]["Common.Username"] = "Usuario";
+            _languageTranslations["en"]["Common.Username"] = "Username";
+            _languageTranslations["es"]["Common.Password"] = "Contraseña";
+            _languageTranslations["en"]["Common.Password"] = "Password";
+            _languageTranslations["es"]["Common.Save"] = "Guardar";
+            _languageTranslations["en"]["Common.Save"] = "Save";
+            _languageTranslations["es"]["Common.Cancel"] = "Cancelar";
+            _languageTranslations["en"]["Common.Cancel"] = "Cancel";
+            _languageTranslations["es"]["Common.Delete"] = "Eliminar";
+            _languageTranslations["en"]["Common.Delete"] = "Delete";
+            _languageTranslations["es"]["Common.Edit"] = "Editar";
+            _languageTranslations["en"]["Common.Edit"] = "Edit";
+            _languageTranslations["es"]["Common.New"] = "Nuevo";
+            _languageTranslations["en"]["Common.New"] = "New";
+            _languageTranslations["es"]["Common.Search"] = "Buscar";
+            _languageTranslations["en"]["Common.Search"] = "Search";
+            _languageTranslations["es"]["Common.Close"] = "Cerrar";
+            _languageTranslations["en"]["Common.Close"] = "Close";
+            _languageTranslations["es"]["Common.Yes"] = "Sí";
+            _languageTranslations["en"]["Common.Yes"] = "Yes";
+            _languageTranslations["es"]["Common.No"] = "No";
+            _languageTranslations["en"]["Common.No"] = "No";
+            _languageTranslations["es"]["Common.Error"] = "Error";
+            _languageTranslations["en"]["Common.Error"] = "Error";
+            _languageTranslations["es"]["Common.Validation"] = "Validación";
+            _languageTranslations["en"]["Common.Validation"] = "Validation";
             
             // Login translations
-            _translations["Login.UsernameRequired|es"] = "Por favor ingrese su usuario.";
-            _translations["Login.UsernameRequired|en"] = "Please enter your username.";
-            _translations["Login.PasswordRequired|es"] = "Por favor ingrese su contraseña.";
-            _translations["Login.PasswordRequired|en"] = "Please enter your password.";
-            _translations["Login.InvalidCredentials|es"] = "Usuario o contraseña incorrectos.";
-            _translations["Login.InvalidCredentials|en"] = "Invalid username or password.";
-            _translations["Login.AuthError|es"] = "Error de Autenticación";
-            _translations["Login.AuthError|en"] = "Authentication Error";
-            _translations["Login.Error|es"] = "Error al iniciar sesión";
-            _translations["Login.Error|en"] = "Login error";
+            _languageTranslations["es"]["Login.UsernameRequired"] = "Por favor ingrese su usuario.";
+            _languageTranslations["en"]["Login.UsernameRequired"] = "Please enter your username.";
+            _languageTranslations["es"]["Login.PasswordRequired"] = "Por favor ingrese su contraseña.";
+            _languageTranslations["en"]["Login.PasswordRequired"] = "Please enter your password.";
+            _languageTranslations["es"]["Login.InvalidCredentials"] = "Usuario o contraseña incorrectos.";
+            _languageTranslations["en"]["Login.InvalidCredentials"] = "Invalid username or password.";
+            _languageTranslations["es"]["Login.AuthError"] = "Error de Autenticación";
+            _languageTranslations["en"]["Login.AuthError"] = "Authentication Error";
+            _languageTranslations["es"]["Login.Error"] = "Error al iniciar sesión";
+            _languageTranslations["en"]["Login.Error"] = "Login error";
             
             // Menu translations
-            _translations["Menu.Users|es"] = "Usuarios";
-            _translations["Menu.Users|en"] = "Users";
-            _translations["Menu.Roles|es"] = "Roles";
-            _translations["Menu.Roles|en"] = "Roles";
-            _translations["Menu.Products|es"] = "Productos";
-            _translations["Menu.Products|en"] = "Products";
-            _translations["Menu.Warehouses|es"] = "Almacenes";
-            _translations["Menu.Warehouses|en"] = "Warehouses";
-            _translations["Menu.Stock|es"] = "Inventario";
-            _translations["Menu.Stock|en"] = "Stock";
-            _translations["Menu.StockMovements|es"] = "Movimientos de Stock";
-            _translations["Menu.StockMovements|en"] = "Stock Movements";
+            _languageTranslations["es"]["Menu.Users"] = "Usuarios";
+            _languageTranslations["en"]["Menu.Users"] = "Users";
+            _languageTranslations["es"]["Menu.Roles"] = "Roles";
+            _languageTranslations["en"]["Menu.Roles"] = "Roles";
+            _languageTranslations["es"]["Menu.Products"] = "Productos";
+            _languageTranslations["en"]["Menu.Products"] = "Products";
+            _languageTranslations["es"]["Menu.Warehouses"] = "Almacenes";
+            _languageTranslations["en"]["Menu.Warehouses"] = "Warehouses";
+            _languageTranslations["es"]["Menu.Stock"] = "Inventario";
+            _languageTranslations["en"]["Menu.Stock"] = "Stock";
+            _languageTranslations["es"]["Menu.StockMovements"] = "Movimientos de Stock";
+            _languageTranslations["en"]["Menu.StockMovements"] = "Stock Movements";
         }
     }
 }

@@ -1,0 +1,57 @@
+{
+  "Common": {
+    "Login": "Iniciar Sesión",
+    "Username": "Usuario",
+    "Password": "Contraseña",
+    "Save": "Guardar",
+    "Cancel": "Cancelar",
+    "Delete": "Eliminar",
+    "Edit": "Editar",
+    "New": "Nuevo",
+    "Search": "Buscar",
+    "Close": "Cerrar",
+    "Yes": "Sí",
+    "No": "No",
+    "Error": "Error",
+    "Validation": "Validación",
+    "Confirmation": "Confirmación"
+  },
+  "Login": {
+    "UsernameRequired": "Por favor ingrese su usuario.",
+    "PasswordRequired": "Por favor ingrese su contraseña.",
+    "InvalidCredentials": "Usuario o contraseña incorrectos.",
+    "AuthError": "Error de Autenticación",
+    "Error": "Error al iniciar sesión"
+  },
+  "Menu": {
+    "File": "&Archivo",
+    "Logout": "Cerrar &Sesión",
+    "Exit": "&Salir",
+    "Administration": "A&dministración",
+    "Users": "&Usuarios",
+    "Roles": "&Roles",
+    "Inventory": "&Inventario",
+    "Products": "&Productos",
+    "Warehouses": "&Almacenes",
+    "Operations": "&Operaciones",
+    "StockMovements": "&Movimientos",
+    "StockQuery": "&Consultar Stock",
+    "Settings": "&Configuración",
+    "Language": "&Idioma",
+    "Help": "Ay&uda",
+    "About": "&Acerca de..."
+  },
+  "App": {
+    "Title": "Gestor de Stock"
+  },
+  "Status": {
+    "Ready": "Listo"
+  },
+  "Confirm": {
+    "Logout": "¿Está seguro que desea cerrar sesión?",
+    "Exit": "¿Está seguro que desea salir de la aplicación?"
+  },
+  "Error": {
+    "Unauthorized": "No tiene permisos para realizar esta acción."
+  }
+}

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace SERVICES.Interfaces
@@ -9,5 +10,6 @@ namespace SERVICES.Interfaces
         void SetLanguage(string language);
         string CurrentLanguage { get; }
         List<string> AvailableLanguages { get; }
+        event EventHandler LanguageChanged;
     }
 }
