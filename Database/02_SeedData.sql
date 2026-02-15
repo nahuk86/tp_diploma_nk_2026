@@ -203,7 +203,7 @@ FROM [dbo].[Permissions]
 WHERE [PermissionCode] IN (
     'Products.View',
     'Warehouses.View',
-    'Stock.View', 'Stock.Receive', 'Stock.Issue', 'Stock.Transfer'
+    'Stock.View', 'Stock.Receive', 'Stock.Issue', 'Stock.Transfer', 'Stock.Adjust'
 )
 AND NOT EXISTS (
     SELECT 1 FROM [dbo].[RolePermissions] 
