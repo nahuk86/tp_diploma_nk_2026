@@ -39,6 +39,7 @@
             this.menuInventory = new System.Windows.Forms.ToolStripMenuItem();
             this.menuProducts = new System.Windows.Forms.ToolStripMenuItem();
             this.menuWarehouses = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuClients = new System.Windows.Forms.ToolStripMenuItem();
             this.menuOperations = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStockMovements = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStockQuery = new System.Windows.Forms.ToolStripMenuItem();
@@ -125,7 +126,8 @@
             // 
             this.menuInventory.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuProducts,
-            this.menuWarehouses});
+            this.menuWarehouses,
+            this.menuClients});
             this.menuInventory.Name = "menuInventory";
             this.menuInventory.Size = new System.Drawing.Size(72, 20);
             this.menuInventory.Text = "&Inventario";
@@ -143,6 +145,13 @@
             this.menuWarehouses.Size = new System.Drawing.Size(180, 22);
             this.menuWarehouses.Text = "&Almacenes";
             this.menuWarehouses.Click += new System.EventHandler(this.menuWarehouses_Click);
+            // 
+            // menuClients
+            // 
+            this.menuClients.Name = "menuClients";
+            this.menuClients.Size = new System.Drawing.Size(180, 22);
+            this.menuClients.Text = "&Clientes";
+            this.menuClients.Click += new System.EventHandler(this.menuClients_Click);
             // 
             // menuOperations
             // 
@@ -265,6 +274,7 @@
         private System.Windows.Forms.ToolStripMenuItem menuInventory;
         private System.Windows.Forms.ToolStripMenuItem menuProducts;
         private System.Windows.Forms.ToolStripMenuItem menuWarehouses;
+        private System.Windows.Forms.ToolStripMenuItem menuClients;
         private System.Windows.Forms.ToolStripMenuItem menuOperations;
         private System.Windows.Forms.ToolStripMenuItem menuStockMovements;
         private System.Windows.Forms.ToolStripMenuItem menuStockQuery;
