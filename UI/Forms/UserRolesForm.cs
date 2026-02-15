@@ -71,6 +71,7 @@ namespace UI.Forms
                     "Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
+                this.DialogResult = DialogResult.Cancel;
                 this.Close();
             }
         }
