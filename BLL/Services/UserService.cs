@@ -252,6 +252,19 @@ namespace BLL.Services
             }
         }
 
+        public List<Role> GetUserRoles(int userId)
+        {
+            try
+            {
+                return _userRepo.GetUserRoles(userId);
+            }
+            catch (Exception ex)
+            {
+                _logService.Error($"Error retrieving roles for user: {userId}", ex);
+                throw;
+            }
+        }
+
         private void ValidateUser(User user)
         {
             if (user == null)

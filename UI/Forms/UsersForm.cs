@@ -12,6 +12,7 @@ namespace UI.Forms
     public partial class UsersForm : Form
     {
         private readonly UserService _userService;
+        private readonly RoleService _roleService;
         private readonly IAuthorizationService _authorizationService;
         private readonly ILocalizationService _localizationService;
         private readonly ILogService _logService;
@@ -30,7 +31,10 @@ namespace UI.Forms
             var authService = new AuthenticationService(userRepo, _logService);
             _userService = new UserService(userRepo, auditRepo, _logService, authService);
             
+            var roleRepo = new RoleRepository();
             var permissionRepo = new PermissionRepository();
+            _roleService = new RoleService(roleRepo, permissionRepo, auditRepo, _logService);
+            
             _authorizationService = new AuthorizationService(permissionRepo, _logService);
             _localizationService = new LocalizationService();
             _errorHandler = new ErrorHandlerService(_logService, _localizationService);
@@ -58,6 +62,7 @@ namespace UI.Forms
             btnSave.Text = _localizationService.GetString("Common.Save") ?? "Guardar";
             btnCancel.Text = _localizationService.GetString("Common.Cancel") ?? "Cancelar";
             btnChangePassword.Text = _localizationService.GetString("Users.ChangePassword") ?? "Cambiar Contraseña";
+            btnAssignRoles.Text = _localizationService.GetString("Users.AssignRoles") ?? "Asignar Roles";
             
             colUsername.HeaderText = _localizationService.GetString("Users.Username") ?? "Usuario";
             colFullName.HeaderText = _localizationService.GetString("Users.FullName") ?? "Nombre Completo";
@@ -74,6 +79,7 @@ namespace UI.Forms
             btnNew.Enabled = _authorizationService.HasPermission(userId, "Users.Create");
             btnEdit.Enabled = _authorizationService.HasPermission(userId, "Users.Edit");
             btnDelete.Enabled = _authorizationService.HasPermission(userId, "Users.Delete");
+            btnAssignRoles.Enabled = _authorizationService.HasPermission(userId, "Users.Edit");
         }
 
         private void LoadUsers()
@@ -265,6 +271,24 @@ namespace UI.Forms
             }
         }
 
+        private void btnAssignRoles_Click(object sender, EventArgs e)
+        {
+            if (dgvUsers.CurrentRow == null)
+            {
+                MessageBox.Show(
+                    _localizationService.GetString("Users.SelectUser") ?? "Por favor seleccione un usuario.",
+                    _localizationService.GetString("Common.Validation") ?? "Validación",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            var user = (User)dgvUsers.CurrentRow.DataBoundItem;
+            
+            var userRolesForm = new UserRolesForm(user.UserId, user.Username, _userService, _roleService);
+            userRolesForm.ShowDialog();
+        }
+
         private bool ValidateForm()
         {
             if (string.IsNullOrWhiteSpace(txtUsername.Text))
@@ -325,6 +349,7 @@ namespace UI.Forms
             btnEdit.Enabled = !enabled;
             btnDelete.Enabled = !enabled;
             btnChangePassword.Enabled = !enabled;
+            btnAssignRoles.Enabled = !enabled;
             
             txtUsername.ReadOnly = _isEditing;
         }

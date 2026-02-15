@@ -102,6 +102,12 @@
     <Compile Include="Forms\RolePermissionsForm.Designer.cs">
       <DependentUpon>RolePermissionsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\UserRolesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\UserRolesForm.Designer.cs">
+      <DependentUpon>UserRolesForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
