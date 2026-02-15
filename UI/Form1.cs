@@ -87,7 +87,13 @@ namespace UI
             menuRoles.Enabled = _authorizationService.HasPermission(userId, "Roles.View");
             menuProducts.Enabled = _authorizationService.HasPermission(userId, "Products.View");
             menuWarehouses.Enabled = _authorizationService.HasPermission(userId, "Warehouses.View");
-            menuStockMovements.Enabled = _authorizationService.HasPermission(userId, "Stock.View");
+            
+            // Enable stock movements if user has any stock operation permission
+            menuStockMovements.Enabled = _authorizationService.HasPermission(userId, "Stock.View") ||
+                                        _authorizationService.HasPermission(userId, "Stock.Receive") ||
+                                        _authorizationService.HasPermission(userId, "Stock.Issue") ||
+                                        _authorizationService.HasPermission(userId, "Stock.Transfer") ||
+                                        _authorizationService.HasPermission(userId, "Stock.Adjust");
             menuStockQuery.Enabled = _authorizationService.HasPermission(userId, "Stock.View");
 
             // Hide entire admin menu if user has no admin permissions
@@ -167,8 +173,25 @@ namespace UI
 
         private void menuStockMovements_Click(object sender, EventArgs e)
         {
-            if (!CheckPermission("Stock.View", "No tiene permisos para registrar movimientos."))
+            if (!SessionContext.CurrentUserId.HasValue)
                 return;
+
+            var userId = SessionContext.CurrentUserId.Value;
+            
+            // Allow access if user has any stock operation permission
+            if (!_authorizationService.HasPermission(userId, "Stock.View") &&
+                !_authorizationService.HasPermission(userId, "Stock.Receive") &&
+                !_authorizationService.HasPermission(userId, "Stock.Issue") &&
+                !_authorizationService.HasPermission(userId, "Stock.Transfer") &&
+                !_authorizationService.HasPermission(userId, "Stock.Adjust"))
+            {
+                MessageBox.Show(
+                    _localizationService.GetString("Error.Unauthorized") ?? "No tiene permisos para registrar movimientos.",
+                    _localizationService.GetString("Common.Error") ?? "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
 
             var stockMovementForm = new Forms.StockMovementForm();
             stockMovementForm.MdiParent = this;
