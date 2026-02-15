@@ -4,8 +4,6 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
-using System.Runtime.Serialization.Json;
-using System.Text;
 using SERVICES.Interfaces;
 
 namespace SERVICES.Implementations
@@ -193,8 +191,17 @@ namespace SERVICES.Implementations
                         if (valueEnd == -1)
                             break;
                         
-                        // Check if this quote is escaped
-                        if (valueEnd > 0 && line[valueEnd - 1] == '\\')
+                        // Count consecutive backslashes before this quote
+                        int backslashCount = 0;
+                        int checkPos = valueEnd - 1;
+                        while (checkPos >= valueStart && line[checkPos] == '\\')
+                        {
+                            backslashCount++;
+                            checkPos--;
+                        }
+                        
+                        // If there's an odd number of backslashes, the quote is escaped
+                        if (backslashCount % 2 == 1)
                         {
                             valueEnd++; // Skip escaped quote
                             continue;
