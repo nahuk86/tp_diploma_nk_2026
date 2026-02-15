@@ -271,8 +271,8 @@ namespace BLL.Services
                     break;
 
                 case MovementType.Adjustment:
-                    // Adjust stock (can be positive or negative)
-                    // Note: Quantity can be negative for adjustments, but validation ensures it's not zero
+                    // Adjust stock by adding the specified quantity
+                    // Note: For stock reduction adjustments, use OUT movement type instead
                     var currentAdj = _stockRepo.GetCurrentStock(productId, destinationWarehouseId.Value);
                     _stockRepo.UpdateStock(productId, destinationWarehouseId.Value, currentAdj + quantity, userId);
                     break;
