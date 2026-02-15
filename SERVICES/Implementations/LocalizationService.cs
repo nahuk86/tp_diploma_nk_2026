@@ -4,7 +4,8 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
-using Newtonsoft.Json.Linq;
+using System.Runtime.Serialization.Json;
+using System.Text;
 using SERVICES.Interfaces;
 
 namespace SERVICES.Implementations
@@ -128,28 +129,64 @@ namespace SERVICES.Implementations
         private Dictionary<string, string> ParseJsonTranslations(string jsonContent)
         {
             var translations = new Dictionary<string, string>();
-            var json = JObject.Parse(jsonContent);
             
-            // Flatten the JSON structure to key-value pairs
-            FlattenJson(json, "", translations);
+            // Simple line-by-line parser for our specific two-level nested structure
+            var lines = jsonContent.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            string currentCategory = null;
             
-            return translations;
-        }
-
-        private void FlattenJson(JToken token, string prefix, Dictionary<string, string> result)
-        {
-            if (token.Type == JTokenType.Object)
+            foreach (var rawLine in lines)
             {
-                foreach (var property in ((JObject)token).Properties())
+                var line = rawLine.Trim();
+                
+                // Skip opening and closing braces
+                if (line == "{" || line == "}" || string.IsNullOrEmpty(line))
+                    continue;
+                
+                // Check if this is a category (key followed by opening brace)
+                if (line.Contains("{") && line.Contains("\""))
                 {
-                    var key = string.IsNullOrEmpty(prefix) ? property.Name : $"{prefix}.{property.Name}";
-                    FlattenJson(property.Value, key, result);
+                    var keyStart = line.IndexOf('"') + 1;
+                    var keyEnd = line.IndexOf('"', keyStart);
+                    if (keyEnd > keyStart)
+                    {
+                        currentCategory = line.Substring(keyStart, keyEnd - keyStart);
+                    }
+                    continue;
+                }
+                
+                // Check if this is a closing brace (end of category)
+                if (line.Contains("}"))
+                {
+                    currentCategory = null;
+                    continue;
+                }
+                
+                // Parse key-value pair
+                if (line.Contains(":") && line.Contains("\""))
+                {
+                    // Find the key
+                    var keyStart = line.IndexOf('"') + 1;
+                    var keyEnd = line.IndexOf('"', keyStart);
+                    if (keyEnd <= keyStart)
+                        continue;
+                    
+                    var key = line.Substring(keyStart, keyEnd - keyStart);
+                    
+                    // Find the value
+                    var valueStart = line.IndexOf('"', keyEnd + 1) + 1;
+                    var valueEnd = line.LastIndexOf('"');
+                    if (valueEnd <= valueStart)
+                        continue;
+                    
+                    var value = line.Substring(valueStart, valueEnd - valueStart);
+                    
+                    // Build full key
+                    var fullKey = currentCategory != null ? $"{currentCategory}.{key}" : key;
+                    translations[fullKey] = value;
                 }
             }
-            else if (token.Type == JTokenType.String)
-            {
-                result[prefix] = token.ToString();
-            }
+            
+            return translations;
         }
 
         private void LoadTranslationsFromDatabase()
