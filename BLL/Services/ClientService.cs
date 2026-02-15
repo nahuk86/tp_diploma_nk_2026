@@ -123,11 +123,10 @@ namespace BLL.Services
                 // Update
                 _clientRepo.Update(client);
 
-                // Audit log - log each changed field
+                // Audit log - log each changed field (DNI is not audited as it's read-only during edit)
                 LogFieldChange("Clients", client.ClientId, "Nombre", oldClient.Nombre, client.Nombre);
                 LogFieldChange("Clients", client.ClientId, "Apellido", oldClient.Apellido, client.Apellido);
                 LogFieldChange("Clients", client.ClientId, "Correo", oldClient.Correo, client.Correo);
-                LogFieldChange("Clients", client.ClientId, "DNI", oldClient.DNI, client.DNI);
                 LogFieldChange("Clients", client.ClientId, "Telefono", oldClient.Telefono, client.Telefono);
                 LogFieldChange("Clients", client.ClientId, "Direccion", oldClient.Direccion, client.Direccion);
 
