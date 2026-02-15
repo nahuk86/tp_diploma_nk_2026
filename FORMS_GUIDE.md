@@ -141,6 +141,7 @@ Se han implementado los formularios principales para soportar las funcionalidade
   - **Editar**: Modificar datos del usuario (no cambia contraseña)
   - **Eliminar**: Soft delete del usuario
   - **Cambiar Contraseña**: Actualizar contraseña de un usuario
+  - **Asignar Roles**: Asignar/desasignar roles al usuario
   - **Guardar**: Guardar cambios
   - **Cancelar**: Descartar cambios
 
@@ -158,14 +159,64 @@ Se han implementado los formularios principales para soportar las funcionalidade
 **Permisos Requeridos**:
 - `Users.View`: Ver usuarios
 - `Users.Create`: Crear usuarios
-- `Users.Edit`: Editar usuarios
+- `Users.Edit`: Editar usuarios (también requerido para asignar roles)
 - `Users.Delete`: Eliminar usuarios
 
 **Funcionalidades Especiales**:
 - La contraseña se oculta con PasswordChar = '*'
 - El campo usuario es de solo lectura al editar
 - El botón "Cambiar Contraseña" permite actualizar la contraseña de cualquier usuario
+- El botón "Asignar Roles" abre un diálogo para asignar/desasignar roles
 - Hash automático de contraseñas con PBKDF2
+
+**Formulario de Asignación de Roles**:
+- Diálogo modal con lista de todos los roles disponibles
+- CheckedListBox para selección múltiple
+- Muestra roles actualmente asignados al usuario
+- Permite asignar/desasignar roles con un solo clic
+- Los cambios se guardan en la tabla UserRoles
+
+### 6. RolesForm
+
+**Descripción**: Formulario CRUD para la gestión de roles del sistema.
+
+**Características**:
+- Lista de roles activos en DataGridView
+- Formulario de detalles con los siguientes campos:
+  - Nombre del Rol (único, requerido, 2-50 caracteres)
+  - Descripción (opcional, máx. 200 caracteres)
+- Operaciones CRUD completas:
+  - **Nuevo**: Crear un nuevo rol
+  - **Editar**: Modificar un rol existente
+  - **Eliminar**: Soft delete del rol
+  - **Gestionar Permisos**: Asignar/desasignar permisos al rol
+  - **Guardar**: Guardar cambios
+  - **Cancelar**: Descartar cambios
+
+**Validaciones**:
+- Nombre del rol requerido (2-50 caracteres)
+- Nombre del rol único en el sistema
+- Descripción máximo 200 caracteres
+- No se pueden eliminar roles del sistema (Admin, User)
+
+**Permisos Requeridos**:
+- `Roles.View`: Ver roles
+- `Roles.Create`: Crear roles
+- `Roles.Edit`: Editar roles
+- `Roles.Delete`: Eliminar roles
+
+**Funcionalidades Especiales**:
+- El campo nombre del rol es de solo lectura al editar
+- El botón "Gestionar Permisos" abre un diálogo para asignar permisos
+- Los permisos se presentan organizados por módulo
+- Protección contra eliminación de roles del sistema (Admin, User)
+
+**Formulario de Gestión de Permisos**:
+- Diálogo modal con lista de todos los permisos disponibles
+- Permisos agrupados por módulo
+- CheckedListBox para selección múltiple
+- Muestra permisos actualmente asignados al rol
+- Permite asignar/desasignar permisos con un solo clic
 
 ## Servicios BLL Implementados
 
@@ -199,6 +250,7 @@ Se han implementado los formularios principales para soportar las funcionalidade
 - `UpdateUser(User)`: Actualiza un usuario existente (no actualiza password)
 - `DeleteUser(int id)`: Soft delete de un usuario
 - `ChangePassword(int userId, string newPassword)`: Cambia la contraseña de un usuario
+- `GetUserRoles(int userId)`: Obtiene los roles asignados a un usuario
 - `AssignRolesToUser(int userId, List<int> roleIds)`: Asigna roles a un usuario
 
 **Validaciones**:
@@ -209,6 +261,27 @@ Se han implementado los formularios principales para soportar las funcionalidade
 - Contraseña debe tener al menos un número
 - No se puede eliminar el usuario "admin"
 - Hash automático de contraseñas con PBKDF2
+- Auditoría automática de cambios
+
+### RoleService
+
+**Descripción**: Servicio de lógica de negocio para la gestión de roles.
+
+**Métodos**:
+- `GetAllRoles()`: Obtiene todos los roles
+- `GetActiveRoles()`: Obtiene solo roles activos
+- `GetRoleById(int id)`: Obtiene un rol por ID
+- `GetRolePermissions(int roleId)`: Obtiene los permisos de un rol
+- `GetAllPermissions()`: Obtiene todos los permisos disponibles
+- `CreateRole(Role)`: Crea un nuevo rol con validaciones
+- `UpdateRole(Role)`: Actualiza un rol existente
+- `DeleteRole(int id)`: Soft delete de un rol
+- `AssignPermissions(int roleId, List<int> permissionIds)`: Asigna permisos a un rol
+
+**Validaciones**:
+- Nombre del rol único y requerido (2-50 caracteres)
+- Descripción máximo 200 caracteres
+- No se pueden eliminar roles del sistema (Admin, User)
 - Auditoría automática de cambios
 
 ## Arquitectura de los Formularios
@@ -308,11 +381,7 @@ El cambio de idioma se realiza desde el menú principal: **Configuración > Idio
 
 Los siguientes formularios están pendientes y aparecen como "En desarrollo" en el menú:
 
-1. **RolesForm**: Gestión de roles y permisos
-   - CRUD de roles
-   - Asignación de permisos a roles
-
-2. **StockMovementForm**: Registro de movimientos de stock
+1. **StockMovementForm**: Registro de movimientos de stock
    - Entrada de mercadería
    - Salida de mercadería
    - Transferencias entre almacenes
@@ -340,8 +409,8 @@ Los siguientes formularios están pendientes y aparecen como "En desarrollo" en 
 
 ## Próximos Pasos
 
-1. Implementar los formularios pendientes (Users, Roles, StockMovement)
-2. Implementar servicios BLL adicionales (UserService, RoleService, StockMovementService)
+1. Implementar los formularios pendientes (StockMovement)
+2. Implementar servicios BLL adicionales (StockMovementService)
 3. Agregar reportes (PDF, Excel)
 4. Implementar dashboard con KPIs
 5. Agregar búsqueda avanzada con filtros

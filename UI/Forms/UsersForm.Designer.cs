@@ -37,6 +37,7 @@ namespace UI.Forms
             this.btnEdit = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
             this.btnChangePassword = new System.Windows.Forms.Button();
+            this.btnAssignRoles = new System.Windows.Forms.Button();
             this.grpDetails = new System.Windows.Forms.GroupBox();
             this.lblUsername = new System.Windows.Forms.Label();
             this.txtUsername = new System.Windows.Forms.TextBox();
@@ -63,6 +64,7 @@ namespace UI.Forms
             this.grpList.Controls.Add(this.btnEdit);
             this.grpList.Controls.Add(this.btnDelete);
             this.grpList.Controls.Add(this.btnChangePassword);
+            this.grpList.Controls.Add(this.btnAssignRoles);
             this.grpList.Location = new System.Drawing.Point(12, 12);
             this.grpList.Name = "grpList";
             this.grpList.Size = new System.Drawing.Size(760, 350);
@@ -151,6 +153,16 @@ namespace UI.Forms
             this.btnChangePassword.Text = "Cambiar Contraseña";
             this.btnChangePassword.UseVisualStyleBackColor = true;
             this.btnChangePassword.Click += new System.EventHandler(this.btnChangePassword_Click);
+            // 
+            // btnAssignRoles
+            // 
+            this.btnAssignRoles.Location = new System.Drawing.Point(460, 19);
+            this.btnAssignRoles.Name = "btnAssignRoles";
+            this.btnAssignRoles.Size = new System.Drawing.Size(110, 23);
+            this.btnAssignRoles.TabIndex = 5;
+            this.btnAssignRoles.Text = "Asignar Roles";
+            this.btnAssignRoles.UseVisualStyleBackColor = true;
+            this.btnAssignRoles.Click += new System.EventHandler(this.btnAssignRoles_Click);
             // 
             // grpDetails
             // 
@@ -295,6 +307,7 @@ namespace UI.Forms
         private System.Windows.Forms.Button btnEdit;
         private System.Windows.Forms.Button btnDelete;
         private System.Windows.Forms.Button btnChangePassword;
+        private System.Windows.Forms.Button btnAssignRoles;
         private System.Windows.Forms.GroupBox grpDetails;
         private System.Windows.Forms.Label lblUsername;
         private System.Windows.Forms.TextBox txtUsername;
