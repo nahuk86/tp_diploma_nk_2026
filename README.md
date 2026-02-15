@@ -101,10 +101,10 @@ El sistema está organizado en capas siguiendo principios de arquitectura limpia
 - `ProductService` ✅: Validaciones de productos (SKU único, precio > 0, etc.)
 - `WarehouseService` ✅: Gestión de almacenes (código único, validaciones)
 - `UserService` ✅: Validaciones de usuarios (username único, formato email, cambio de contraseña)
+- `StockMovementService` ✅: Lógica completa de movimientos con validaciones y actualización automática de stock
 
 **Servicios Pendientes**:
 - `RoleService`: Gestión de roles y asignación de permisos
-- `StockMovementService`: Lógica compleja de movimientos con transacciones
 
 ### 5. UI (WinForms)
 **Propósito**: Interfaz de usuario.
@@ -119,10 +119,11 @@ El sistema está organizado en capas siguiendo principios de arquitectura limpia
 - `ProductsForm` ✅: ABM de productos con búsqueda
 - `WarehousesForm` ✅: ABM de almacenes
 - `StockQueryForm` ✅: Consulta de stock actual con filtros
+- `RolesForm` ✅: ABM de roles con asignación de permisos
+- `StockMovementForm` ✅: Registro de movimientos (entrada, salida, transferencia, ajuste) con actualización automática de stock
 
 **Forms Pendientes**:
-- `RolesForm`: ABM de roles con asignación de permisos
-- `StockMovementForm`: Registro de movimientos (entrada, salida, transferencia, ajuste)
+- Ninguno - Todas las funcionalidades principales implementadas
 
 ## Base de Datos
 
@@ -207,21 +208,18 @@ Una vez configurada la contraseña, podrá iniciar sesión normalmente.
 - [x] Servicio de manejo de errores
 - [x] Repositorios: User, Role, Permission, Product, Warehouse, Stock, StockMovement, AuditLog
 - [x] Helper de base de datos
-- [x] Servicios BLL: ProductService, WarehouseService, UserService
+- [x] Servicios BLL: ProductService, WarehouseService, UserService, StockMovementService
 - [x] Formulario principal (MainForm) con menú MDI y control de permisos
 - [x] LoginForm y AdminPasswordInitForm
 - [x] ProductsForm con búsqueda y CRUD completo
 - [x] WarehousesForm con CRUD completo
 - [x] UsersForm con gestión de usuarios y cambio de contraseña
+- [x] RolesForm con gestión de roles y permisos
 - [x] StockQueryForm para consultar inventario actual
+- [x] StockMovementForm para registrar movimientos con actualización automática de stock
 
 ### 🔲 Pendientes
 
-- [ ] Implementar RoleService
-- [ ] Implementar StockMovementService (con transacciones!)
-- [ ] Crear RolesForm para gestión de roles y permisos
-- [ ] Crear StockMovementForm para registrar movimientos
-- [ ] Implementar transacciones para movimientos de stock
 - [ ] Implementar control de permisos en runtime (cambio de idioma)
 - [ ] Agregar reportes (PDF, Excel)
 
