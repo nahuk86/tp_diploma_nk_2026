@@ -27,6 +27,9 @@ namespace UI
             _localizationService = localizationService ?? throw new ArgumentNullException(nameof(localizationService));
             _logService = logService ?? throw new ArgumentNullException(nameof(logService));
             
+            // Subscribe to language change event
+            _localizationService.LanguageChanged += OnLanguageChanged;
+            
             // Initialize authorization service
             var permissionRepo = new PermissionRepository();
             _authorizationService = new AuthorizationService(permissionRepo, _logService);
@@ -34,6 +37,29 @@ namespace UI
             ApplyLocalization();
             InitializeMainForm();
             ConfigureMenuByPermissions();
+        }
+
+        private void OnLanguageChanged(object sender, EventArgs e)
+        {
+            // Refresh the main form
+            ApplyLocalization();
+            
+            // Refresh all open MDI child forms
+            RefreshMdiChildren();
+        }
+
+        private void RefreshMdiChildren()
+        {
+            foreach (Form childForm in this.MdiChildren)
+            {
+                // Try to call ApplyLocalization method if it exists
+                var method = childForm.GetType().GetMethod("ApplyLocalization", 
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                if (method != null)
+                {
+                    method.Invoke(childForm, null);
+                }
+            }
         }
 
         private void ApplyLocalization()
@@ -213,7 +239,6 @@ namespace UI
             _localizationService.SetLanguage("es");
             menuLanguageSpanish.Checked = true;
             menuLanguageEnglish.Checked = false;
-            ApplyLocalization();
             _logService.Info("Language changed to Spanish");
         }
 
@@ -222,7 +247,6 @@ namespace UI
             _localizationService.SetLanguage("en");
             menuLanguageSpanish.Checked = false;
             menuLanguageEnglish.Checked = true;
-            ApplyLocalization();
             _logService.Info("Language changed to English");
         }
 

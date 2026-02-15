@@ -1,0 +1,57 @@
+{
+  "Common": {
+    "Login": "Login",
+    "Username": "Username",
+    "Password": "Password",
+    "Save": "Save",
+    "Cancel": "Cancel",
+    "Delete": "Delete",
+    "Edit": "Edit",
+    "New": "New",
+    "Search": "Search",
+    "Close": "Close",
+    "Yes": "Yes",
+    "No": "No",
+    "Error": "Error",
+    "Validation": "Validation",
+    "Confirmation": "Confirmation"
+  },
+  "Login": {
+    "UsernameRequired": "Please enter your username.",
+    "PasswordRequired": "Please enter your password.",
+    "InvalidCredentials": "Invalid username or password.",
+    "AuthError": "Authentication Error",
+    "Error": "Login error"
+  },
+  "Menu": {
+    "File": "&File",
+    "Logout": "&Logout",
+    "Exit": "E&xit",
+    "Administration": "&Administration",
+    "Users": "&Users",
+    "Roles": "&Roles",
+    "Inventory": "&Inventory",
+    "Products": "&Products",
+    "Warehouses": "&Warehouses",
+    "Operations": "&Operations",
+    "StockMovements": "Stock &Movements",
+    "StockQuery": "&Query Stock",
+    "Settings": "&Settings",
+    "Language": "&Language",
+    "Help": "&Help",
+    "About": "&About..."
+  },
+  "App": {
+    "Title": "Stock Manager"
+  },
+  "Status": {
+    "Ready": "Ready"
+  },
+  "Confirm": {
+    "Logout": "Are you sure you want to log out?",
+    "Exit": "Are you sure you want to exit the application?"
+  },
+  "Error": {
+    "Unauthorized": "You do not have permission to perform this action."
+  }
+}
