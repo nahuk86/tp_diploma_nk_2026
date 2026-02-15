@@ -146,15 +146,19 @@ Los scripts están en la carpeta `Database/`:
 
 1. **01_CreateSchema.sql**: Crea todas las tablas, índices y relaciones
 2. **02_SeedData.sql**: Inserta datos semilla (roles, permisos, productos, almacenes)
+3. **03_UpdatePermissions.sql**: (Opcional) Actualiza permisos en bases de datos existentes
 
 **Ejecutar en este orden**:
 ```sql
--- Ejecutar primero
+-- Para una base de datos nueva:
 01_CreateSchema.sql
-
--- Ejecutar después
 02_SeedData.sql
+
+-- Para actualizar una base de datos existente:
+03_UpdatePermissions.sql
 ```
+
+> **Nota**: Si ya tiene una base de datos creada con versiones anteriores del seed data, ejecute `03_UpdatePermissions.sql` para habilitar todas las funcionalidades de movimientos de stock para el rol WarehouseOperator.
 
 ### Tablas Principales
 
