@@ -244,7 +244,7 @@ namespace DAO.Repositories
             {
                 MovementId = (int)reader["MovementId"],
                 MovementNumber = reader["MovementNumber"].ToString(),
-                MovementType = (MovementType)Enum.Parse(typeof(MovementType), reader["MovementType"].ToString()),
+                MovementType = (MovementType)Enum.Parse(typeof(MovementType), reader["MovementType"].ToString(), ignoreCase: true),
                 MovementDate = (DateTime)reader["MovementDate"],
                 SourceWarehouseId = reader["SourceWarehouseId"] == DBNull.Value ? (int?)null : (int)reader["SourceWarehouseId"],
                 DestinationWarehouseId = reader["DestinationWarehouseId"] == DBNull.Value ? (int?)null : (int)reader["DestinationWarehouseId"],
