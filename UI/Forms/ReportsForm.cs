@@ -78,9 +78,9 @@ namespace UI.Forms
         {
             try
             {
-                _products = _productService.GetAllActiveProducts();
-                _clients = _clientService.GetAllActiveClients();
-                _warehouses = _warehouseService.GetAllActiveWarehouses();
+                _products = _productService.GetActiveProducts();
+                _clients = _clientService.GetActiveClients();
+                _warehouses = _warehouseService.GetActiveWarehouses();
                 _categories = _products.Select(p => p.Category).Distinct().Where(c => !string.IsNullOrEmpty(c)).OrderBy(c => c).ToList();
 
                 // Populate category dropdowns
