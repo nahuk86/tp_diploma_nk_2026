@@ -28,10 +28,11 @@ namespace UI.Forms
             this.tabClientTicketAverage = new System.Windows.Forms.TabPage();
             
             this.tabControl1.SuspendLayout();
+            this.tabTopProducts.SuspendLayout();
             this.SuspendLayout();
             
-            // Note: Tab initialization methods not yet implemented
-            // Will be added in future updates
+            // Initialize Top Products tab with essential controls
+            InitializeTopProductsTab();
             
             // 
             // tabControl1
@@ -52,6 +53,17 @@ namespace UI.Forms
             this.tabControl1.TabIndex = 0;
             
             // 
+            // tabTopProducts
+            //
+            this.tabTopProducts.Location = new System.Drawing.Point(4, 22);
+            this.tabTopProducts.Name = "tabTopProducts";
+            this.tabTopProducts.Padding = new System.Windows.Forms.Padding(3);
+            this.tabTopProducts.Size = new System.Drawing.Size(1192, 674);
+            this.tabTopProducts.TabIndex = 0;
+            this.tabTopProducts.Text = "Productos Más Vendidos";
+            this.tabTopProducts.UseVisualStyleBackColor = true;
+            
+            // 
             // ReportsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -63,7 +75,185 @@ namespace UI.Forms
             this.Text = "Reportes";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.tabControl1.ResumeLayout(false);
+            this.tabTopProducts.ResumeLayout(false);
             this.ResumeLayout(false);
+        }
+
+        private void InitializeTopProductsTab()
+        {
+            // Initialize controls
+            this.pnlTopProductsFilters = new System.Windows.Forms.Panel();
+            this.lblTopProductsDateRange = new System.Windows.Forms.Label();
+            this.dtpTopProductsStart = new System.Windows.Forms.DateTimePicker();
+            this.dtpTopProductsEnd = new System.Windows.Forms.DateTimePicker();
+            this.lblTopProductsCategory = new System.Windows.Forms.Label();
+            this.cboTopProductsCategory = new System.Windows.Forms.ComboBox();
+            this.chkTopProductsLimit = new System.Windows.Forms.CheckBox();
+            this.nudTopProductsLimit = new System.Windows.Forms.NumericUpDown();
+            this.lblTopProductsOrderBy = new System.Windows.Forms.Label();
+            this.cboTopProductsOrderBy = new System.Windows.Forms.ComboBox();
+            this.btnGenerateTopProducts = new System.Windows.Forms.Button();
+            this.btnExportTopProducts = new System.Windows.Forms.Button();
+            this.dgvTopProducts = new System.Windows.Forms.DataGridView();
+            
+            ((System.ComponentModel.ISupportInitialize)(this.nudTopProductsLimit)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvTopProducts)).BeginInit();
+            
+            // 
+            // pnlTopProductsFilters
+            // 
+            this.pnlTopProductsFilters.Controls.Add(this.lblTopProductsDateRange);
+            this.pnlTopProductsFilters.Controls.Add(this.dtpTopProductsStart);
+            this.pnlTopProductsFilters.Controls.Add(this.dtpTopProductsEnd);
+            this.pnlTopProductsFilters.Controls.Add(this.lblTopProductsCategory);
+            this.pnlTopProductsFilters.Controls.Add(this.cboTopProductsCategory);
+            this.pnlTopProductsFilters.Controls.Add(this.chkTopProductsLimit);
+            this.pnlTopProductsFilters.Controls.Add(this.nudTopProductsLimit);
+            this.pnlTopProductsFilters.Controls.Add(this.lblTopProductsOrderBy);
+            this.pnlTopProductsFilters.Controls.Add(this.cboTopProductsOrderBy);
+            this.pnlTopProductsFilters.Controls.Add(this.btnGenerateTopProducts);
+            this.pnlTopProductsFilters.Controls.Add(this.btnExportTopProducts);
+            this.pnlTopProductsFilters.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlTopProductsFilters.Location = new System.Drawing.Point(3, 3);
+            this.pnlTopProductsFilters.Name = "pnlTopProductsFilters";
+            this.pnlTopProductsFilters.Size = new System.Drawing.Size(1186, 100);
+            this.pnlTopProductsFilters.TabIndex = 0;
+            
+            // 
+            // lblTopProductsDateRange
+            // 
+            this.lblTopProductsDateRange.AutoSize = true;
+            this.lblTopProductsDateRange.Location = new System.Drawing.Point(10, 15);
+            this.lblTopProductsDateRange.Name = "lblTopProductsDateRange";
+            this.lblTopProductsDateRange.Size = new System.Drawing.Size(100, 13);
+            this.lblTopProductsDateRange.TabIndex = 0;
+            this.lblTopProductsDateRange.Text = "Rango de Fechas:";
+            
+            // 
+            // dtpTopProductsStart
+            // 
+            this.dtpTopProductsStart.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtpTopProductsStart.Location = new System.Drawing.Point(120, 12);
+            this.dtpTopProductsStart.Name = "dtpTopProductsStart";
+            this.dtpTopProductsStart.Size = new System.Drawing.Size(100, 20);
+            this.dtpTopProductsStart.TabIndex = 1;
+            
+            // 
+            // dtpTopProductsEnd
+            // 
+            this.dtpTopProductsEnd.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtpTopProductsEnd.Location = new System.Drawing.Point(230, 12);
+            this.dtpTopProductsEnd.Name = "dtpTopProductsEnd";
+            this.dtpTopProductsEnd.Size = new System.Drawing.Size(100, 20);
+            this.dtpTopProductsEnd.TabIndex = 2;
+            
+            // 
+            // lblTopProductsCategory
+            // 
+            this.lblTopProductsCategory.AutoSize = true;
+            this.lblTopProductsCategory.Location = new System.Drawing.Point(350, 15);
+            this.lblTopProductsCategory.Name = "lblTopProductsCategory";
+            this.lblTopProductsCategory.Size = new System.Drawing.Size(60, 13);
+            this.lblTopProductsCategory.TabIndex = 3;
+            this.lblTopProductsCategory.Text = "Categoría:";
+            
+            // 
+            // cboTopProductsCategory
+            // 
+            this.cboTopProductsCategory.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboTopProductsCategory.FormattingEnabled = true;
+            this.cboTopProductsCategory.Location = new System.Drawing.Point(420, 12);
+            this.cboTopProductsCategory.Name = "cboTopProductsCategory";
+            this.cboTopProductsCategory.Size = new System.Drawing.Size(200, 21);
+            this.cboTopProductsCategory.TabIndex = 4;
+            
+            // 
+            // chkTopProductsLimit
+            // 
+            this.chkTopProductsLimit.AutoSize = true;
+            this.chkTopProductsLimit.Location = new System.Drawing.Point(10, 45);
+            this.chkTopProductsLimit.Name = "chkTopProductsLimit";
+            this.chkTopProductsLimit.Size = new System.Drawing.Size(100, 17);
+            this.chkTopProductsLimit.TabIndex = 5;
+            this.chkTopProductsLimit.Text = "Limitar a Top:";
+            this.chkTopProductsLimit.UseVisualStyleBackColor = true;
+            
+            // 
+            // nudTopProductsLimit
+            // 
+            this.nudTopProductsLimit.Location = new System.Drawing.Point(120, 43);
+            this.nudTopProductsLimit.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
+            this.nudTopProductsLimit.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            this.nudTopProductsLimit.Name = "nudTopProductsLimit";
+            this.nudTopProductsLimit.Size = new System.Drawing.Size(80, 20);
+            this.nudTopProductsLimit.TabIndex = 6;
+            this.nudTopProductsLimit.Value = new decimal(new int[] { 10, 0, 0, 0 });
+            
+            // 
+            // lblTopProductsOrderBy
+            // 
+            this.lblTopProductsOrderBy.AutoSize = true;
+            this.lblTopProductsOrderBy.Location = new System.Drawing.Point(220, 47);
+            this.lblTopProductsOrderBy.Name = "lblTopProductsOrderBy";
+            this.lblTopProductsOrderBy.Size = new System.Drawing.Size(70, 13);
+            this.lblTopProductsOrderBy.TabIndex = 7;
+            this.lblTopProductsOrderBy.Text = "Ordenar por:";
+            
+            // 
+            // cboTopProductsOrderBy
+            // 
+            this.cboTopProductsOrderBy.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboTopProductsOrderBy.FormattingEnabled = true;
+            this.cboTopProductsOrderBy.Items.AddRange(new object[] { "Unidades", "Ingresos" });
+            this.cboTopProductsOrderBy.Location = new System.Drawing.Point(300, 44);
+            this.cboTopProductsOrderBy.Name = "cboTopProductsOrderBy";
+            this.cboTopProductsOrderBy.Size = new System.Drawing.Size(120, 21);
+            this.cboTopProductsOrderBy.TabIndex = 8;
+            this.cboTopProductsOrderBy.SelectedIndex = 0;
+            
+            // 
+            // btnGenerateTopProducts
+            // 
+            this.btnGenerateTopProducts.Location = new System.Drawing.Point(450, 42);
+            this.btnGenerateTopProducts.Name = "btnGenerateTopProducts";
+            this.btnGenerateTopProducts.Size = new System.Drawing.Size(80, 25);
+            this.btnGenerateTopProducts.TabIndex = 9;
+            this.btnGenerateTopProducts.Text = "Generar";
+            this.btnGenerateTopProducts.UseVisualStyleBackColor = true;
+            this.btnGenerateTopProducts.Click += new System.EventHandler(this.btnGenerateTopProducts_Click);
+            
+            // 
+            // btnExportTopProducts
+            // 
+            this.btnExportTopProducts.Location = new System.Drawing.Point(540, 42);
+            this.btnExportTopProducts.Name = "btnExportTopProducts";
+            this.btnExportTopProducts.Size = new System.Drawing.Size(100, 25);
+            this.btnExportTopProducts.TabIndex = 10;
+            this.btnExportTopProducts.Text = "Exportar CSV";
+            this.btnExportTopProducts.UseVisualStyleBackColor = true;
+            this.btnExportTopProducts.Click += new System.EventHandler(this.btnExportTopProducts_Click);
+            
+            // 
+            // dgvTopProducts
+            // 
+            this.dgvTopProducts.AllowUserToAddRows = false;
+            this.dgvTopProducts.AllowUserToDeleteRows = false;
+            this.dgvTopProducts.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvTopProducts.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvTopProducts.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvTopProducts.Location = new System.Drawing.Point(3, 103);
+            this.dgvTopProducts.Name = "dgvTopProducts";
+            this.dgvTopProducts.ReadOnly = true;
+            this.dgvTopProducts.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvTopProducts.Size = new System.Drawing.Size(1186, 568);
+            this.dgvTopProducts.TabIndex = 11;
+            
+            // Add controls to tab
+            this.tabTopProducts.Controls.Add(this.dgvTopProducts);
+            this.tabTopProducts.Controls.Add(this.pnlTopProductsFilters);
+            
+            ((System.ComponentModel.ISupportInitialize)(this.nudTopProductsLimit)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvTopProducts)).EndInit();
         }
 
         #endregion
