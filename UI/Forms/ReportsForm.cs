@@ -106,143 +106,189 @@ namespace UI.Forms
             var today = DateTime.Today;
             
             // Report 1: Top Products
-            dtpTopProductsStart.Value = today.AddMonths(-1);
-            dtpTopProductsEnd.Value = today;
+            if (dtpTopProductsStart != null)
+                dtpTopProductsStart.Value = today.AddMonths(-1);
+            if (dtpTopProductsEnd != null)
+                dtpTopProductsEnd.Value = today;
             
             // Report 2: Client Purchases
-            dtpClientPurchasesStart.Value = today.AddMonths(-1);
-            dtpClientPurchasesEnd.Value = today;
+            if (dtpClientPurchasesStart != null)
+                dtpClientPurchasesStart.Value = today.AddMonths(-1);
+            if (dtpClientPurchasesEnd != null)
+                dtpClientPurchasesEnd.Value = today;
             
             // Report 3: Price Variation
-            dtpPriceVariationStart.Value = today.AddMonths(-1);
-            dtpPriceVariationEnd.Value = today;
+            if (dtpPriceVariationStart != null)
+                dtpPriceVariationStart.Value = today.AddMonths(-1);
+            if (dtpPriceVariationEnd != null)
+                dtpPriceVariationEnd.Value = today;
             
             // Report 4: Seller Performance
-            dtpSellerPerformanceStart.Value = today.AddMonths(-1);
-            dtpSellerPerformanceEnd.Value = today;
+            if (dtpSellerPerformanceStart != null)
+                dtpSellerPerformanceStart.Value = today.AddMonths(-1);
+            if (dtpSellerPerformanceEnd != null)
+                dtpSellerPerformanceEnd.Value = today;
             
             // Report 5: Category Sales
-            dtpCategorySalesStart.Value = today.AddMonths(-1);
-            dtpCategorySalesEnd.Value = today;
+            if (dtpCategorySalesStart != null)
+                dtpCategorySalesStart.Value = today.AddMonths(-1);
+            if (dtpCategorySalesEnd != null)
+                dtpCategorySalesEnd.Value = today;
             
             // Report 6: Revenue by Date
-            dtpRevenueByDateStart.Value = today.AddMonths(-1);
-            dtpRevenueByDateEnd.Value = today;
+            if (dtpRevenueByDateStart != null)
+                dtpRevenueByDateStart.Value = today.AddMonths(-1);
+            if (dtpRevenueByDateEnd != null)
+                dtpRevenueByDateEnd.Value = today;
             
             // Report 7: Client Product Ranking
-            dtpClientProductRankingStart.Value = today.AddMonths(-1);
-            dtpClientProductRankingEnd.Value = today;
+            if (dtpClientProductRankingStart != null)
+                dtpClientProductRankingStart.Value = today.AddMonths(-1);
+            if (dtpClientProductRankingEnd != null)
+                dtpClientProductRankingEnd.Value = today;
             
             // Report 8: Client Ticket Average
-            dtpClientTicketAverageStart.Value = today.AddMonths(-1);
-            dtpClientTicketAverageEnd.Value = today;
+            if (dtpClientTicketAverageStart != null)
+                dtpClientTicketAverageStart.Value = today.AddMonths(-1);
+            if (dtpClientTicketAverageEnd != null)
+                dtpClientTicketAverageEnd.Value = today;
         }
 
         private void PopulateCategories()
         {
-            cboTopProductsCategory.Items.Clear();
-            cboTopProductsCategory.Items.Add("-- Todas las Categorías --");
-            cboTopProductsCategory.Items.AddRange(_categories.ToArray());
-            cboTopProductsCategory.SelectedIndex = 0;
+            if (cboTopProductsCategory != null)
+            {
+                cboTopProductsCategory.Items.Clear();
+                cboTopProductsCategory.Items.Add("-- Todas las Categorías --");
+                cboTopProductsCategory.Items.AddRange(_categories.ToArray());
+                cboTopProductsCategory.SelectedIndex = 0;
+            }
 
-            cboPriceVariationCategory.Items.Clear();
-            cboPriceVariationCategory.Items.Add("-- Todas las Categorías --");
-            cboPriceVariationCategory.Items.AddRange(_categories.ToArray());
-            cboPriceVariationCategory.SelectedIndex = 0;
+            if (cboPriceVariationCategory != null)
+            {
+                cboPriceVariationCategory.Items.Clear();
+                cboPriceVariationCategory.Items.Add("-- Todas las Categorías --");
+                cboPriceVariationCategory.Items.AddRange(_categories.ToArray());
+                cboPriceVariationCategory.SelectedIndex = 0;
+            }
 
-            cboSellerPerformanceCategory.Items.Clear();
-            cboSellerPerformanceCategory.Items.Add("-- Todas las Categorías --");
-            cboSellerPerformanceCategory.Items.AddRange(_categories.ToArray());
-            cboSellerPerformanceCategory.SelectedIndex = 0;
+            if (cboSellerPerformanceCategory != null)
+            {
+                cboSellerPerformanceCategory.Items.Clear();
+                cboSellerPerformanceCategory.Items.Add("-- Todas las Categorías --");
+                cboSellerPerformanceCategory.Items.AddRange(_categories.ToArray());
+                cboSellerPerformanceCategory.SelectedIndex = 0;
+            }
 
-            cboCategorySalesCategory.Items.Clear();
-            cboCategorySalesCategory.Items.Add("-- Todas las Categorías --");
-            cboCategorySalesCategory.Items.AddRange(_categories.ToArray());
-            cboCategorySalesCategory.SelectedIndex = 0;
+            if (cboCategorySalesCategory != null)
+            {
+                cboCategorySalesCategory.Items.Clear();
+                cboCategorySalesCategory.Items.Add("-- Todas las Categorías --");
+                cboCategorySalesCategory.Items.AddRange(_categories.ToArray());
+                cboCategorySalesCategory.SelectedIndex = 0;
+            }
 
-            cboClientProductRankingCategory.Items.Clear();
-            cboClientProductRankingCategory.Items.Add("-- Todas las Categorías --");
-            cboClientProductRankingCategory.Items.AddRange(_categories.ToArray());
-            cboClientProductRankingCategory.SelectedIndex = 0;
+            if (cboClientProductRankingCategory != null)
+            {
+                cboClientProductRankingCategory.Items.Clear();
+                cboClientProductRankingCategory.Items.Add("-- Todas las Categorías --");
+                cboClientProductRankingCategory.Items.AddRange(_categories.ToArray());
+                cboClientProductRankingCategory.SelectedIndex = 0;
+            }
         }
 
         private void PopulateClients()
         {
-            cboClientPurchasesClient.Items.Clear();
-            cboClientPurchasesClient.Items.Add(new ComboBoxItem { Text = "-- Todos los Clientes --", Value = null });
-            foreach (var client in _clients)
+            if (cboClientPurchasesClient != null)
             {
-                cboClientPurchasesClient.Items.Add(new ComboBoxItem 
-                { 
-                    Text = $"{client.Nombre} {client.Apellido} - {client.DNI}", 
-                    Value = client.ClientId 
-                });
+                cboClientPurchasesClient.Items.Clear();
+                cboClientPurchasesClient.Items.Add(new ComboBoxItem { Text = "-- Todos los Clientes --", Value = null });
+                foreach (var client in _clients)
+                {
+                    cboClientPurchasesClient.Items.Add(new ComboBoxItem 
+                    { 
+                        Text = $"{client.Nombre} {client.Apellido} - {client.DNI}", 
+                        Value = client.ClientId 
+                    });
+                }
+                cboClientPurchasesClient.DisplayMember = "Text";
+                cboClientPurchasesClient.ValueMember = "Value";
+                cboClientPurchasesClient.SelectedIndex = 0;
             }
-            cboClientPurchasesClient.DisplayMember = "Text";
-            cboClientPurchasesClient.ValueMember = "Value";
-            cboClientPurchasesClient.SelectedIndex = 0;
 
-            cboClientTicketAverageClient.Items.Clear();
-            cboClientTicketAverageClient.Items.Add(new ComboBoxItem { Text = "-- Todos los Clientes --", Value = null });
-            foreach (var client in _clients)
+            if (cboClientTicketAverageClient != null)
             {
-                cboClientTicketAverageClient.Items.Add(new ComboBoxItem 
-                { 
-                    Text = $"{client.Nombre} {client.Apellido} - {client.DNI}", 
-                    Value = client.ClientId 
-                });
+                cboClientTicketAverageClient.Items.Clear();
+                cboClientTicketAverageClient.Items.Add(new ComboBoxItem { Text = "-- Todos los Clientes --", Value = null });
+                foreach (var client in _clients)
+                {
+                    cboClientTicketAverageClient.Items.Add(new ComboBoxItem 
+                    { 
+                        Text = $"{client.Nombre} {client.Apellido} - {client.DNI}", 
+                        Value = client.ClientId 
+                    });
+                }
+                cboClientTicketAverageClient.DisplayMember = "Text";
+                cboClientTicketAverageClient.ValueMember = "Value";
+                cboClientTicketAverageClient.SelectedIndex = 0;
             }
-            cboClientTicketAverageClient.DisplayMember = "Text";
-            cboClientTicketAverageClient.ValueMember = "Value";
-            cboClientTicketAverageClient.SelectedIndex = 0;
         }
 
         private void PopulateProducts()
         {
-            cboPriceVariationProduct.Items.Clear();
-            cboPriceVariationProduct.Items.Add(new ComboBoxItem { Text = "-- Todos los Productos --", Value = null });
-            foreach (var product in _products)
+            if (cboPriceVariationProduct != null)
             {
-                cboPriceVariationProduct.Items.Add(new ComboBoxItem 
-                { 
-                    Text = $"{product.SKU} - {product.Name}", 
-                    Value = product.ProductId 
-                });
+                cboPriceVariationProduct.Items.Clear();
+                cboPriceVariationProduct.Items.Add(new ComboBoxItem { Text = "-- Todos los Productos --", Value = null });
+                foreach (var product in _products)
+                {
+                    cboPriceVariationProduct.Items.Add(new ComboBoxItem 
+                    { 
+                        Text = $"{product.SKU} - {product.Name}", 
+                        Value = product.ProductId 
+                    });
+                }
+                cboPriceVariationProduct.DisplayMember = "Text";
+                cboPriceVariationProduct.ValueMember = "Value";
+                cboPriceVariationProduct.SelectedIndex = 0;
             }
-            cboPriceVariationProduct.DisplayMember = "Text";
-            cboPriceVariationProduct.ValueMember = "Value";
-            cboPriceVariationProduct.SelectedIndex = 0;
 
-            cboClientProductRankingProduct.Items.Clear();
-            cboClientProductRankingProduct.Items.Add(new ComboBoxItem { Text = "-- Todos los Productos --", Value = null });
-            foreach (var product in _products)
+            if (cboClientProductRankingProduct != null)
             {
-                cboClientProductRankingProduct.Items.Add(new ComboBoxItem 
-                { 
-                    Text = $"{product.SKU} - {product.Name}", 
-                    Value = product.ProductId 
-                });
+                cboClientProductRankingProduct.Items.Clear();
+                cboClientProductRankingProduct.Items.Add(new ComboBoxItem { Text = "-- Todos los Productos --", Value = null });
+                foreach (var product in _products)
+                {
+                    cboClientProductRankingProduct.Items.Add(new ComboBoxItem 
+                    { 
+                        Text = $"{product.SKU} - {product.Name}", 
+                        Value = product.ProductId 
+                    });
+                }
+                cboClientProductRankingProduct.DisplayMember = "Text";
+                cboClientProductRankingProduct.ValueMember = "Value";
+                cboClientProductRankingProduct.SelectedIndex = 0;
             }
-            cboClientProductRankingProduct.DisplayMember = "Text";
-            cboClientProductRankingProduct.ValueMember = "Value";
-            cboClientProductRankingProduct.SelectedIndex = 0;
         }
 
         private void PopulateWarehouses()
         {
-            cboRevenueByDateWarehouse.Items.Clear();
-            cboRevenueByDateWarehouse.Items.Add(new ComboBoxItem { Text = "-- Todos los Almacenes --", Value = null });
-            foreach (var warehouse in _warehouses)
+            if (cboRevenueByDateWarehouse != null)
             {
-                cboRevenueByDateWarehouse.Items.Add(new ComboBoxItem 
-                { 
-                    Text = warehouse.Name, 
-                    Value = warehouse.WarehouseId 
-                });
+                cboRevenueByDateWarehouse.Items.Clear();
+                cboRevenueByDateWarehouse.Items.Add(new ComboBoxItem { Text = "-- Todos los Almacenes --", Value = null });
+                foreach (var warehouse in _warehouses)
+                {
+                    cboRevenueByDateWarehouse.Items.Add(new ComboBoxItem 
+                    { 
+                        Text = warehouse.Name, 
+                        Value = warehouse.WarehouseId 
+                    });
+                }
+                cboRevenueByDateWarehouse.DisplayMember = "Text";
+                cboRevenueByDateWarehouse.ValueMember = "Value";
+                cboRevenueByDateWarehouse.SelectedIndex = 0;
             }
-            cboRevenueByDateWarehouse.DisplayMember = "Text";
-            cboRevenueByDateWarehouse.ValueMember = "Value";
-            cboRevenueByDateWarehouse.SelectedIndex = 0;
         }
 
         // Report 1: Top Products
