@@ -529,6 +529,19 @@ namespace UI.Forms
             var lines = _movementService.GetMovementLines(movement.MovementId);
             foreach (var line in lines)
             {
+                // Check if product exists in active products list
+                var productInList = colProduct.Items.Cast<ProductItem>().Any(p => p.ProductId == line.ProductId);
+                
+                if (!productInList && !string.IsNullOrEmpty(line.ProductName))
+                {
+                    // Product is no longer active, add it temporarily for display
+                    colProduct.Items.Add(new ProductItem
+                    {
+                        ProductId = line.ProductId,
+                        DisplayText = $"{line.ProductSKU} - {line.ProductName} (Inactivo)"
+                    });
+                }
+                
                 var rowIndex = dgvLines.Rows.Add();
                 dgvLines.Rows[rowIndex].Cells[colProduct.Index].Value = line.ProductId;
                 dgvLines.Rows[rowIndex].Cells[colQuantity.Index].Value = line.Quantity;
