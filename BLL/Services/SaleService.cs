@@ -145,6 +145,9 @@ namespace BLL.Services
                 // Create sale with lines
                 int saleId = _saleRepo.CreateWithLines(sale, saleLines);
 
+                // Deduct inventory from warehouses
+                DeductInventoryForSale(saleLines, currentUserId, sale.SaleNumber);
+
                 // Log audit
                 _auditRepo.LogChange("Sales", saleId, AuditAction.Insert, null, null, 
                     $"Sale {sale.SaleNumber} created with {saleLines.Count} items, Total: {sale.TotalAmount:C}", 
@@ -308,6 +311,74 @@ namespace BLL.Services
 
                 // Calculate line total
                 line.LineTotal = line.Quantity * line.UnitPrice;
+            }
+        }
+
+        /// <summary>
+        /// Deducts inventory from warehouses when a sale is created.
+        /// Uses FIFO approach - deducts from warehouses in order until quantity is satisfied.
+        /// </summary>
+        private void DeductInventoryForSale(List<SaleLine> saleLines, int currentUserId, string saleNumber)
+        {
+            // Group lines by product to handle duplicates correctly
+            var productQuantities = saleLines
+                .GroupBy(l => l.ProductId)
+                .ToDictionary(g => g.Key, g => g.Sum(l => l.Quantity));
+
+            foreach (var productGroup in productQuantities)
+            {
+                var productId = productGroup.Key;
+                var totalQuantity = productGroup.Value;
+                var remainingToDeduct = totalQuantity;
+
+                // Get all warehouses with stock for this product (ordered by warehouse name for consistency)
+                var stockRecords = _stockRepo.GetByProduct(productId)
+                    .Where(s => s.Quantity > 0)
+                    .OrderBy(s => s.WarehouseName)
+                    .ToList();
+
+                if (!stockRecords.Any())
+                {
+                    var product = _productRepo.GetById(productId);
+                    throw new InvalidOperationException(
+                        $"No hay stock disponible en ningún almacén para el producto '{product.Name}'");
+                }
+
+                // Deduct from warehouses until the full quantity is satisfied
+                foreach (var stock in stockRecords)
+                {
+                    if (remainingToDeduct <= 0)
+                        break;
+
+                    var quantityToDeduct = Math.Min(remainingToDeduct, stock.Quantity);
+                    var newQuantity = stock.Quantity - quantityToDeduct;
+
+                    // Update stock in the warehouse
+                    _stockRepo.UpdateStock(productId, stock.WarehouseId, newQuantity, currentUserId);
+
+                    // Log the deduction for audit trail
+                    _auditRepo.LogChange("Stock", stock.StockId, AuditAction.Update,
+                        "Quantity",
+                        stock.Quantity.ToString(),
+                        newQuantity.ToString(),
+                        currentUserId);
+
+                    _logService.Info(
+                        $"Sale {saleNumber}: Deducted {quantityToDeduct} units of product {productId} " +
+                        $"from warehouse {stock.WarehouseName} (ID: {stock.WarehouseId}). " +
+                        $"Stock reduced from {stock.Quantity} to {newQuantity}");
+
+                    remainingToDeduct -= quantityToDeduct;
+                }
+
+                // This should never happen because we validated stock availability earlier
+                if (remainingToDeduct > 0)
+                {
+                    var product = _productRepo.GetById(productId);
+                    throw new InvalidOperationException(
+                        $"No se pudo descontar la cantidad completa para el producto '{product.Name}'. " +
+                        $"Faltaron {remainingToDeduct} unidades.");
+                }
             }
         }
 
