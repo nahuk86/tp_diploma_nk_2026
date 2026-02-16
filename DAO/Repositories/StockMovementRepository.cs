@@ -19,7 +19,7 @@ namespace DAO.Repositories
                              sm.CreatedAt, sm.CreatedBy, u.Username AS CreatedByUsername,
                              sw.Name AS SourceWarehouseName, dw.Name AS DestinationWarehouseName
                              FROM StockMovements sm
-                             INNER JOIN Users u ON sm.CreatedBy = u.UserId
+                             LEFT JOIN Users u ON sm.CreatedBy = u.UserId
                              LEFT JOIN Warehouses sw ON sm.SourceWarehouseId = sw.WarehouseId
                              LEFT JOIN Warehouses dw ON sm.DestinationWarehouseId = dw.WarehouseId
                              WHERE sm.MovementId = @MovementId";
@@ -46,7 +46,7 @@ namespace DAO.Repositories
                              sm.CreatedAt, sm.CreatedBy, u.Username AS CreatedByUsername,
                              sw.Name AS SourceWarehouseName, dw.Name AS DestinationWarehouseName
                              FROM StockMovements sm
-                             INNER JOIN Users u ON sm.CreatedBy = u.UserId
+                             LEFT JOIN Users u ON sm.CreatedBy = u.UserId
                              LEFT JOIN Warehouses sw ON sm.SourceWarehouseId = sw.WarehouseId
                              LEFT JOIN Warehouses dw ON sm.DestinationWarehouseId = dw.WarehouseId
                              ORDER BY sm.MovementDate DESC, sm.MovementNumber DESC";
@@ -72,7 +72,7 @@ namespace DAO.Repositories
                              sm.CreatedAt, sm.CreatedBy, u.Username AS CreatedByUsername,
                              sw.Name AS SourceWarehouseName, dw.Name AS DestinationWarehouseName
                              FROM StockMovements sm
-                             INNER JOIN Users u ON sm.CreatedBy = u.UserId
+                             LEFT JOIN Users u ON sm.CreatedBy = u.UserId
                              LEFT JOIN Warehouses sw ON sm.SourceWarehouseId = sw.WarehouseId
                              LEFT JOIN Warehouses dw ON sm.DestinationWarehouseId = dw.WarehouseId
                              WHERE sm.MovementType = @MovementType
@@ -100,7 +100,7 @@ namespace DAO.Repositories
                              sm.CreatedAt, sm.CreatedBy, u.Username AS CreatedByUsername,
                              sw.Name AS SourceWarehouseName, dw.Name AS DestinationWarehouseName
                              FROM StockMovements sm
-                             INNER JOIN Users u ON sm.CreatedBy = u.UserId
+                             LEFT JOIN Users u ON sm.CreatedBy = u.UserId
                              LEFT JOIN Warehouses sw ON sm.SourceWarehouseId = sw.WarehouseId
                              LEFT JOIN Warehouses dw ON sm.DestinationWarehouseId = dw.WarehouseId
                              WHERE sm.SourceWarehouseId = @WarehouseId OR sm.DestinationWarehouseId = @WarehouseId
@@ -128,7 +128,7 @@ namespace DAO.Repositories
                              sm.CreatedAt, sm.CreatedBy, u.Username AS CreatedByUsername,
                              sw.Name AS SourceWarehouseName, dw.Name AS DestinationWarehouseName
                              FROM StockMovements sm
-                             INNER JOIN Users u ON sm.CreatedBy = u.UserId
+                             LEFT JOIN Users u ON sm.CreatedBy = u.UserId
                              LEFT JOIN Warehouses sw ON sm.SourceWarehouseId = sw.WarehouseId
                              LEFT JOIN Warehouses dw ON sm.DestinationWarehouseId = dw.WarehouseId
                              WHERE sm.MovementDate BETWEEN @StartDate AND @EndDate
@@ -252,7 +252,7 @@ namespace DAO.Repositories
                 Notes = reader["Notes"] == DBNull.Value ? null : reader["Notes"].ToString(),
                 CreatedAt = (DateTime)reader["CreatedAt"],
                 CreatedBy = (int)reader["CreatedBy"],
-                CreatedByUsername = reader["CreatedByUsername"].ToString(),
+                CreatedByUsername = reader["CreatedByUsername"] == DBNull.Value ? null : reader["CreatedByUsername"].ToString(),
                 SourceWarehouseName = reader["SourceWarehouseName"] == DBNull.Value ? null : reader["SourceWarehouseName"].ToString(),
                 DestinationWarehouseName = reader["DestinationWarehouseName"] == DBNull.Value ? null : reader["DestinationWarehouseName"].ToString()
             };
