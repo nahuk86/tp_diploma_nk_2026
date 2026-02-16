@@ -320,8 +320,51 @@ namespace UI.Forms
                     return;
                 }
 
+                // Check for price updates (only for IN movements)
+                var priceUpdates = _movementService.CheckPriceUpdates(movement.MovementType, lines);
+                bool confirmLowerPrices = false;
+
+                if (priceUpdates.Any(p => p.NeedsConfirmation))
+                {
+                    // Build message for products with lower prices
+                    var message = "Los siguientes productos tienen un precio menor al actual:\n\n";
+                    foreach (var update in priceUpdates.Where(p => p.NeedsConfirmation))
+                    {
+                        message += $"• {update.ProductSKU} - {update.ProductName}\n" +
+                                  $"  Precio actual: {update.CurrentPrice:C} → Precio nuevo: {update.NewPrice:C}\n\n";
+                    }
+                    message += "¿Desea actualizar los precios de estos productos?";
+
+                    var result = MessageBox.Show(
+                        message,
+                        "Confirmación de actualización de precios",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question);
+
+                    if (result == DialogResult.No)
+                    {
+                        // User declined price update, proceed without updating prices
+                        confirmLowerPrices = false;
+                    }
+                    else
+                    {
+                        confirmLowerPrices = true;
+                    }
+                }
+                else if (priceUpdates.Any())
+                {
+                    // All price updates are increases (automatic), no confirmation needed
+                    confirmLowerPrices = true;
+                }
+
                 // Create movement
                 var movementId = _movementService.CreateMovement(movement, lines);
+
+                // Update product prices if applicable
+                if (priceUpdates.Any())
+                {
+                    _movementService.UpdateProductPrices(lines, confirmLowerPrices);
+                }
 
                 MessageBox.Show(
                     "Movimiento creado exitosamente.",
