@@ -222,7 +222,6 @@ DECLARE @Quantity INT;
 DECLARE @UnitPrice DECIMAL(18,2);
 DECLARE @LineTotal DECIMAL(18,2);
 DECLARE @TotalAmount DECIMAL(18,2);
-DECLARE @SaleCounter INT;
 DECLARE @SaleNumberCounter INT = 1;
 
 WHILE @CurrentDay < @DaysAgo
