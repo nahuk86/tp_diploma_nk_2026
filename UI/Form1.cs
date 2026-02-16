@@ -81,6 +81,7 @@ namespace UI
             menuClients.Text = _localizationService.GetString("Menu.Clients") ?? "&Clientes";
             
             menuOperations.Text = _localizationService.GetString("Menu.Operations") ?? "&Operaciones";
+            menuSales.Text = _localizationService.GetString("Menu.Sales") ?? "&Ventas";
             menuStockMovements.Text = _localizationService.GetString("Menu.StockMovements") ?? "&Movimientos";
             menuStockQuery.Text = _localizationService.GetString("Menu.StockQuery") ?? "&Consultar Stock";
             
@@ -114,6 +115,10 @@ namespace UI
             menuRoles.Enabled = _authorizationService.HasPermission(userId, "Roles.View");
             menuProducts.Enabled = _authorizationService.HasPermission(userId, "Products.View");
             menuWarehouses.Enabled = _authorizationService.HasPermission(userId, "Warehouses.View");
+            menuClients.Enabled = _authorizationService.HasPermission(userId, "Clients.View");
+            
+            // Enable sales if user has sales view permission
+            menuSales.Enabled = _authorizationService.HasPermission(userId, "Sales.View");
             
             // Enable stock movements if user has any stock operation permission
             menuStockMovements.Enabled = _authorizationService.HasPermission(userId, "Stock.View") ||
@@ -206,6 +211,16 @@ namespace UI
             var clientsForm = new Forms.ClientsForm();
             clientsForm.MdiParent = this;
             clientsForm.Show();
+        }
+
+        private void menuSales_Click(object sender, EventArgs e)
+        {
+            if (!CheckPermission("Sales.View", _localizationService.GetString("Error.Unauthorized") ?? "No tiene permisos para realizar esta acción."))
+                return;
+
+            var salesForm = new Forms.SalesForm();
+            salesForm.MdiParent = this;
+            salesForm.Show();
         }
 
         private void menuStockMovements_Click(object sender, EventArgs e)

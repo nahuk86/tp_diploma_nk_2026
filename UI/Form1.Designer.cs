@@ -41,6 +41,7 @@
             this.menuWarehouses = new System.Windows.Forms.ToolStripMenuItem();
             this.menuClients = new System.Windows.Forms.ToolStripMenuItem();
             this.menuOperations = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuSales = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStockMovements = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStockQuery = new System.Windows.Forms.ToolStripMenuItem();
             this.menuSettings = new System.Windows.Forms.ToolStripMenuItem();
@@ -156,11 +157,19 @@
             // menuOperations
             // 
             this.menuOperations.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuSales,
             this.menuStockMovements,
             this.menuStockQuery});
             this.menuOperations.Name = "menuOperations";
             this.menuOperations.Size = new System.Drawing.Size(85, 20);
             this.menuOperations.Text = "&Operaciones";
+            // 
+            // menuSales
+            // 
+            this.menuSales.Name = "menuSales";
+            this.menuSales.Size = new System.Drawing.Size(180, 22);
+            this.menuSales.Text = "&Ventas";
+            this.menuSales.Click += new System.EventHandler(this.menuSales_Click);
             // 
             // menuStockMovements
             // 
@@ -276,6 +285,7 @@
         private System.Windows.Forms.ToolStripMenuItem menuWarehouses;
         private System.Windows.Forms.ToolStripMenuItem menuClients;
         private System.Windows.Forms.ToolStripMenuItem menuOperations;
+        private System.Windows.Forms.ToolStripMenuItem menuSales;
         private System.Windows.Forms.ToolStripMenuItem menuStockMovements;
         private System.Windows.Forms.ToolStripMenuItem menuStockQuery;
         private System.Windows.Forms.ToolStripMenuItem menuSettings;

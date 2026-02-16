@@ -302,6 +302,57 @@ END
 GO
 
 -- ============================================
+-- SALES TABLES
+-- ============================================
+
+-- Sales table
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Sales]') AND type in (N'U'))
+BEGIN
+    CREATE TABLE [dbo].[Sales] (
+        [SaleId] INT PRIMARY KEY IDENTITY(1,1),
+        [SaleNumber] NVARCHAR(50) NOT NULL UNIQUE,
+        [SaleDate] DATETIME NOT NULL DEFAULT GETDATE(),
+        [ClientId] INT NULL,
+        [SellerName] NVARCHAR(100) NOT NULL,
+        [TotalAmount] DECIMAL(18,2) NOT NULL DEFAULT 0,
+        [Notes] NVARCHAR(500) NULL,
+        [IsActive] BIT NOT NULL DEFAULT 1,
+        [CreatedAt] DATETIME NOT NULL DEFAULT GETDATE(),
+        [CreatedBy] INT NULL,
+        [UpdatedAt] DATETIME NULL,
+        [UpdatedBy] INT NULL,
+        CONSTRAINT FK_Sales_Client FOREIGN KEY ([ClientId]) REFERENCES [dbo].[Clients]([ClientId]),
+        CONSTRAINT FK_Sales_CreatedBy FOREIGN KEY ([CreatedBy]) REFERENCES [dbo].[Users]([UserId]),
+        CONSTRAINT FK_Sales_UpdatedBy FOREIGN KEY ([UpdatedBy]) REFERENCES [dbo].[Users]([UserId])
+    );
+    
+    CREATE NONCLUSTERED INDEX IX_Sales_SaleNumber ON [dbo].[Sales]([SaleNumber]) WHERE [IsActive] = 1;
+    CREATE NONCLUSTERED INDEX IX_Sales_ClientId ON [dbo].[Sales]([ClientId]) WHERE [IsActive] = 1;
+    CREATE NONCLUSTERED INDEX IX_Sales_SaleDate ON [dbo].[Sales]([SaleDate]) WHERE [IsActive] = 1;
+    CREATE NONCLUSTERED INDEX IX_Sales_SellerName ON [dbo].[Sales]([SellerName]) WHERE [IsActive] = 1;
+END
+GO
+
+-- SaleLines table
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SaleLines]') AND type in (N'U'))
+BEGIN
+    CREATE TABLE [dbo].[SaleLines] (
+        [SaleLineId] INT PRIMARY KEY IDENTITY(1,1),
+        [SaleId] INT NOT NULL,
+        [ProductId] INT NOT NULL,
+        [Quantity] INT NOT NULL,
+        [UnitPrice] DECIMAL(18,2) NOT NULL,
+        [LineTotal] DECIMAL(18,2) NOT NULL,
+        CONSTRAINT FK_SaleLines_Sale FOREIGN KEY ([SaleId]) REFERENCES [dbo].[Sales]([SaleId]) ON DELETE CASCADE,
+        CONSTRAINT FK_SaleLines_Product FOREIGN KEY ([ProductId]) REFERENCES [dbo].[Products]([ProductId])
+    );
+    
+    CREATE NONCLUSTERED INDEX IX_SaleLines_SaleId ON [dbo].[SaleLines]([SaleId]);
+    CREATE NONCLUSTERED INDEX IX_SaleLines_ProductId ON [dbo].[SaleLines]([ProductId]);
+END
+GO
+
+-- ============================================
 -- LOCALIZATION TABLE
 -- ============================================
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DOMAIN.Contracts;
 using DOMAIN.Entities;
 using DOMAIN.Enums;
@@ -278,5 +279,101 @@ namespace BLL.Services
                     break;
             }
         }
+
+        /// <summary>
+        /// Checks if any product prices need confirmation before updating (price decrease scenario)
+        /// </summary>
+        public List<PriceUpdateInfo> CheckPriceUpdates(MovementType movementType, List<StockMovementLine> lines)
+        {
+            var priceUpdates = new List<PriceUpdateInfo>();
+
+            // Only check for IN movements
+            if (movementType != MovementType.In)
+                return priceUpdates;
+
+            foreach (var line in lines)
+            {
+                if (!line.UnitPrice.HasValue || line.UnitPrice.Value <= 0)
+                    continue;
+
+                var product = _productRepo.GetById(line.ProductId);
+                if (product == null)
+                    continue;
+
+                var currentPrice = product.UnitPrice;
+                var newPrice = line.UnitPrice.Value;
+
+                if (newPrice != currentPrice)
+                {
+                    priceUpdates.Add(new PriceUpdateInfo
+                    {
+                        ProductId = product.ProductId,
+                        ProductName = product.Name,
+                        ProductSKU = product.SKU,
+                        CurrentPrice = currentPrice,
+                        NewPrice = newPrice,
+                        NeedsConfirmation = newPrice < currentPrice
+                    });
+                }
+            }
+
+            return priceUpdates;
+        }
+
+        /// <summary>
+        /// Updates product prices based on stock movement (for IN movements)
+        /// </summary>
+        public void UpdateProductPrices(List<StockMovementLine> lines, bool confirmLowerPrices = false)
+        {
+            foreach (var line in lines)
+            {
+                if (!line.UnitPrice.HasValue || line.UnitPrice.Value <= 0)
+                    continue;
+
+                var product = _productRepo.GetById(line.ProductId);
+                if (product == null)
+                    continue;
+
+                var currentPrice = product.UnitPrice;
+                var newPrice = line.UnitPrice.Value;
+
+                // Skip if no change
+                if (newPrice == currentPrice)
+                    continue;
+
+                // Update if price is higher (automatic) or if lower price is confirmed
+                if (newPrice > currentPrice || (newPrice < currentPrice && confirmLowerPrices))
+                {
+                    var oldPrice = product.UnitPrice;
+                    product.UnitPrice = newPrice;
+                    product.UpdatedAt = DateTime.Now;
+                    product.UpdatedBy = SessionContext.CurrentUserId;
+
+                    _productRepo.Update(product);
+
+                    // Log the price update
+                    _auditRepo.LogChange("Products", product.ProductId, AuditAction.Update,
+                        "UnitPrice", oldPrice.ToString("F2"), newPrice.ToString("F2"),
+                        SessionContext.CurrentUserId);
+
+                    _logService.Info(
+                        $"Product price updated via stock movement: {product.SKU} - {product.Name}, " +
+                        $"Price: {oldPrice:C} → {newPrice:C} by {SessionContext.CurrentUsername}");
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Information about a product price that will be updated
+    /// </summary>
+    public class PriceUpdateInfo
+    {
+        public int ProductId { get; set; }
+        public string ProductName { get; set; }
+        public string ProductSKU { get; set; }
+        public decimal CurrentPrice { get; set; }
+        public decimal NewPrice { get; set; }
+        public bool NeedsConfirmation { get; set; }
     }
 }

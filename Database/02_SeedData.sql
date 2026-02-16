@@ -127,6 +127,23 @@ IF NOT EXISTS (SELECT 1 FROM [dbo].[Permissions] WHERE [PermissionCode] = 'Audit
     INSERT INTO [dbo].[Permissions] ([PermissionCode], [PermissionName], [Description], [Module]) 
     VALUES ('Audit.View', 'View Audit Logs', 'View audit logs and history', 'Audit');
 
+-- Sales Management Permissions
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Permissions] WHERE [PermissionCode] = 'Sales.View')
+    INSERT INTO [dbo].[Permissions] ([PermissionCode], [PermissionName], [Description], [Module]) 
+    VALUES ('Sales.View', 'View Sales', 'View sales list and details', 'Sales');
+
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Permissions] WHERE [PermissionCode] = 'Sales.Create')
+    INSERT INTO [dbo].[Permissions] ([PermissionCode], [PermissionName], [Description], [Module]) 
+    VALUES ('Sales.Create', 'Create Sales', 'Create new sales', 'Sales');
+
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Permissions] WHERE [PermissionCode] = 'Sales.Edit')
+    INSERT INTO [dbo].[Permissions] ([PermissionCode], [PermissionName], [Description], [Module]) 
+    VALUES ('Sales.Edit', 'Edit Sales', 'Edit existing sales', 'Sales');
+
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Permissions] WHERE [PermissionCode] = 'Sales.Delete')
+    INSERT INTO [dbo].[Permissions] ([PermissionCode], [PermissionName], [Description], [Module]) 
+    VALUES ('Sales.Delete', 'Delete Sales', 'Delete sales (soft delete)', 'Sales');
+
 PRINT 'Permissions inserted successfully.';
 GO
 
@@ -155,6 +172,11 @@ IF NOT EXISTS (SELECT 1 FROM [dbo].[Roles] WHERE [RoleName] = 'WarehouseOperator
 IF NOT EXISTS (SELECT 1 FROM [dbo].[Roles] WHERE [RoleName] = 'Viewer')
     INSERT INTO [dbo].[Roles] ([RoleName], [Description]) 
     VALUES ('Viewer', 'Read-only access to view data');
+
+-- Seller Role
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Roles] WHERE [RoleName] = 'Seller')
+    INSERT INTO [dbo].[Roles] ([RoleName], [Description]) 
+    VALUES ('Seller', 'Create and manage sales transactions');
 
 PRINT 'Roles inserted successfully.';
 GO
@@ -256,6 +278,32 @@ AND NOT EXISTS (
 );
 
 PRINT 'Permissions assigned to Viewer role.';
+GO
+
+-- ============================================
+-- ASSIGN PERMISSIONS TO SELLER
+-- ============================================
+
+PRINT 'Assigning permissions to Seller role...';
+
+DECLARE @SellerRoleId INT;
+SELECT @SellerRoleId = RoleId FROM [dbo].[Roles] WHERE [RoleName] = 'Seller';
+
+INSERT INTO [dbo].[RolePermissions] ([RoleId], [PermissionId])
+SELECT @SellerRoleId, [PermissionId]
+FROM [dbo].[Permissions]
+WHERE [PermissionCode] IN (
+    'Products.View',
+    'Clients.View', 'Clients.Create', 'Clients.Edit',
+    'Stock.View',
+    'Sales.View', 'Sales.Create', 'Sales.Edit'
+)
+AND NOT EXISTS (
+    SELECT 1 FROM [dbo].[RolePermissions] 
+    WHERE [RoleId] = @SellerRoleId AND [PermissionId] = [Permissions].[PermissionId]
+);
+
+PRINT 'Permissions assigned to Seller role.';
 GO
 
 -- ============================================

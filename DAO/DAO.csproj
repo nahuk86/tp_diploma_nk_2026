@@ -49,6 +49,7 @@
     <Compile Include="Repositories\ProductRepository.cs" />
     <Compile Include="Repositories\WarehouseRepository.cs" />
     <Compile Include="Repositories\ClientRepository.cs" />
+    <Compile Include="Repositories\SaleRepository.cs" />
     <Compile Include="Repositories\StockRepository.cs" />
     <Compile Include="Repositories\StockMovementRepository.cs" />
     <Compile Include="Repositories\AuditLogRepository.cs" />
