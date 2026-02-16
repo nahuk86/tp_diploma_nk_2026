@@ -30,15 +30,8 @@ namespace UI.Forms
             this.tabControl1.SuspendLayout();
             this.SuspendLayout();
             
-            // Initialize all controls for each tab
-            InitializeTopProductsTab();
-            InitializeClientPurchasesTab();
-            InitializePriceVariationTab();
-            InitializeSellerPerformanceTab();
-            InitializeCategorySalesTab();
-            InitializeRevenueByDateTab();
-            InitializeClientProductRankingTab();
-            InitializeClientTicketAverageTab();
+            // Note: Tab initialization methods not yet implemented
+            // Will be added in future updates
             
             // 
             // tabControl1
@@ -190,113 +183,8 @@ namespace UI.Forms
         private System.Windows.Forms.Button btnGenerateClientTicketAverage;
         private System.Windows.Forms.Button btnExportClientTicketAverage;
         private System.Windows.Forms.DataGridView dgvClientTicketAverage;
+
+        // Note: Tab initialization methods can be added here in the future
+        // For now, tabs will need to be manually configured in the designer or at runtime
     }
 }
-
-        private void InitializeTopProductsTab()
-        {
-            this.pnlTopProductsFilters = new System.Windows.Forms.Panel();
-            this.lblTopProductsDateRange = new System.Windows.Forms.Label();
-            this.dtpTopProductsStart = new System.Windows.Forms.DateTimePicker();
-            this.dtpTopProductsEnd = new System.Windows.Forms.DateTimePicker();
-            this.lblTopProductsCategory = new System.Windows.Forms.Label();
-            this.cboTopProductsCategory = new System.Windows.Forms.ComboBox();
-            this.chkTopProductsLimit = new System.Windows.Forms.CheckBox();
-            this.nudTopProductsLimit = new System.Windows.Forms.NumericUpDown();
-            this.lblTopProductsOrderBy = new System.Windows.Forms.Label();
-            this.cboTopProductsOrderBy = new System.Windows.Forms.ComboBox();
-            this.btnGenerateTopProducts = new System.Windows.Forms.Button();
-            this.btnExportTopProducts = new System.Windows.Forms.Button();
-            this.dgvTopProducts = new System.Windows.Forms.DataGridView();
-
-            this.pnlTopProductsFilters.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudTopProductsLimit)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvTopProducts)).BeginInit();
-
-            // pnlTopProductsFilters
-            this.pnlTopProductsFilters.Controls.Add(this.lblTopProductsDateRange);
-            this.pnlTopProductsFilters.Controls.Add(this.dtpTopProductsStart);
-            this.pnlTopProductsFilters.Controls.Add(this.dtpTopProductsEnd);
-            this.pnlTopProductsFilters.Controls.Add(this.lblTopProductsCategory);
-            this.pnlTopProductsFilters.Controls.Add(this.cboTopProductsCategory);
-            this.pnlTopProductsFilters.Controls.Add(this.chkTopProductsLimit);
-            this.pnlTopProductsFilters.Controls.Add(this.nudTopProductsLimit);
-            this.pnlTopProductsFilters.Controls.Add(this.lblTopProductsOrderBy);
-            this.pnlTopProductsFilters.Controls.Add(this.cboTopProductsOrderBy);
-            this.pnlTopProductsFilters.Controls.Add(this.btnGenerateTopProducts);
-            this.pnlTopProductsFilters.Controls.Add(this.btnExportTopProducts);
-            this.pnlTopProductsFilters.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlTopProductsFilters.Location = new System.Drawing.Point(0, 0);
-            this.pnlTopProductsFilters.Size = new System.Drawing.Size(1180, 120);
-
-            this.lblTopProductsDateRange.Location = new System.Drawing.Point(10, 10);
-            this.lblTopProductsDateRange.Size = new System.Drawing.Size(100, 20);
-            this.lblTopProductsDateRange.Text = "Rango de Fechas:";
-
-            this.dtpTopProductsStart.Location = new System.Drawing.Point(120, 10);
-            this.dtpTopProductsStart.Size = new System.Drawing.Size(150, 20);
-
-            this.dtpTopProductsEnd.Location = new System.Drawing.Point(280, 10);
-            this.dtpTopProductsEnd.Size = new System.Drawing.Size(150, 20);
-
-            this.lblTopProductsCategory.Location = new System.Drawing.Point(10, 40);
-            this.lblTopProductsCategory.Size = new System.Drawing.Size(100, 20);
-            this.lblTopProductsCategory.Text = "Categoría:";
-
-            this.cboTopProductsCategory.Location = new System.Drawing.Point(120, 40);
-            this.cboTopProductsCategory.Size = new System.Drawing.Size(200, 20);
-            this.cboTopProductsCategory.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-
-            this.chkTopProductsLimit.Location = new System.Drawing.Point(10, 70);
-            this.chkTopProductsLimit.Size = new System.Drawing.Size(100, 20);
-            this.chkTopProductsLimit.Text = "Limitar a Top:";
-
-            this.nudTopProductsLimit.Location = new System.Drawing.Point(120, 70);
-            this.nudTopProductsLimit.Size = new System.Drawing.Size(80, 20);
-            this.nudTopProductsLimit.Minimum = 1;
-            this.nudTopProductsLimit.Maximum = 1000;
-            this.nudTopProductsLimit.Value = 10;
-
-            this.lblTopProductsOrderBy.Location = new System.Drawing.Point(450, 40);
-            this.lblTopProductsOrderBy.Size = new System.Drawing.Size(80, 20);
-            this.lblTopProductsOrderBy.Text = "Ordenar por:";
-
-            this.cboTopProductsOrderBy.Location = new System.Drawing.Point(540, 40);
-            this.cboTopProductsOrderBy.Size = new System.Drawing.Size(150, 20);
-            this.cboTopProductsOrderBy.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboTopProductsOrderBy.Items.AddRange(new object[] { "Unidades", "Ingresos" });
-            this.cboTopProductsOrderBy.SelectedIndex = 0;
-
-            this.btnGenerateTopProducts.Location = new System.Drawing.Point(750, 40);
-            this.btnGenerateTopProducts.Size = new System.Drawing.Size(100, 30);
-            this.btnGenerateTopProducts.Text = "Generar";
-            this.btnGenerateTopProducts.Click += new System.EventHandler(this.btnGenerateTopProducts_Click);
-
-            this.btnExportTopProducts.Location = new System.Drawing.Point(860, 40);
-            this.btnExportTopProducts.Size = new System.Drawing.Size(100, 30);
-            this.btnExportTopProducts.Text = "Exportar CSV";
-            this.btnExportTopProducts.Click += new System.EventHandler(this.btnExportTopProducts_Click);
-
-            // dgvTopProducts
-            this.dgvTopProducts.AllowUserToAddRows = false;
-            this.dgvTopProducts.AllowUserToDeleteRows = false;
-            this.dgvTopProducts.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dgvTopProducts.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvTopProducts.Location = new System.Drawing.Point(0, 120);
-            this.dgvTopProducts.ReadOnly = true;
-            this.dgvTopProducts.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-
-            this.tabTopProducts.Controls.Add(this.dgvTopProducts);
-            this.tabTopProducts.Controls.Add(this.pnlTopProductsFilters);
-            this.tabTopProducts.Location = new System.Drawing.Point(4, 22);
-            this.tabTopProducts.Name = "tabTopProducts";
-            this.tabTopProducts.Padding = new System.Windows.Forms.Padding(3);
-            this.tabTopProducts.Size = new System.Drawing.Size(1192, 674);
-            this.tabTopProducts.TabIndex = 0;
-            this.tabTopProducts.Text = "Productos Más Vendidos";
-            this.tabTopProducts.UseVisualStyleBackColor = true;
-
-            this.pnlTopProductsFilters.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.nudTopProductsLimit)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvTopProducts)).EndInit();
-        }

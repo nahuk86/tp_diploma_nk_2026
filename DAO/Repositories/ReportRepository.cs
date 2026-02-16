@@ -615,14 +615,22 @@ namespace DAO.Repositories
                 
                 if (!string.IsNullOrEmpty(movementType))
                 {
-                    var typeValue = movementType.ToLower() switch
+                    int? typeValue = null;
+                    switch (movementType.ToLower())
                     {
-                        "in" => 0,
-                        "out" => 1,
-                        "transfer" => 2,
-                        "adjustment" => 3,
-                        _ => (int?)null
-                    };
+                        case "in":
+                            typeValue = 0;
+                            break;
+                        case "out":
+                            typeValue = 1;
+                            break;
+                        case "transfer":
+                            typeValue = 2;
+                            break;
+                        case "adjustment":
+                            typeValue = 3;
+                            break;
+                    }
                     
                     if (typeValue.HasValue)
                     {
@@ -647,14 +655,22 @@ namespace DAO.Repositories
                     
                     if (!string.IsNullOrEmpty(movementType) && movementTypeFilter != "")
                     {
-                        var typeValue = movementType.ToLower() switch
+                        int typeValue = 0;
+                        switch (movementType.ToLower())
                         {
-                            "in" => 0,
-                            "out" => 1,
-                            "transfer" => 2,
-                            "adjustment" => 3,
-                            _ => 0
-                        };
+                            case "in":
+                                typeValue = 0;
+                                break;
+                            case "out":
+                                typeValue = 1;
+                                break;
+                            case "transfer":
+                                typeValue = 2;
+                                break;
+                            case "adjustment":
+                                typeValue = 3;
+                                break;
+                        }
                         command.Parameters.Add(DatabaseHelper.CreateParameter("@MovementType", typeValue));
                     }
                     
