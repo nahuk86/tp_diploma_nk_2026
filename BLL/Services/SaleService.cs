@@ -268,13 +268,14 @@ namespace BLL.Services
             if (saleLines == null || saleLines.Count == 0)
                 throw new ArgumentException("Sale must have at least one line item");
 
-            // Validate client if specified
-            if (sale.ClientId.HasValue)
-            {
-                var client = _clientRepo.GetById(sale.ClientId.Value);
-                if (client == null || !client.IsActive)
-                    throw new InvalidOperationException($"Client {sale.ClientId} not found or inactive");
-            }
+            // Validate client is required
+            if (!sale.ClientId.HasValue)
+                throw new ArgumentException("Se requiere seleccionar un cliente para la venta");
+
+            // Validate client exists and is active
+            var client = _clientRepo.GetById(sale.ClientId.Value);
+            if (client == null || !client.IsActive)
+                throw new InvalidOperationException($"Client {sale.ClientId} not found or inactive");
 
             // Group sale lines by product to validate total quantities
             var productQuantities = saleLines

@@ -540,6 +540,20 @@ namespace UI.Forms
         private bool ValidateForm()
         {
             // Seller name is automatically set from current user, no need to validate
+            
+            // Validate client selection is required
+            var clientId = GetSelectedClientId();
+            if (!clientId.HasValue)
+            {
+                MessageBox.Show(
+                    _localizationService.GetString("Sales.ClientRequired") ?? "Debe seleccionar un cliente para la venta.",
+                    _localizationService.GetString("Common.Validation") ?? "Validación",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                cmbClient.Focus();
+                return false;
+            }
+            
             return true;
         }
 
