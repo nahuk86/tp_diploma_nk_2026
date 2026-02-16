@@ -114,7 +114,7 @@ DECLARE @DistributionWarehouseId INT = (SELECT TOP 1 WarehouseId FROM [dbo].[War
 
 -- Movement 1: Initial stock to Main Warehouse
 INSERT INTO [dbo].[StockMovements] ([MovementNumber], [MovementType], [MovementDate], [SourceWarehouseId], [DestinationWarehouseId], [Notes], [CreatedBy])
-VALUES ('SM-' + FORMAT(GETDATE(), 'yyyyMMdd') + '-001', 'IN', DATEADD(DAY, -90, GETDATE()), NULL, @MainWarehouseId, 'Initial stock - Main Warehouse', @AdminUserId);
+VALUES ('SM-' + FORMAT(DATEADD(DAY, -90, GETDATE()), 'yyyyMMdd') + '-001', 'IN', DATEADD(DAY, -90, GETDATE()), NULL, @MainWarehouseId, 'Initial stock - Main Warehouse', @AdminUserId);
 
 DECLARE @Movement1Id INT = SCOPE_IDENTITY();
 
@@ -136,7 +136,7 @@ WHERE ProductId <= 15; -- First batch of products
 
 -- Movement 2: Initial stock to Secondary Warehouse
 INSERT INTO [dbo].[StockMovements] ([MovementNumber], [MovementType], [MovementDate], [SourceWarehouseId], [DestinationWarehouseId], [Notes], [CreatedBy])
-VALUES ('SM-' + FORMAT(GETDATE(), 'yyyyMMdd') + '-002', 'IN', DATEADD(DAY, -85, GETDATE()), NULL, @SecondaryWarehouseId, 'Initial stock - Secondary Warehouse', @AdminUserId);
+VALUES ('SM-' + FORMAT(DATEADD(DAY, -85, GETDATE()), 'yyyyMMdd') + '-002', 'IN', DATEADD(DAY, -85, GETDATE()), NULL, @SecondaryWarehouseId, 'Initial stock - Secondary Warehouse', @AdminUserId);
 
 DECLARE @Movement2Id INT = SCOPE_IDENTITY();
 
@@ -156,7 +156,7 @@ WHERE ProductId <= 20;
 
 -- Movement 3: Initial stock to Distribution Center
 INSERT INTO [dbo].[StockMovements] ([MovementNumber], [MovementType], [MovementDate], [SourceWarehouseId], [DestinationWarehouseId], [Notes], [CreatedBy])
-VALUES ('SM-' + FORMAT(GETDATE(), 'yyyyMMdd') + '-003', 'IN', DATEADD(DAY, -80, GETDATE()), NULL, @DistributionWarehouseId, 'Initial stock - Distribution Center', @AdminUserId);
+VALUES ('SM-' + FORMAT(DATEADD(DAY, -80, GETDATE()), 'yyyyMMdd') + '-003', 'IN', DATEADD(DAY, -80, GETDATE()), NULL, @DistributionWarehouseId, 'Initial stock - Distribution Center', @AdminUserId);
 
 DECLARE @Movement3Id INT = SCOPE_IDENTITY();
 
@@ -172,7 +172,7 @@ FROM [dbo].[Products];
 
 -- Movement 4: Transfer between warehouses
 INSERT INTO [dbo].[StockMovements] ([MovementNumber], [MovementType], [MovementDate], [SourceWarehouseId], [DestinationWarehouseId], [Notes], [CreatedBy])
-VALUES ('SM-' + FORMAT(GETDATE(), 'yyyyMMdd') + '-004', 'TRANSFER', DATEADD(DAY, -60, GETDATE()), @MainWarehouseId, @SecondaryWarehouseId, 'Stock transfer for rebalancing', @AdminUserId);
+VALUES ('SM-' + FORMAT(DATEADD(DAY, -60, GETDATE()), 'yyyyMMdd') + '-004', 'TRANSFER', DATEADD(DAY, -60, GETDATE()), @MainWarehouseId, @SecondaryWarehouseId, 'Stock transfer for rebalancing', @AdminUserId);
 
 DECLARE @Movement4Id INT = SCOPE_IDENTITY();
 
@@ -184,7 +184,7 @@ AND ProductId <= 10;
 
 -- Movement 5: Stock adjustment
 INSERT INTO [dbo].[StockMovements] ([MovementNumber], [MovementType], [MovementDate], [SourceWarehouseId], [DestinationWarehouseId], [Notes], [CreatedBy])
-VALUES ('SM-' + FORMAT(GETDATE(), 'yyyyMMdd') + '-005', 'ADJUSTMENT', DATEADD(DAY, -45, GETDATE()), @MainWarehouseId, @MainWarehouseId, 'Inventory adjustment', @AdminUserId);
+VALUES ('SM-' + FORMAT(DATEADD(DAY, -45, GETDATE()), 'yyyyMMdd') + '-005', 'ADJUSTMENT', DATEADD(DAY, -45, GETDATE()), @MainWarehouseId, @MainWarehouseId, 'Inventory adjustment', @AdminUserId);
 
 DECLARE @Movement5Id INT = SCOPE_IDENTITY();
 
@@ -243,7 +243,7 @@ BEGIN
         
         -- Create sale
         INSERT INTO [dbo].[Sales] ([SaleNumber], [SaleDate], [ClientId], [SellerName], [TotalAmount], [CreatedBy])
-        VALUES ('SALE-' + FORMAT(GETDATE(), 'yyyyMMdd') + '-' + RIGHT('000' + CAST(@SaleNumberCounter AS VARCHAR(3)), 3), @SaleDate, @ClientId, @SellerName, 0, 1); -- TotalAmount will be updated
+        VALUES ('SALE-' + FORMAT(@SaleDate, 'yyyyMMdd') + '-' + RIGHT('000' + CAST(@SaleNumberCounter AS VARCHAR(3)), 3), @SaleDate, @ClientId, @SellerName, 0, 1); -- TotalAmount will be updated
         
         SET @SaleId = SCOPE_IDENTITY();
         SET @TotalAmount = 0;
