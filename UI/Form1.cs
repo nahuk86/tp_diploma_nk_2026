@@ -78,6 +78,7 @@ namespace UI
             menuInventory.Text = _localizationService.GetString("Menu.Inventory") ?? "&Inventario";
             menuProducts.Text = _localizationService.GetString("Menu.Products") ?? "&Productos";
             menuWarehouses.Text = _localizationService.GetString("Menu.Warehouses") ?? "&Almacenes";
+            menuClients.Text = _localizationService.GetString("Menu.Clients") ?? "&Clientes";
             
             menuOperations.Text = _localizationService.GetString("Menu.Operations") ?? "&Operaciones";
             menuStockMovements.Text = _localizationService.GetString("Menu.StockMovements") ?? "&Movimientos";
@@ -195,6 +196,16 @@ namespace UI
             var warehousesForm = new Forms.WarehousesForm();
             warehousesForm.MdiParent = this;
             warehousesForm.Show();
+        }
+
+        private void menuClients_Click(object sender, EventArgs e)
+        {
+            if (!CheckPermission("Clients.View", "No tiene permisos para ver clientes."))
+                return;
+
+            var clientsForm = new Forms.ClientsForm();
+            clientsForm.MdiParent = this;
+            clientsForm.Show();
         }
 
         private void menuStockMovements_Click(object sender, EventArgs e)

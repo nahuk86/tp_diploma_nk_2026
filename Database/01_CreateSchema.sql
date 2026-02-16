@@ -272,6 +272,36 @@ END
 GO
 
 -- ============================================
+-- CLIENTS TABLE
+-- ============================================
+
+-- Clients table
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Clients]') AND type in (N'U'))
+BEGIN
+    CREATE TABLE [dbo].[Clients] (
+        [ClientId] INT PRIMARY KEY IDENTITY(1,1),
+        [Nombre] NVARCHAR(100) NOT NULL,
+        [Apellido] NVARCHAR(100) NOT NULL,
+        [Correo] NVARCHAR(100) NULL,
+        [DNI] NVARCHAR(20) NOT NULL UNIQUE,
+        [Telefono] NVARCHAR(20) NULL,
+        [Direccion] NVARCHAR(200) NULL,
+        [IsActive] BIT NOT NULL DEFAULT 1,
+        [CreatedAt] DATETIME NOT NULL DEFAULT GETDATE(),
+        [CreatedBy] INT NULL,
+        [UpdatedAt] DATETIME NULL,
+        [UpdatedBy] INT NULL,
+        CONSTRAINT FK_Clients_CreatedBy FOREIGN KEY ([CreatedBy]) REFERENCES [dbo].[Users]([UserId]),
+        CONSTRAINT FK_Clients_UpdatedBy FOREIGN KEY ([UpdatedBy]) REFERENCES [dbo].[Users]([UserId])
+    );
+    
+    CREATE NONCLUSTERED INDEX IX_Clients_DNI ON [dbo].[Clients]([DNI]) WHERE [IsActive] = 1;
+    CREATE NONCLUSTERED INDEX IX_Clients_Nombre ON [dbo].[Clients]([Nombre]) WHERE [IsActive] = 1;
+    CREATE NONCLUSTERED INDEX IX_Clients_Apellido ON [dbo].[Clients]([Apellido]) WHERE [IsActive] = 1;
+END
+GO
+
+-- ============================================
 -- LOCALIZATION TABLE
 -- ============================================
 
