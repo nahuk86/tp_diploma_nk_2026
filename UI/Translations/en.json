@@ -298,7 +298,6 @@
     "PercentageOfProductSales": "% of Product",
     "NoDataToExport": "No data to export",
     "Information": "Information",
-    "ExportSuccess": "Report exported successfully to:\n{0}",
-    "Success": "Success"
+    "ExportSuccess": "Report exported successfully to:\n{0}"
   }
 }
