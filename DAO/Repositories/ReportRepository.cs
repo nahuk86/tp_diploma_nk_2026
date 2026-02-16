@@ -582,9 +582,9 @@ namespace DAO.Repositories
                         FROM StockMovements sm
                         INNER JOIN StockMovementLines sml ON sm.MovementId = sml.MovementId
                         WHERE 1=1
-                            {0}
                             {1}
                             {2}
+                            {3}
                         GROUP BY CAST(sm.MovementDate AS DATE)
                     )
                     SELECT 
@@ -604,23 +604,29 @@ namespace DAO.Repositories
 
                 if (startDate.HasValue && endDate.HasValue)
                 {
-                    dateFilter = "AND ReportDate >= @StartDate AND ReportDate <= @EndDate";
+                    dateFilter = "AND CAST(s.SaleDate AS DATE) >= @StartDate AND CAST(s.SaleDate AS DATE) <= @EndDate";
+                }
+                
+                var dateFilterMovements = "";
+                if (startDate.HasValue && endDate.HasValue)
+                {
+                    dateFilterMovements = "AND CAST(sm.MovementDate AS DATE) >= @StartDate AND CAST(sm.MovementDate AS DATE) <= @EndDate";
                 }
                 
                 if (!string.IsNullOrEmpty(movementType))
                 {
                     var typeValue = movementType.ToLower() switch
                     {
-                        "in" => "0",
-                        "out" => "1",
-                        "transfer" => "2",
-                        "adjustment" => "3",
-                        _ => null
+                        "in" => 0,
+                        "out" => 1,
+                        "transfer" => 2,
+                        "adjustment" => 3,
+                        _ => (int?)null
                     };
                     
-                    if (typeValue != null)
+                    if (typeValue.HasValue)
                     {
-                        movementTypeFilter = $"AND sm.MovementType = {typeValue}";
+                        movementTypeFilter = "AND sm.MovementType = @MovementType";
                     }
                 }
                 
@@ -629,14 +635,27 @@ namespace DAO.Repositories
                     warehouseFilter = "AND (sm.SourceWarehouseId = @WarehouseId OR sm.DestinationWarehouseId = @WarehouseId)";
                 }
 
-                var finalQuery = string.Format(query, dateFilter, movementTypeFilter, warehouseFilter);
+                var finalQuery = string.Format(query, dateFilter, dateFilterMovements, movementTypeFilter, warehouseFilter);
 
                 using (var command = new SqlCommand(finalQuery, connection))
                 {
                     if (startDate.HasValue && endDate.HasValue)
                     {
-                        command.Parameters.Add(DatabaseHelper.CreateParameter("@StartDate", startDate.Value));
-                        command.Parameters.Add(DatabaseHelper.CreateParameter("@EndDate", endDate.Value));
+                        command.Parameters.Add(DatabaseHelper.CreateParameter("@StartDate", startDate.Value.Date));
+                        command.Parameters.Add(DatabaseHelper.CreateParameter("@EndDate", endDate.Value.Date));
+                    }
+                    
+                    if (!string.IsNullOrEmpty(movementType) && movementTypeFilter != "")
+                    {
+                        var typeValue = movementType.ToLower() switch
+                        {
+                            "in" => 0,
+                            "out" => 1,
+                            "transfer" => 2,
+                            "adjustment" => 3,
+                            _ => 0
+                        };
+                        command.Parameters.Add(DatabaseHelper.CreateParameter("@MovementType", typeValue));
                     }
                     
                     if (warehouseId.HasValue)
@@ -853,7 +872,7 @@ namespace DAO.Repositories
                 
                 if (minPurchases.HasValue)
                 {
-                    minPurchasesFilter = $"HAVING COUNT(*) >= {minPurchases.Value}";
+                    minPurchasesFilter = "HAVING COUNT(*) >= @MinPurchases";
                 }
 
                 var finalQuery = string.Format(query, dateFilter, clientFilter, minPurchasesFilter);
@@ -869,6 +888,11 @@ namespace DAO.Repositories
                     if (clientId.HasValue)
                     {
                         command.Parameters.Add(DatabaseHelper.CreateParameter("@ClientId", clientId.Value));
+                    }
+                    
+                    if (minPurchases.HasValue)
+                    {
+                        command.Parameters.Add(DatabaseHelper.CreateParameter("@MinPurchases", minPurchases.Value));
                     }
 
                     connection.Open();
