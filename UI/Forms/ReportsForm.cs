@@ -69,7 +69,6 @@ namespace UI.Forms
             tabPriceVariation.Text = _localizationService.GetString("Reports.PriceVariation") ?? "Variación de Precios";
             tabSellerPerformance.Text = _localizationService.GetString("Reports.SellerPerformance") ?? "Ventas por Vendedor";
             tabCategorySales.Text = _localizationService.GetString("Reports.CategorySales") ?? "Ventas por Categoría";
-            tabRevenueByDate.Text = _localizationService.GetString("Reports.RevenueByDate") ?? "Ingresos por Fecha";
             tabClientProductRanking.Text = _localizationService.GetString("Reports.ClientProductRanking") ?? "Ranking Clientes-Productos";
             tabClientTicketAverage.Text = _localizationService.GetString("Reports.ClientTicketAverage") ?? "Ticket Promedio";
         }
@@ -134,12 +133,6 @@ namespace UI.Forms
                 dtpCategorySalesStart.Value = today.AddMonths(-1);
             if (dtpCategorySalesEnd != null)
                 dtpCategorySalesEnd.Value = today;
-            
-            // Report 6: Revenue by Date
-            if (dtpRevenueByDateStart != null)
-                dtpRevenueByDateStart.Value = today.AddMonths(-1);
-            if (dtpRevenueByDateEnd != null)
-                dtpRevenueByDateEnd.Value = today;
             
             // Report 7: Client Product Ranking
             if (dtpClientProductRankingStart != null)
@@ -273,22 +266,7 @@ namespace UI.Forms
 
         private void PopulateWarehouses()
         {
-            if (cboRevenueByDateWarehouse != null)
-            {
-                cboRevenueByDateWarehouse.Items.Clear();
-                cboRevenueByDateWarehouse.Items.Add(new ComboBoxItem { Text = "-- Todos los Almacenes --", Value = null });
-                foreach (var warehouse in _warehouses)
-                {
-                    cboRevenueByDateWarehouse.Items.Add(new ComboBoxItem 
-                    { 
-                        Text = warehouse.Name, 
-                        Value = warehouse.WarehouseId 
-                    });
-                }
-                cboRevenueByDateWarehouse.DisplayMember = "Text";
-                cboRevenueByDateWarehouse.ValueMember = "Value";
-                cboRevenueByDateWarehouse.SelectedIndex = 0;
-            }
+            // Warehouse population removed - no longer needed
         }
 
         // Report 1: Top Products
@@ -584,65 +562,7 @@ namespace UI.Forms
             ExportToCSV(dgvCategorySales, "Ventas_Por_Categoria");
         }
 
-        // Report 6: Revenue by Date
-        private void btnGenerateRevenueByDate_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                var startDate = dtpRevenueByDateStart.Value.Date;
-                var endDate = dtpRevenueByDateEnd.Value.Date.AddDays(1).AddSeconds(-1);
-                
-                // Extract movement type - items are: "-- Todos --", "In", "Out", "Transfer", "Adjustment"
-                string movementType = null;
-                if (cboRevenueByDateMovementType.SelectedIndex > 0)
-                {
-                    movementType = cboRevenueByDateMovementType.SelectedItem.ToString();
-                }
-                
-                var warehouseItem = cboRevenueByDateWarehouse.SelectedItem as ComboBoxItem;
-                var warehouseId = warehouseItem?.Value as int?;
 
-                var data = _reportService.GetRevenueByDateReport(startDate, endDate, movementType, warehouseId);
-                dgvRevenueByDate.DataSource = data;
-
-                FormatRevenueByDateGrid();
-                _logService.Info($"Reporte Ingresos por Fecha generado con {data.Count} registros");
-            }
-            catch (Exception ex)
-            {
-                _errorHandler.HandleError(ex, "Error generando reporte de ingresos por fecha");
-            }
-        }
-
-        private void FormatRevenueByDateGrid()
-        {
-            if (dgvRevenueByDate.DataSource != null && dgvRevenueByDate.Columns.Count > 0)
-            {
-                if (dgvRevenueByDate.Columns.Contains("ReportDate"))
-                {
-                    dgvRevenueByDate.Columns["ReportDate"].HeaderText = "Fecha";
-                    dgvRevenueByDate.Columns["ReportDate"].DefaultCellStyle.Format = "dd/MM/yyyy";
-                }
-                if (dgvRevenueByDate.Columns.Contains("SalesRevenue"))
-                {
-                    dgvRevenueByDate.Columns["SalesRevenue"].HeaderText = "Ingresos Ventas";
-                    dgvRevenueByDate.Columns["SalesRevenue"].DefaultCellStyle.Format = "C2";
-                }
-                if (dgvRevenueByDate.Columns.Contains("StockInMovements"))
-                    dgvRevenueByDate.Columns["StockInMovements"].HeaderText = "Movimientos Entrada";
-                if (dgvRevenueByDate.Columns.Contains("StockInUnits"))
-                    dgvRevenueByDate.Columns["StockInUnits"].HeaderText = "Unidades Entrada";
-                if (dgvRevenueByDate.Columns.Contains("StockOutMovements"))
-                    dgvRevenueByDate.Columns["StockOutMovements"].HeaderText = "Movimientos Salida";
-                if (dgvRevenueByDate.Columns.Contains("StockOutUnits"))
-                    dgvRevenueByDate.Columns["StockOutUnits"].HeaderText = "Unidades Salida";
-            }
-        }
-
-        private void btnExportRevenueByDate_Click(object sender, EventArgs e)
-        {
-            ExportToCSV(dgvRevenueByDate, "Ingresos_Por_Fecha");
-        }
 
         // Report 7: Client Product Ranking
         private void btnGenerateClientProductRanking_Click(object sender, EventArgs e)

@@ -23,7 +23,6 @@ namespace UI.Forms
             this.tabPriceVariation = new System.Windows.Forms.TabPage();
             this.tabSellerPerformance = new System.Windows.Forms.TabPage();
             this.tabCategorySales = new System.Windows.Forms.TabPage();
-            this.tabRevenueByDate = new System.Windows.Forms.TabPage();
             this.tabClientProductRanking = new System.Windows.Forms.TabPage();
             this.tabClientTicketAverage = new System.Windows.Forms.TabPage();
             
@@ -33,7 +32,6 @@ namespace UI.Forms
             this.tabPriceVariation.SuspendLayout();
             this.tabSellerPerformance.SuspendLayout();
             this.tabCategorySales.SuspendLayout();
-            this.tabRevenueByDate.SuspendLayout();
             this.tabClientProductRanking.SuspendLayout();
             this.tabClientTicketAverage.SuspendLayout();
             this.SuspendLayout();
@@ -44,7 +42,6 @@ namespace UI.Forms
             InitializePriceVariationTab();
             InitializeSellerPerformanceTab();
             InitializeCategorySalesTab();
-            InitializeRevenueByDateTab();
             InitializeClientProductRankingTab();
             InitializeClientTicketAverageTab();
             
@@ -56,7 +53,6 @@ namespace UI.Forms
             this.tabControl1.Controls.Add(this.tabPriceVariation);
             this.tabControl1.Controls.Add(this.tabSellerPerformance);
             this.tabControl1.Controls.Add(this.tabCategorySales);
-            this.tabControl1.Controls.Add(this.tabRevenueByDate);
             this.tabControl1.Controls.Add(this.tabClientProductRanking);
             this.tabControl1.Controls.Add(this.tabClientTicketAverage);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -94,7 +90,6 @@ namespace UI.Forms
             this.tabPriceVariation.ResumeLayout(false);
             this.tabSellerPerformance.ResumeLayout(false);
             this.tabCategorySales.ResumeLayout(false);
-            this.tabRevenueByDate.ResumeLayout(false);
             this.tabClientProductRanking.ResumeLayout(false);
             this.tabClientTicketAverage.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -788,139 +783,6 @@ namespace UI.Forms
             ((System.ComponentModel.ISupportInitialize)(this.dgvCategorySales)).EndInit();
         }
 
-        private void InitializeRevenueByDateTab()
-        {
-            // Initialize controls
-            this.pnlRevenueByDateFilters = new System.Windows.Forms.Panel();
-            this.lblRevenueByDateDateRange = new System.Windows.Forms.Label();
-            this.dtpRevenueByDateStart = new System.Windows.Forms.DateTimePicker();
-            this.dtpRevenueByDateEnd = new System.Windows.Forms.DateTimePicker();
-            this.lblRevenueByDateMovementType = new System.Windows.Forms.Label();
-            this.cboRevenueByDateMovementType = new System.Windows.Forms.ComboBox();
-            this.lblRevenueByDateWarehouse = new System.Windows.Forms.Label();
-            this.cboRevenueByDateWarehouse = new System.Windows.Forms.ComboBox();
-            this.btnGenerateRevenueByDate = new System.Windows.Forms.Button();
-            this.btnExportRevenueByDate = new System.Windows.Forms.Button();
-            this.dgvRevenueByDate = new System.Windows.Forms.DataGridView();
-            
-            ((System.ComponentModel.ISupportInitialize)(this.dgvRevenueByDate)).BeginInit();
-            
-            // pnlRevenueByDateFilters
-            this.pnlRevenueByDateFilters.Controls.Add(this.lblRevenueByDateDateRange);
-            this.pnlRevenueByDateFilters.Controls.Add(this.dtpRevenueByDateStart);
-            this.pnlRevenueByDateFilters.Controls.Add(this.dtpRevenueByDateEnd);
-            this.pnlRevenueByDateFilters.Controls.Add(this.lblRevenueByDateMovementType);
-            this.pnlRevenueByDateFilters.Controls.Add(this.cboRevenueByDateMovementType);
-            this.pnlRevenueByDateFilters.Controls.Add(this.lblRevenueByDateWarehouse);
-            this.pnlRevenueByDateFilters.Controls.Add(this.cboRevenueByDateWarehouse);
-            this.pnlRevenueByDateFilters.Controls.Add(this.btnGenerateRevenueByDate);
-            this.pnlRevenueByDateFilters.Controls.Add(this.btnExportRevenueByDate);
-            this.pnlRevenueByDateFilters.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlRevenueByDateFilters.Location = new System.Drawing.Point(3, 3);
-            this.pnlRevenueByDateFilters.Name = "pnlRevenueByDateFilters";
-            this.pnlRevenueByDateFilters.Size = new System.Drawing.Size(1186, 80);
-            this.pnlRevenueByDateFilters.TabIndex = 0;
-            
-            // lblRevenueByDateDateRange
-            this.lblRevenueByDateDateRange.AutoSize = true;
-            this.lblRevenueByDateDateRange.Location = new System.Drawing.Point(10, 15);
-            this.lblRevenueByDateDateRange.Name = "lblRevenueByDateDateRange";
-            this.lblRevenueByDateDateRange.Size = new System.Drawing.Size(100, 13);
-            this.lblRevenueByDateDateRange.TabIndex = 0;
-            this.lblRevenueByDateDateRange.Text = "Rango de Fechas:";
-            
-            // dtpRevenueByDateStart
-            this.dtpRevenueByDateStart.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpRevenueByDateStart.Location = new System.Drawing.Point(120, 12);
-            this.dtpRevenueByDateStart.Name = "dtpRevenueByDateStart";
-            this.dtpRevenueByDateStart.Size = new System.Drawing.Size(100, 20);
-            this.dtpRevenueByDateStart.TabIndex = 1;
-            
-            // dtpRevenueByDateEnd
-            this.dtpRevenueByDateEnd.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpRevenueByDateEnd.Location = new System.Drawing.Point(230, 12);
-            this.dtpRevenueByDateEnd.Name = "dtpRevenueByDateEnd";
-            this.dtpRevenueByDateEnd.Size = new System.Drawing.Size(100, 20);
-            this.dtpRevenueByDateEnd.TabIndex = 2;
-            
-            // lblRevenueByDateMovementType
-            this.lblRevenueByDateMovementType.AutoSize = true;
-            this.lblRevenueByDateMovementType.Location = new System.Drawing.Point(350, 15);
-            this.lblRevenueByDateMovementType.Name = "lblRevenueByDateMovementType";
-            this.lblRevenueByDateMovementType.Size = new System.Drawing.Size(100, 13);
-            this.lblRevenueByDateMovementType.TabIndex = 3;
-            this.lblRevenueByDateMovementType.Text = "Tipo Movimiento:";
-            
-            // cboRevenueByDateMovementType
-            this.cboRevenueByDateMovementType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboRevenueByDateMovementType.FormattingEnabled = true;
-            this.cboRevenueByDateMovementType.Items.AddRange(new object[] { "-- Todos --", "In", "Out", "Transfer", "Adjustment" });
-            this.cboRevenueByDateMovementType.Location = new System.Drawing.Point(455, 12);
-            this.cboRevenueByDateMovementType.Name = "cboRevenueByDateMovementType";
-            this.cboRevenueByDateMovementType.Size = new System.Drawing.Size(150, 21);
-            this.cboRevenueByDateMovementType.TabIndex = 4;
-            this.cboRevenueByDateMovementType.SelectedIndex = 0;
-            
-            // lblRevenueByDateWarehouse
-            this.lblRevenueByDateWarehouse.AutoSize = true;
-            this.lblRevenueByDateWarehouse.Location = new System.Drawing.Point(10, 47);
-            this.lblRevenueByDateWarehouse.Name = "lblRevenueByDateWarehouse";
-            this.lblRevenueByDateWarehouse.Size = new System.Drawing.Size(100, 13);
-            this.lblRevenueByDateWarehouse.TabIndex = 5;
-            this.lblRevenueByDateWarehouse.Text = "Almacén:";
-            
-            // cboRevenueByDateWarehouse
-            this.cboRevenueByDateWarehouse.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboRevenueByDateWarehouse.FormattingEnabled = true;
-            this.cboRevenueByDateWarehouse.Location = new System.Drawing.Point(120, 44);
-            this.cboRevenueByDateWarehouse.Name = "cboRevenueByDateWarehouse";
-            this.cboRevenueByDateWarehouse.Size = new System.Drawing.Size(200, 21);
-            this.cboRevenueByDateWarehouse.TabIndex = 6;
-            
-            // btnGenerateRevenueByDate
-            this.btnGenerateRevenueByDate.Location = new System.Drawing.Point(340, 42);
-            this.btnGenerateRevenueByDate.Name = "btnGenerateRevenueByDate";
-            this.btnGenerateRevenueByDate.Size = new System.Drawing.Size(80, 25);
-            this.btnGenerateRevenueByDate.TabIndex = 7;
-            this.btnGenerateRevenueByDate.Text = "Generar";
-            this.btnGenerateRevenueByDate.UseVisualStyleBackColor = true;
-            this.btnGenerateRevenueByDate.Click += new System.EventHandler(this.btnGenerateRevenueByDate_Click);
-            
-            // btnExportRevenueByDate
-            this.btnExportRevenueByDate.Location = new System.Drawing.Point(430, 42);
-            this.btnExportRevenueByDate.Name = "btnExportRevenueByDate";
-            this.btnExportRevenueByDate.Size = new System.Drawing.Size(100, 25);
-            this.btnExportRevenueByDate.TabIndex = 8;
-            this.btnExportRevenueByDate.Text = "Exportar CSV";
-            this.btnExportRevenueByDate.UseVisualStyleBackColor = true;
-            this.btnExportRevenueByDate.Click += new System.EventHandler(this.btnExportRevenueByDate_Click);
-            
-            // dgvRevenueByDate
-            this.dgvRevenueByDate.AllowUserToAddRows = false;
-            this.dgvRevenueByDate.AllowUserToDeleteRows = false;
-            this.dgvRevenueByDate.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dgvRevenueByDate.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvRevenueByDate.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvRevenueByDate.Location = new System.Drawing.Point(3, 83);
-            this.dgvRevenueByDate.Name = "dgvRevenueByDate";
-            this.dgvRevenueByDate.ReadOnly = true;
-            this.dgvRevenueByDate.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvRevenueByDate.Size = new System.Drawing.Size(1186, 588);
-            this.dgvRevenueByDate.TabIndex = 9;
-            
-            // tabRevenueByDate
-            this.tabRevenueByDate.Controls.Add(this.dgvRevenueByDate);
-            this.tabRevenueByDate.Controls.Add(this.pnlRevenueByDateFilters);
-            this.tabRevenueByDate.Location = new System.Drawing.Point(4, 22);
-            this.tabRevenueByDate.Name = "tabRevenueByDate";
-            this.tabRevenueByDate.Padding = new System.Windows.Forms.Padding(3);
-            this.tabRevenueByDate.Size = new System.Drawing.Size(1192, 674);
-            this.tabRevenueByDate.TabIndex = 5;
-            this.tabRevenueByDate.Text = "Ingresos por Fecha";
-            this.tabRevenueByDate.UseVisualStyleBackColor = true;
-            
-            ((System.ComponentModel.ISupportInitialize)(this.dgvRevenueByDate)).EndInit();
-        }
 
         private void InitializeClientProductRankingTab()
         {
@@ -1221,7 +1083,6 @@ namespace UI.Forms
         private System.Windows.Forms.TabPage tabPriceVariation;
         private System.Windows.Forms.TabPage tabSellerPerformance;
         private System.Windows.Forms.TabPage tabCategorySales;
-        private System.Windows.Forms.TabPage tabRevenueByDate;
         private System.Windows.Forms.TabPage tabClientProductRanking;
         private System.Windows.Forms.TabPage tabClientTicketAverage;
 
@@ -1289,19 +1150,6 @@ namespace UI.Forms
         private System.Windows.Forms.Button btnGenerateCategorySales;
         private System.Windows.Forms.Button btnExportCategorySales;
         private System.Windows.Forms.DataGridView dgvCategorySales;
-
-        // Tab 6: Revenue by Date
-        private System.Windows.Forms.Panel pnlRevenueByDateFilters;
-        private System.Windows.Forms.Label lblRevenueByDateDateRange;
-        private System.Windows.Forms.DateTimePicker dtpRevenueByDateStart;
-        private System.Windows.Forms.DateTimePicker dtpRevenueByDateEnd;
-        private System.Windows.Forms.Label lblRevenueByDateMovementType;
-        private System.Windows.Forms.ComboBox cboRevenueByDateMovementType;
-        private System.Windows.Forms.Label lblRevenueByDateWarehouse;
-        private System.Windows.Forms.ComboBox cboRevenueByDateWarehouse;
-        private System.Windows.Forms.Button btnGenerateRevenueByDate;
-        private System.Windows.Forms.Button btnExportRevenueByDate;
-        private System.Windows.Forms.DataGridView dgvRevenueByDate;
 
         // Tab 7: Client Product Ranking
         private System.Windows.Forms.Panel pnlClientProductRankingFilters;
