@@ -527,12 +527,16 @@ namespace UI.Forms
             // Load lines
             dgvLines.Rows.Clear();
             var lines = _movementService.GetMovementLines(movement.MovementId);
+            
+            // Create a set of existing product IDs for efficient lookup
+            var existingProductIds = new HashSet<int>(
+                colProduct.Items.Cast<ProductItem>().Select(p => p.ProductId)
+            );
+            
             foreach (var line in lines)
             {
                 // Check if product exists in active products list
-                var productInList = colProduct.Items.Cast<ProductItem>().Any(p => p.ProductId == line.ProductId);
-                
-                if (!productInList && !string.IsNullOrEmpty(line.ProductName))
+                if (!existingProductIds.Contains(line.ProductId) && !string.IsNullOrEmpty(line.ProductName))
                 {
                     // Product is no longer active, add it temporarily for display
                     colProduct.Items.Add(new ProductItem
@@ -540,6 +544,7 @@ namespace UI.Forms
                         ProductId = line.ProductId,
                         DisplayText = $"{line.ProductSKU} - {line.ProductName} (Inactivo)"
                     });
+                    existingProductIds.Add(line.ProductId);
                 }
                 
                 var rowIndex = dgvLines.Rows.Add();
