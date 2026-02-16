@@ -17,28 +17,68 @@ PRINT '';
 
 PRINT 'Inserting clients...';
 
--- Clear existing clients if reseeding
-DELETE FROM [dbo].[Clients] WHERE ClientId > 0;
-DBCC CHECKIDENT ('[dbo].[Clients]', RESEED, 0);
+-- Insert clients only if they don't exist (check by DNI)
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Clients] WHERE DNI = '20345678')
+    INSERT INTO [dbo].[Clients] ([Nombre], [Apellido], [DNI], [Correo], [Telefono], [Direccion], [CreatedBy]) 
+    VALUES ('Juan', 'Pérez', '20345678', 'juan.perez@email.com', '11-4567-8901', 'Av. Corrientes 1234, CABA', 1);
 
-INSERT INTO [dbo].[Clients] ([Nombre], [Apellido], [DNI], [Correo], [Telefono], [Direccion], [CreatedBy]) VALUES
-('Juan', 'Pérez', '20345678', 'juan.perez@email.com', '11-4567-8901', 'Av. Corrientes 1234, CABA', 1),
-('María', 'González', '27456789', 'maria.gonzalez@email.com', '11-4567-8902', 'Av. Santa Fe 567, CABA', 1),
-('Carlos', 'Rodríguez', '30567890', 'carlos.rodriguez@email.com', '11-4567-8903', 'Av. Rivadavia 890, CABA', 1),
-('Ana', 'Martínez', '33678901', 'ana.martinez@email.com', '11-4567-8904', 'Av. Cabildo 234, CABA', 1),
-('Luis', 'Fernández', '25789012', 'luis.fernandez@email.com', '11-4567-8905', 'Av. Belgrano 456, CABA', 1),
-('Laura', 'López', '28890123', 'laura.lopez@email.com', '11-4567-8906', 'Av. Callao 678, CABA', 1),
-('Pedro', 'García', '31901234', 'pedro.garcia@email.com', '11-4567-8907', 'Av. Pueyrredón 901, CABA', 1),
-('Sofía', 'Díaz', '26012345', 'sofia.diaz@email.com', '11-4567-8908', 'Av. Las Heras 123, CABA', 1),
-('Diego', 'Sánchez', '29123456', 'diego.sanchez@email.com', '11-4567-8909', 'Av. Córdoba 345, CABA', 1),
-('Valentina', 'Romero', '32234567', 'valentina.romero@email.com', '11-4567-8910', 'Av. 9 de Julio 567, CABA', 1),
-('Mateo', 'Torres', '24345678', 'mateo.torres@email.com', '11-4567-8911', 'Av. San Martín 789, CABA', 1),
-('Lucía', 'Flores', '27456781', 'lucia.flores@email.com', '11-4567-8912', 'Av. Libertador 1011, CABA', 1),
-('Tomás', 'Benítez', '30567892', 'tomas.benitez@email.com', '11-4567-8913', 'Av. del Libertador 1213, CABA', 1),
-('Emma', 'Vargas', '33678903', 'emma.vargas@email.com', '11-4567-8914', 'Av. Figueroa Alcorta 1415, CABA', 1),
-('Martín', 'Castro', '25789014', 'martin.castro@email.com', '11-4567-8915', 'Av. Paseo Colón 1617, CABA', 1);
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Clients] WHERE DNI = '27456789')
+    INSERT INTO [dbo].[Clients] ([Nombre], [Apellido], [DNI], [Correo], [Telefono], [Direccion], [CreatedBy]) 
+    VALUES ('María', 'González', '27456789', 'maria.gonzalez@email.com', '11-4567-8902', 'Av. Santa Fe 567, CABA', 1);
 
-PRINT 'Clients inserted: 15';
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Clients] WHERE DNI = '30567890')
+    INSERT INTO [dbo].[Clients] ([Nombre], [Apellido], [DNI], [Correo], [Telefono], [Direccion], [CreatedBy]) 
+    VALUES ('Carlos', 'Rodríguez', '30567890', 'carlos.rodriguez@email.com', '11-4567-8903', 'Av. Rivadavia 890, CABA', 1);
+
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Clients] WHERE DNI = '33678901')
+    INSERT INTO [dbo].[Clients] ([Nombre], [Apellido], [DNI], [Correo], [Telefono], [Direccion], [CreatedBy]) 
+    VALUES ('Ana', 'Martínez', '33678901', 'ana.martinez@email.com', '11-4567-8904', 'Av. Cabildo 234, CABA', 1);
+
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Clients] WHERE DNI = '25789012')
+    INSERT INTO [dbo].[Clients] ([Nombre], [Apellido], [DNI], [Correo], [Telefono], [Direccion], [CreatedBy]) 
+    VALUES ('Luis', 'Fernández', '25789012', 'luis.fernandez@email.com', '11-4567-8905', 'Av. Belgrano 456, CABA', 1);
+
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Clients] WHERE DNI = '28890123')
+    INSERT INTO [dbo].[Clients] ([Nombre], [Apellido], [DNI], [Correo], [Telefono], [Direccion], [CreatedBy]) 
+    VALUES ('Laura', 'López', '28890123', 'laura.lopez@email.com', '11-4567-8906', 'Av. Callao 678, CABA', 1);
+
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Clients] WHERE DNI = '31901234')
+    INSERT INTO [dbo].[Clients] ([Nombre], [Apellido], [DNI], [Correo], [Telefono], [Direccion], [CreatedBy]) 
+    VALUES ('Pedro', 'García', '31901234', 'pedro.garcia@email.com', '11-4567-8907', 'Av. Pueyrredón 901, CABA', 1);
+
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Clients] WHERE DNI = '26012345')
+    INSERT INTO [dbo].[Clients] ([Nombre], [Apellido], [DNI], [Correo], [Telefono], [Direccion], [CreatedBy]) 
+    VALUES ('Sofía', 'Díaz', '26012345', 'sofia.diaz@email.com', '11-4567-8908', 'Av. Las Heras 123, CABA', 1);
+
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Clients] WHERE DNI = '29123456')
+    INSERT INTO [dbo].[Clients] ([Nombre], [Apellido], [DNI], [Correo], [Telefono], [Direccion], [CreatedBy]) 
+    VALUES ('Diego', 'Sánchez', '29123456', 'diego.sanchez@email.com', '11-4567-8909', 'Av. Córdoba 345, CABA', 1);
+
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Clients] WHERE DNI = '32234567')
+    INSERT INTO [dbo].[Clients] ([Nombre], [Apellido], [DNI], [Correo], [Telefono], [Direccion], [CreatedBy]) 
+    VALUES ('Valentina', 'Romero', '32234567', 'valentina.romero@email.com', '11-4567-8910', 'Av. 9 de Julio 567, CABA', 1);
+
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Clients] WHERE DNI = '24345678')
+    INSERT INTO [dbo].[Clients] ([Nombre], [Apellido], [DNI], [Correo], [Telefono], [Direccion], [CreatedBy]) 
+    VALUES ('Mateo', 'Torres', '24345678', 'mateo.torres@email.com', '11-4567-8911', 'Av. San Martín 789, CABA', 1);
+
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Clients] WHERE DNI = '27456781')
+    INSERT INTO [dbo].[Clients] ([Nombre], [Apellido], [DNI], [Correo], [Telefono], [Direccion], [CreatedBy]) 
+    VALUES ('Lucía', 'Flores', '27456781', 'lucia.flores@email.com', '11-4567-8912', 'Av. Libertador 1011, CABA', 1);
+
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Clients] WHERE DNI = '30567892')
+    INSERT INTO [dbo].[Clients] ([Nombre], [Apellido], [DNI], [Correo], [Telefono], [Direccion], [CreatedBy]) 
+    VALUES ('Tomás', 'Benítez', '30567892', 'tomas.benitez@email.com', '11-4567-8913', 'Av. del Libertador 1213, CABA', 1);
+
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Clients] WHERE DNI = '33678903')
+    INSERT INTO [dbo].[Clients] ([Nombre], [Apellido], [DNI], [Correo], [Telefono], [Direccion], [CreatedBy]) 
+    VALUES ('Emma', 'Vargas', '33678903', 'emma.vargas@email.com', '11-4567-8914', 'Av. Figueroa Alcorta 1415, CABA', 1);
+
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Clients] WHERE DNI = '25789014')
+    INSERT INTO [dbo].[Clients] ([Nombre], [Apellido], [DNI], [Correo], [Telefono], [Direccion], [CreatedBy]) 
+    VALUES ('Martín', 'Castro', '25789014', 'martin.castro@email.com', '11-4567-8915', 'Av. Paseo Colón 1617, CABA', 1);
+
+PRINT 'Clients seeded (inserted if not exists): 15';
 GO
 
 -- ============================================
@@ -47,45 +87,98 @@ GO
 
 PRINT 'Inserting additional products...';
 
--- Clear existing products if reseeding (except sample ones)
--- Use soft delete to avoid foreign key constraint violations
-UPDATE [dbo].[Products] SET IsActive = 0 WHERE ProductId > 5;
-
-INSERT INTO [dbo].[Products] ([SKU], [Name], [Description], [Category], [UnitPrice], [MinStockLevel], [CreatedBy]) VALUES
+-- Insert products only if they don't exist (check by SKU)
 -- Electronics - More variety
-('EARBUDS-BT-01', 'Wireless Earbuds', 'Bluetooth wireless earbuds with charging case', 'Audio', 49.99, 10, 1),
-('CABLE-USBC-2M', 'USB-C Cable 2m', 'USB-C to USB-C cable, 2 meters', 'Cables', 9.99, 25, 1),
-('CABLE-LIGHT-1M', 'Lightning Cable 1m', 'Lightning to USB cable, 1 meter', 'Cables', 8.99, 25, 1),
-('ADAPTER-USBC-HDMI', 'USB-C to HDMI Adapter', 'USB-C to HDMI adapter for displays', 'Adapters', 19.99, 8, 1),
-('HOLDER-CAR-01', 'Car Phone Holder', 'Universal car phone holder', 'Holders', 14.99, 15, 1),
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Products] WHERE SKU = 'EARBUDS-BT-01')
+    INSERT INTO [dbo].[Products] ([SKU], [Name], [Description], [Category], [UnitPrice], [MinStockLevel], [CreatedBy]) 
+    VALUES ('EARBUDS-BT-01', 'Wireless Earbuds', 'Bluetooth wireless earbuds with charging case', 'Audio', 49.99, 10, 1);
+
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Products] WHERE SKU = 'CABLE-USBC-2M')
+    INSERT INTO [dbo].[Products] ([SKU], [Name], [Description], [Category], [UnitPrice], [MinStockLevel], [CreatedBy]) 
+    VALUES ('CABLE-USBC-2M', 'USB-C Cable 2m', 'USB-C to USB-C cable, 2 meters', 'Cables', 9.99, 25, 1);
+
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Products] WHERE SKU = 'CABLE-LIGHT-1M')
+    INSERT INTO [dbo].[Products] ([SKU], [Name], [Description], [Category], [UnitPrice], [MinStockLevel], [CreatedBy]) 
+    VALUES ('CABLE-LIGHT-1M', 'Lightning Cable 1m', 'Lightning to USB cable, 1 meter', 'Cables', 8.99, 25, 1);
+
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Products] WHERE SKU = 'ADAPTER-USBC-HDMI')
+    INSERT INTO [dbo].[Products] ([SKU], [Name], [Description], [Category], [UnitPrice], [MinStockLevel], [CreatedBy]) 
+    VALUES ('ADAPTER-USBC-HDMI', 'USB-C to HDMI Adapter', 'USB-C to HDMI adapter for displays', 'Adapters', 19.99, 8, 1);
+
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Products] WHERE SKU = 'HOLDER-CAR-01')
+    INSERT INTO [dbo].[Products] ([SKU], [Name], [Description], [Category], [UnitPrice], [MinStockLevel], [CreatedBy]) 
+    VALUES ('HOLDER-CAR-01', 'Car Phone Holder', 'Universal car phone holder', 'Holders', 14.99, 15, 1);
 
 -- Cases - More models
-('CASE-IP13-RED', 'iPhone 13 Case Red', 'Silicone case for iPhone 13 - Red', 'Cases', 14.99, 10, 1),
-('CASE-IP13-BLU', 'iPhone 13 Case Blue', 'Silicone case for iPhone 13 - Blue', 'Cases', 14.99, 10, 1),
-('CASE-SAM-A54', 'Samsung A54 Case', 'Protective case for Samsung Galaxy A54', 'Cases', 12.99, 12, 1),
-('CASE-XIAOMI-12', 'Xiaomi 12 Case', 'Protective case for Xiaomi 12', 'Cases', 11.99, 12, 1),
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Products] WHERE SKU = 'CASE-IP13-RED')
+    INSERT INTO [dbo].[Products] ([SKU], [Name], [Description], [Category], [UnitPrice], [MinStockLevel], [CreatedBy]) 
+    VALUES ('CASE-IP13-RED', 'iPhone 13 Case Red', 'Silicone case for iPhone 13 - Red', 'Cases', 14.99, 10, 1);
+
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Products] WHERE SKU = 'CASE-IP13-BLU')
+    INSERT INTO [dbo].[Products] ([SKU], [Name], [Description], [Category], [UnitPrice], [MinStockLevel], [CreatedBy]) 
+    VALUES ('CASE-IP13-BLU', 'iPhone 13 Case Blue', 'Silicone case for iPhone 13 - Blue', 'Cases', 14.99, 10, 1);
+
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Products] WHERE SKU = 'CASE-SAM-A54')
+    INSERT INTO [dbo].[Products] ([SKU], [Name], [Description], [Category], [UnitPrice], [MinStockLevel], [CreatedBy]) 
+    VALUES ('CASE-SAM-A54', 'Samsung A54 Case', 'Protective case for Samsung Galaxy A54', 'Cases', 12.99, 12, 1);
+
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Products] WHERE SKU = 'CASE-XIAOMI-12')
+    INSERT INTO [dbo].[Products] ([SKU], [Name], [Description], [Category], [UnitPrice], [MinStockLevel], [CreatedBy]) 
+    VALUES ('CASE-XIAOMI-12', 'Xiaomi 12 Case', 'Protective case for Xiaomi 12', 'Cases', 11.99, 12, 1);
 
 -- Screen Protectors
-('GLASS-IP13', 'iPhone 13 Screen Protector', 'Tempered glass for iPhone 13', 'Screen Protectors', 7.99, 20, 1),
-('GLASS-SAM-A54', 'Samsung A54 Screen Protector', 'Tempered glass for Samsung A54', 'Screen Protectors', 7.99, 20, 1),
-('GLASS-XIAOMI-12', 'Xiaomi 12 Screen Protector', 'Tempered glass for Xiaomi 12', 'Screen Protectors', 6.99, 20, 1),
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Products] WHERE SKU = 'GLASS-IP13')
+    INSERT INTO [dbo].[Products] ([SKU], [Name], [Description], [Category], [UnitPrice], [MinStockLevel], [CreatedBy]) 
+    VALUES ('GLASS-IP13', 'iPhone 13 Screen Protector', 'Tempered glass for iPhone 13', 'Screen Protectors', 7.99, 20, 1);
+
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Products] WHERE SKU = 'GLASS-SAM-A54')
+    INSERT INTO [dbo].[Products] ([SKU], [Name], [Description], [Category], [UnitPrice], [MinStockLevel], [CreatedBy]) 
+    VALUES ('GLASS-SAM-A54', 'Samsung A54 Screen Protector', 'Tempered glass for Samsung A54', 'Screen Protectors', 7.99, 20, 1);
+
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Products] WHERE SKU = 'GLASS-XIAOMI-12')
+    INSERT INTO [dbo].[Products] ([SKU], [Name], [Description], [Category], [UnitPrice], [MinStockLevel], [CreatedBy]) 
+    VALUES ('GLASS-XIAOMI-12', 'Xiaomi 12 Screen Protector', 'Tempered glass for Xiaomi 12', 'Screen Protectors', 6.99, 20, 1);
 
 -- Power & Chargers
-('CHARGER-FAST-30W', 'Fast Charger 30W', 'USB-C fast charger 30W', 'Chargers', 16.99, 12, 1),
-('POWERBANK-10K', 'Power Bank 10000mAh', 'Portable power bank 10000mAh', 'Power Banks', 24.99, 8, 1),
-('POWERBANK-20K', 'Power Bank 20000mAh', 'Portable power bank 20000mAh', 'Power Banks', 39.99, 5, 1),
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Products] WHERE SKU = 'CHARGER-FAST-30W')
+    INSERT INTO [dbo].[Products] ([SKU], [Name], [Description], [Category], [UnitPrice], [MinStockLevel], [CreatedBy]) 
+    VALUES ('CHARGER-FAST-30W', 'Fast Charger 30W', 'USB-C fast charger 30W', 'Chargers', 16.99, 12, 1);
+
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Products] WHERE SKU = 'POWERBANK-10K')
+    INSERT INTO [dbo].[Products] ([SKU], [Name], [Description], [Category], [UnitPrice], [MinStockLevel], [CreatedBy]) 
+    VALUES ('POWERBANK-10K', 'Power Bank 10000mAh', 'Portable power bank 10000mAh', 'Power Banks', 24.99, 8, 1);
+
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Products] WHERE SKU = 'POWERBANK-20K')
+    INSERT INTO [dbo].[Products] ([SKU], [Name], [Description], [Category], [UnitPrice], [MinStockLevel], [CreatedBy]) 
+    VALUES ('POWERBANK-20K', 'Power Bank 20000mAh', 'Portable power bank 20000mAh', 'Power Banks', 39.99, 5, 1);
 
 -- Audio - More options
-('SPK-BT-MINI-02', 'Bluetooth Speaker Mini Pro', 'Enhanced mini Bluetooth speaker', 'Speakers', 34.99, 5, 1),
-('HEADPHONES-01', 'Over-Ear Headphones', 'Wired over-ear headphones', 'Audio', 29.99, 8, 1),
-('HEADPHONES-BT-02', 'Bluetooth Headphones', 'Wireless Bluetooth headphones', 'Audio', 59.99, 6, 1),
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Products] WHERE SKU = 'SPK-BT-MINI-02')
+    INSERT INTO [dbo].[Products] ([SKU], [Name], [Description], [Category], [UnitPrice], [MinStockLevel], [CreatedBy]) 
+    VALUES ('SPK-BT-MINI-02', 'Bluetooth Speaker Mini Pro', 'Enhanced mini Bluetooth speaker', 'Speakers', 34.99, 5, 1);
+
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Products] WHERE SKU = 'HEADPHONES-01')
+    INSERT INTO [dbo].[Products] ([SKU], [Name], [Description], [Category], [UnitPrice], [MinStockLevel], [CreatedBy]) 
+    VALUES ('HEADPHONES-01', 'Over-Ear Headphones', 'Wired over-ear headphones', 'Audio', 29.99, 8, 1);
+
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Products] WHERE SKU = 'HEADPHONES-BT-02')
+    INSERT INTO [dbo].[Products] ([SKU], [Name], [Description], [Category], [UnitPrice], [MinStockLevel], [CreatedBy]) 
+    VALUES ('HEADPHONES-BT-02', 'Bluetooth Headphones', 'Wireless Bluetooth headphones', 'Audio', 59.99, 6, 1);
 
 -- Accessories
-('STAND-TABLET-01', 'Tablet Stand', 'Adjustable tablet stand', 'Holders', 19.99, 10, 1),
-('MOUSE-WIRELESS-01', 'Wireless Mouse', 'Wireless optical mouse', 'Peripherals', 12.99, 15, 1),
-('KEYBOARD-BT-01', 'Bluetooth Keyboard', 'Compact Bluetooth keyboard', 'Peripherals', 34.99, 8, 1);
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Products] WHERE SKU = 'STAND-TABLET-01')
+    INSERT INTO [dbo].[Products] ([SKU], [Name], [Description], [Category], [UnitPrice], [MinStockLevel], [CreatedBy]) 
+    VALUES ('STAND-TABLET-01', 'Tablet Stand', 'Adjustable tablet stand', 'Holders', 19.99, 10, 1);
 
-PRINT 'Additional products inserted: 21';
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Products] WHERE SKU = 'MOUSE-WIRELESS-01')
+    INSERT INTO [dbo].[Products] ([SKU], [Name], [Description], [Category], [UnitPrice], [MinStockLevel], [CreatedBy]) 
+    VALUES ('MOUSE-WIRELESS-01', 'Wireless Mouse', 'Wireless optical mouse', 'Peripherals', 12.99, 15, 1);
+
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Products] WHERE SKU = 'KEYBOARD-BT-01')
+    INSERT INTO [dbo].[Products] ([SKU], [Name], [Description], [Category], [UnitPrice], [MinStockLevel], [CreatedBy]) 
+    VALUES ('KEYBOARD-BT-01', 'Bluetooth Keyboard', 'Compact Bluetooth keyboard', 'Peripherals', 34.99, 8, 1);
+
+PRINT 'Additional products seeded (inserted if not exists): 21';
 GO
 
 -- ============================================
