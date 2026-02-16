@@ -235,8 +235,10 @@ namespace UI.Forms
             this.txtSellerName.Location = new System.Drawing.Point(100, 52);
             this.txtSellerName.MaxLength = 100;
             this.txtSellerName.Name = "txtSellerName";
+            this.txtSellerName.ReadOnly = true;
             this.txtSellerName.Size = new System.Drawing.Size(200, 20);
             this.txtSellerName.TabIndex = 5;
+            this.txtSellerName.BackColor = System.Drawing.SystemColors.Control;
             // 
             // lblClient
             // 

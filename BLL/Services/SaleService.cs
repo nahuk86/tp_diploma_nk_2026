@@ -240,6 +240,20 @@ namespace BLL.Services
             }
         }
 
+        public int GetTotalAvailableStock(int productId)
+        {
+            try
+            {
+                var stockRecords = _stockRepo.GetByProduct(productId);
+                return stockRecords.Sum(s => s.Quantity);
+            }
+            catch (Exception ex)
+            {
+                _logService.Error($"Error retrieving total stock for product {productId}", ex);
+                throw;
+            }
+        }
+
         private void ValidateSale(Sale sale, List<SaleLine> saleLines)
         {
             if (sale == null)
@@ -272,6 +286,15 @@ namespace BLL.Services
                 var product = _productRepo.GetById(line.ProductId);
                 if (product == null || !product.IsActive)
                     throw new InvalidOperationException($"Product {line.ProductId} not found or inactive");
+
+                // Validate stock availability
+                var availableStock = GetTotalAvailableStock(line.ProductId);
+                if (line.Quantity > availableStock)
+                {
+                    throw new InvalidOperationException(
+                        $"Cantidad insuficiente para el producto '{product.Name}'. " +
+                        $"Solicitado: {line.Quantity}, Disponible: {availableStock}");
+                }
 
                 // Calculate line total
                 line.LineTotal = line.Quantity * line.UnitPrice;
