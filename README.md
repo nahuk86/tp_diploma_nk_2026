@@ -266,6 +266,9 @@ El sistema define permisos granulares por módulo:
 ### Audit
 - `Audit.View`
 
+### Reports
+- `Reports.View`
+
 ## Roles Pre-definidos
 
 1. **Administrator**: Todos los permisos
