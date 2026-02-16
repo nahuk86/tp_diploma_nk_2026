@@ -144,6 +144,11 @@ IF NOT EXISTS (SELECT 1 FROM [dbo].[Permissions] WHERE [PermissionCode] = 'Sales
     INSERT INTO [dbo].[Permissions] ([PermissionCode], [PermissionName], [Description], [Module]) 
     VALUES ('Sales.Delete', 'Delete Sales', 'Delete sales (soft delete)', 'Sales');
 
+-- Reports Permissions
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Permissions] WHERE [PermissionCode] = 'Reports.View')
+    INSERT INTO [dbo].[Permissions] ([PermissionCode], [PermissionName], [Description], [Module]) 
+    VALUES ('Reports.View', 'View Reports', 'View and generate reports', 'Reports');
+
 PRINT 'Permissions inserted successfully.';
 GO
 
@@ -218,7 +223,8 @@ WHERE [PermissionCode] IN (
     'Warehouses.View', 'Warehouses.Create', 'Warehouses.Edit', 'Warehouses.Delete',
     'Clients.View', 'Clients.Create', 'Clients.Edit', 'Clients.Delete',
     'Stock.View', 'Stock.Receive', 'Stock.Issue', 'Stock.Transfer', 'Stock.Adjust',
-    'Audit.View'
+    'Audit.View',
+    'Reports.View'
 )
 AND NOT EXISTS (
     SELECT 1 FROM [dbo].[RolePermissions] 
@@ -270,7 +276,8 @@ WHERE [PermissionCode] IN (
     'Warehouses.View',
     'Clients.View',
     'Stock.View',
-    'Audit.View'
+    'Audit.View',
+    'Reports.View'
 )
 AND NOT EXISTS (
     SELECT 1 FROM [dbo].[RolePermissions] 
@@ -296,7 +303,8 @@ WHERE [PermissionCode] IN (
     'Products.View',
     'Clients.View', 'Clients.Create', 'Clients.Edit',
     'Stock.View',
-    'Sales.View', 'Sales.Create', 'Sales.Edit'
+    'Sales.View', 'Sales.Create', 'Sales.Edit',
+    'Reports.View'
 )
 AND NOT EXISTS (
     SELECT 1 FROM [dbo].[RolePermissions] 

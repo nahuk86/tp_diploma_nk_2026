@@ -129,9 +129,8 @@ namespace UI
                                         _authorizationService.HasPermission(userId, "Stock.Adjust");
             menuStockQuery.Enabled = _authorizationService.HasPermission(userId, "Stock.View");
             
-            // Enable reports if user has sales or stock view permission
-            menuReports.Enabled = _authorizationService.HasPermission(userId, "Sales.View") ||
-                                  _authorizationService.HasPermission(userId, "Stock.View");
+            // Enable reports if user has Reports.View permission
+            menuReports.Enabled = _authorizationService.HasPermission(userId, "Reports.View");
 
             // Hide entire admin menu if user has no admin permissions
             menuAdmin.Visible = menuUsers.Enabled || menuRoles.Enabled;
