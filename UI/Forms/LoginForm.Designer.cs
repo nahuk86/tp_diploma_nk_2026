@@ -33,8 +33,9 @@ namespace UI.Forms
             this.lblTitle = new System.Windows.Forms.Label();
             this.panelMain.SuspendLayout();
             this.SuspendLayout();
-            
+            // 
             // panelMain
+            // 
             this.panelMain.BackColor = System.Drawing.SystemColors.Window;
             this.panelMain.Controls.Add(this.btnCancel);
             this.panelMain.Controls.Add(this.btnLogin);
@@ -46,64 +47,79 @@ namespace UI.Forms
             this.panelMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelMain.Location = new System.Drawing.Point(0, 0);
             this.panelMain.Name = "panelMain";
-            this.panelMain.Size = new System.Drawing.Size(400, 250);
-            
-            // lblTitle
-            this.lblTitle.AutoSize = false;
-            this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
-            this.lblTitle.Location = new System.Drawing.Point(50, 30);
-            this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(300, 40);
-            this.lblTitle.Text = "Stock Manager";
-            this.lblTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            
-            // lblUsername
-            this.lblUsername.AutoSize = true;
-            this.lblUsername.Location = new System.Drawing.Point(80, 90);
-            this.lblUsername.Name = "lblUsername";
-            this.lblUsername.Size = new System.Drawing.Size(60, 15);
-            this.lblUsername.Text = "Usuario:";
-            
-            // txtUsername
-            this.txtUsername.Location = new System.Drawing.Point(150, 87);
-            this.txtUsername.Name = "txtUsername";
-            this.txtUsername.Size = new System.Drawing.Size(170, 23);
-            
-            // lblPassword
-            this.lblPassword.AutoSize = true;
-            this.lblPassword.Location = new System.Drawing.Point(80, 125);
-            this.lblPassword.Name = "lblPassword";
-            this.lblPassword.Size = new System.Drawing.Size(70, 15);
-            this.lblPassword.Text = "Contraseña:";
-            
-            // txtPassword
-            this.txtPassword.Location = new System.Drawing.Point(150, 122);
-            this.txtPassword.Name = "txtPassword";
-            this.txtPassword.PasswordChar = '*';
-            this.txtPassword.Size = new System.Drawing.Size(170, 23);
-            
+            this.panelMain.Size = new System.Drawing.Size(343, 217);
+            this.panelMain.TabIndex = 0;
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnCancel.Location = new System.Drawing.Point(206, 147);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(69, 26);
+            this.btnCancel.TabIndex = 3;
+            this.btnCancel.Text = "Cancelar";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            // 
             // btnLogin
-            this.btnLogin.Location = new System.Drawing.Point(150, 170);
+            // 
+            this.btnLogin.Location = new System.Drawing.Point(129, 147);
             this.btnLogin.Name = "btnLogin";
-            this.btnLogin.Size = new System.Drawing.Size(80, 30);
+            this.btnLogin.Size = new System.Drawing.Size(69, 26);
+            this.btnLogin.TabIndex = 2;
             this.btnLogin.Text = "Ingresar";
             this.btnLogin.UseVisualStyleBackColor = true;
             this.btnLogin.Click += new System.EventHandler(this.btnLogin_Click);
-            
-            // btnCancel
-            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(240, 170);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(80, 30);
-            this.btnCancel.Text = "Cancelar";
-            this.btnCancel.UseVisualStyleBackColor = true;
-            
+            // 
+            // txtPassword
+            // 
+            this.txtPassword.Location = new System.Drawing.Point(129, 106);
+            this.txtPassword.Name = "txtPassword";
+            this.txtPassword.PasswordChar = '*';
+            this.txtPassword.Size = new System.Drawing.Size(146, 20);
+            this.txtPassword.TabIndex = 1;
+            // 
+            // txtUsername
+            // 
+            this.txtUsername.Location = new System.Drawing.Point(129, 75);
+            this.txtUsername.Name = "txtUsername";
+            this.txtUsername.Size = new System.Drawing.Size(146, 20);
+            this.txtUsername.TabIndex = 0;
+            // 
+            // lblPassword
+            // 
+            this.lblPassword.AutoSize = true;
+            this.lblPassword.Location = new System.Drawing.Point(69, 108);
+            this.lblPassword.Name = "lblPassword";
+            this.lblPassword.Size = new System.Drawing.Size(64, 13);
+            this.lblPassword.TabIndex = 4;
+            this.lblPassword.Text = "Contraseña:";
+            // 
+            // lblUsername
+            // 
+            this.lblUsername.AutoSize = true;
+            this.lblUsername.Location = new System.Drawing.Point(69, 78);
+            this.lblUsername.Name = "lblUsername";
+            this.lblUsername.Size = new System.Drawing.Size(46, 13);
+            this.lblUsername.TabIndex = 5;
+            this.lblUsername.Text = "Usuario:";
+            // 
+            // lblTitle
+            // 
+            this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
+            this.lblTitle.Location = new System.Drawing.Point(43, 26);
+            this.lblTitle.Name = "lblTitle";
+            this.lblTitle.Size = new System.Drawing.Size(257, 35);
+            this.lblTitle.TabIndex = 6;
+            this.lblTitle.Text = "Stock Manager";
+            this.lblTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // LoginForm
+            // 
             this.AcceptButton = this.btnLogin;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(400, 250);
+            this.ClientSize = new System.Drawing.Size(343, 217);
             this.Controls.Add(this.panelMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -114,6 +130,7 @@ namespace UI.Forms
             this.panelMain.ResumeLayout(false);
             this.panelMain.PerformLayout();
             this.ResumeLayout(false);
+
         }
     }
 }
