@@ -371,7 +371,9 @@ namespace DAO.Repositories
                 ProductId = reader.GetInt32(reader.GetOrdinal("ProductId")),
                 Quantity = reader.GetInt32(reader.GetOrdinal("Quantity")),
                 UnitPrice = reader.GetDecimal(reader.GetOrdinal("UnitPrice")),
-                LineTotal = reader.GetDecimal(reader.GetOrdinal("LineTotal"))
+                LineTotal = reader.GetDecimal(reader.GetOrdinal("LineTotal")),
+                ProductName = reader.GetString(reader.GetOrdinal("ProductName")),
+                SKU = reader.GetString(reader.GetOrdinal("SKU"))
             };
         }
     }

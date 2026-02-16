@@ -526,6 +526,21 @@ namespace UI.Forms
                 {
                     var rowIndex = dgvLines.Rows.Add();
                     var row = dgvLines.Rows[rowIndex];
+                    
+                    // Check if product exists in active products list
+                    var productInList = colProduct.Items.Cast<ProductItem>().Any(p => p.ProductId == line.ProductId);
+                    
+                    if (!productInList && !string.IsNullOrEmpty(line.ProductName))
+                    {
+                        // Product is no longer active, add it temporarily for display
+                        colProduct.Items.Add(new ProductItem
+                        {
+                            ProductId = line.ProductId,
+                            DisplayText = $"{line.SKU} - {line.ProductName} (Inactivo)",
+                            UnitPrice = line.UnitPrice
+                        });
+                    }
+                    
                     row.Cells[colProduct.Index].Value = line.ProductId;
                     row.Cells[colQuantity.Index].Value = line.Quantity;
                     row.Cells[colUnitPrice.Index].Value = line.UnitPrice;
