@@ -251,7 +251,7 @@ namespace DAO.Repositories
                 Reason = reader["Reason"] == DBNull.Value ? null : reader["Reason"].ToString(),
                 Notes = reader["Notes"] == DBNull.Value ? null : reader["Notes"].ToString(),
                 CreatedAt = (DateTime)reader["CreatedAt"],
-                CreatedBy = (int)reader["CreatedBy"],
+                CreatedBy = reader["CreatedBy"] == DBNull.Value ? 0 : (int)reader["CreatedBy"],
                 CreatedByUsername = reader["CreatedByUsername"] == DBNull.Value ? null : reader["CreatedByUsername"].ToString(),
                 SourceWarehouseName = reader["SourceWarehouseName"] == DBNull.Value ? null : reader["SourceWarehouseName"].ToString(),
                 DestinationWarehouseName = reader["DestinationWarehouseName"] == DBNull.Value ? null : reader["DestinationWarehouseName"].ToString()
