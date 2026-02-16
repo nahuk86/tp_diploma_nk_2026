@@ -95,7 +95,7 @@ namespace DAO.Repositories
                                 SKU = reader.GetString(reader.GetOrdinal("SKU")),
                                 ProductName = reader.GetString(reader.GetOrdinal("ProductName")),
                                 Category = reader.IsDBNull(reader.GetOrdinal("Category")) ? "" : reader.GetString(reader.GetOrdinal("Category")),
-                                UnitsSold = Convert.ToInt32(reader.GetInt64(reader.GetOrdinal("UnitsSold"))),
+                                UnitsSold = reader.GetInt32(reader.GetOrdinal("UnitsSold")),
                                 Revenue = reader.GetDecimal(reader.GetOrdinal("Revenue")),
                                 ListPrice = reader.GetDecimal(reader.GetOrdinal("ListPrice")),
                                 AverageSalePrice = reader.GetDecimal(reader.GetOrdinal("AverageSalePrice"))
@@ -178,10 +178,10 @@ namespace DAO.Repositories
                                 ClientFullName = reader.GetString(reader.GetOrdinal("ClientFullName")),
                                 DNI = reader.IsDBNull(reader.GetOrdinal("DNI")) ? "" : reader.GetString(reader.GetOrdinal("DNI")),
                                 Email = reader.IsDBNull(reader.GetOrdinal("Email")) ? "" : reader.GetString(reader.GetOrdinal("Email")),
-                                PurchaseCount = Convert.ToInt32(reader.GetInt64(reader.GetOrdinal("PurchaseCount"))),
+                                PurchaseCount = reader.GetInt32(reader.GetOrdinal("PurchaseCount")),
                                 TotalSpent = reader.GetDecimal(reader.GetOrdinal("TotalSpent")),
-                                TotalUnits = Convert.ToInt32(reader.GetInt64(reader.GetOrdinal("TotalUnits"))),
-                                DistinctProducts = Convert.ToInt32(reader.GetInt64(reader.GetOrdinal("DistinctProducts"))),
+                                TotalUnits = reader.GetInt32(reader.GetOrdinal("TotalUnits")),
+                                DistinctProducts = reader.GetInt32(reader.GetOrdinal("DistinctProducts")),
                                 AverageTicket = reader.GetDecimal(reader.GetOrdinal("AverageTicket")),
                                 ProductDetails = new List<ClientProductDetail>()
                             });
@@ -244,7 +244,7 @@ namespace DAO.Repositories
                             {
                                 ProductName = reader.GetString(reader.GetOrdinal("ProductName")),
                                 SKU = reader.GetString(reader.GetOrdinal("SKU")),
-                                Quantity = Convert.ToInt32(reader.GetInt64(reader.GetOrdinal("Quantity"))),
+                                Quantity = reader.GetInt32(reader.GetOrdinal("Quantity")),
                                 TotalAmount = reader.GetDecimal(reader.GetOrdinal("TotalAmount"))
                             });
                         }
@@ -452,12 +452,12 @@ namespace DAO.Repositories
                             reports.Add(new SellerPerformanceReportDTO
                             {
                                 SellerName = reader.GetString(reader.GetOrdinal("SellerName")),
-                                TotalSales = Convert.ToInt32(reader.GetInt64(reader.GetOrdinal("TotalSales"))),
-                                TotalUnits = Convert.ToInt32(reader.GetInt64(reader.GetOrdinal("TotalUnits"))),
+                                TotalSales = reader.GetInt32(reader.GetOrdinal("TotalSales")),
+                                TotalUnits = reader.GetInt32(reader.GetOrdinal("TotalUnits")),
                                 TotalRevenue = reader.GetDecimal(reader.GetOrdinal("TotalRevenue")),
                                 AverageTicket = reader.GetDecimal(reader.GetOrdinal("AverageTicket")),
                                 TopProduct = reader.GetString(reader.GetOrdinal("TopProduct")),
-                                TopProductQuantity = Convert.ToInt32(reader.GetInt64(reader.GetOrdinal("TopProductQuantity")))
+                                TopProductQuantity = reader.GetInt32(reader.GetOrdinal("TopProductQuantity"))
                             });
                         }
                     }
@@ -541,7 +541,7 @@ namespace DAO.Repositories
                             reports.Add(new CategorySalesReportDTO
                             {
                                 Category = reader.GetString(reader.GetOrdinal("Category")),
-                                UnitsSold = Convert.ToInt32(reader.GetInt64(reader.GetOrdinal("UnitsSold"))),
+                                UnitsSold = reader.GetInt32(reader.GetOrdinal("UnitsSold")),
                                 TotalRevenue = reader.GetDecimal(reader.GetOrdinal("TotalRevenue")),
                                 PercentageOfTotal = reader.GetDecimal(reader.GetOrdinal("PercentageOfTotal"))
                             });
@@ -688,10 +688,10 @@ namespace DAO.Repositories
                             {
                                 ReportDate = reader.GetDateTime(reader.GetOrdinal("ReportDate")),
                                 SalesRevenue = reader.GetDecimal(reader.GetOrdinal("SalesRevenue")),
-                                StockInMovements = Convert.ToInt32(reader.GetInt64(reader.GetOrdinal("StockInMovements"))),
-                                StockInUnits = Convert.ToInt32(reader.GetInt64(reader.GetOrdinal("StockInUnits"))),
-                                StockOutMovements = Convert.ToInt32(reader.GetInt64(reader.GetOrdinal("StockOutMovements"))),
-                                StockOutUnits = Convert.ToInt32(reader.GetInt64(reader.GetOrdinal("StockOutUnits")))
+                                StockInMovements = reader.GetInt32(reader.GetOrdinal("StockInMovements")),
+                                StockInUnits = reader.GetInt32(reader.GetOrdinal("StockInUnits")),
+                                StockOutMovements = reader.GetInt32(reader.GetOrdinal("StockOutMovements")),
+                                StockOutUnits = reader.GetInt32(reader.GetOrdinal("StockOutUnits"))
                             });
                         }
                     }
@@ -810,7 +810,7 @@ namespace DAO.Repositories
                                 ProductName = reader.GetString(reader.GetOrdinal("ProductName")),
                                 SKU = reader.GetString(reader.GetOrdinal("SKU")),
                                 Category = reader.IsDBNull(reader.GetOrdinal("Category")) ? "" : reader.GetString(reader.GetOrdinal("Category")),
-                                UnitsPurchased = Convert.ToInt32(reader.GetInt64(reader.GetOrdinal("UnitsPurchased"))),
+                                UnitsPurchased = reader.GetInt32(reader.GetOrdinal("UnitsPurchased")),
                                 TotalSpent = reader.GetDecimal(reader.GetOrdinal("TotalSpent")),
                                 PercentageOfProductSales = reader.GetDecimal(reader.GetOrdinal("PercentageOfProductSales"))
                             });
@@ -921,7 +921,7 @@ namespace DAO.Repositories
                                 ClientId = reader.GetInt32(reader.GetOrdinal("ClientId")),
                                 ClientFullName = reader.GetString(reader.GetOrdinal("ClientFullName")),
                                 DNI = reader.IsDBNull(reader.GetOrdinal("DNI")) ? "" : reader.GetString(reader.GetOrdinal("DNI")),
-                                PurchaseCount = Convert.ToInt32(reader.GetInt64(reader.GetOrdinal("PurchaseCount"))),
+                                PurchaseCount = reader.GetInt32(reader.GetOrdinal("PurchaseCount")),
                                 TotalSpent = reader.GetDecimal(reader.GetOrdinal("TotalSpent")),
                                 AverageTicket = reader.GetDecimal(reader.GetOrdinal("AverageTicket")),
                                 MinTicket = reader.GetDecimal(reader.GetOrdinal("MinTicket")),
