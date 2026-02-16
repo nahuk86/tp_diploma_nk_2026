@@ -21,7 +21,7 @@ PRINT 'Inserting clients...';
 DELETE FROM [dbo].[Clients] WHERE ClientId > 0;
 DBCC CHECKIDENT ('[dbo].[Clients]', RESEED, 0);
 
-INSERT INTO [dbo].[Clients] ([Nombre], [Apellido], [DNI], [Email], [Telefono], [Direccion], [CreatedBy]) VALUES
+INSERT INTO [dbo].[Clients] ([Nombre], [Apellido], [DNI], [Correo], [Telefono], [Direccion], [CreatedBy]) VALUES
 ('Juan', 'Pérez', '20345678', 'juan.perez@email.com', '11-4567-8901', 'Av. Corrientes 1234, CABA', 1),
 ('María', 'González', '27456789', 'maria.gonzalez@email.com', '11-4567-8902', 'Av. Santa Fe 567, CABA', 1),
 ('Carlos', 'Rodríguez', '30567890', 'carlos.rodriguez@email.com', '11-4567-8903', 'Av. Rivadavia 890, CABA', 1),
@@ -48,7 +48,8 @@ GO
 PRINT 'Inserting additional products...';
 
 -- Clear existing products if reseeding (except sample ones)
-DELETE FROM [dbo].[Products] WHERE ProductId > 5;
+-- Use soft delete to avoid foreign key constraint violations
+UPDATE [dbo].[Products] SET IsActive = 0 WHERE ProductId > 5;
 
 INSERT INTO [dbo].[Products] ([SKU], [Name], [Description], [Category], [UnitPrice], [MinStockLevel], [CreatedBy]) VALUES
 -- Electronics - More variety
@@ -112,8 +113,8 @@ DECLARE @SecondaryWarehouseId INT = (SELECT TOP 1 WarehouseId FROM [dbo].[Wareho
 DECLARE @DistributionWarehouseId INT = (SELECT TOP 1 WarehouseId FROM [dbo].[Warehouses] WHERE Code = 'WH003');
 
 -- Movement 1: Initial stock to Main Warehouse
-INSERT INTO [dbo].[StockMovements] ([MovementType], [MovementDate], [SourceWarehouseId], [DestinationWarehouseId], [Notes], [CreatedBy])
-VALUES (0, DATEADD(DAY, -90, GETDATE()), NULL, @MainWarehouseId, 'Initial stock - Main Warehouse', @AdminUserId);
+INSERT INTO [dbo].[StockMovements] ([MovementNumber], [MovementType], [MovementDate], [SourceWarehouseId], [DestinationWarehouseId], [Notes], [CreatedBy])
+VALUES ('SM-' + FORMAT(GETDATE(), 'yyyyMMdd') + '-001', 'IN', DATEADD(DAY, -90, GETDATE()), NULL, @MainWarehouseId, 'Initial stock - Main Warehouse', @AdminUserId);
 
 DECLARE @Movement1Id INT = SCOPE_IDENTITY();
 
@@ -134,8 +135,8 @@ FROM [dbo].[Products]
 WHERE ProductId <= 15; -- First batch of products
 
 -- Movement 2: Initial stock to Secondary Warehouse
-INSERT INTO [dbo].[StockMovements] ([MovementType], [MovementDate], [SourceWarehouseId], [DestinationWarehouseId], [Notes], [CreatedBy])
-VALUES (0, DATEADD(DAY, -85, GETDATE()), NULL, @SecondaryWarehouseId, 'Initial stock - Secondary Warehouse', @AdminUserId);
+INSERT INTO [dbo].[StockMovements] ([MovementNumber], [MovementType], [MovementDate], [SourceWarehouseId], [DestinationWarehouseId], [Notes], [CreatedBy])
+VALUES ('SM-' + FORMAT(GETDATE(), 'yyyyMMdd') + '-002', 'IN', DATEADD(DAY, -85, GETDATE()), NULL, @SecondaryWarehouseId, 'Initial stock - Secondary Warehouse', @AdminUserId);
 
 DECLARE @Movement2Id INT = SCOPE_IDENTITY();
 
@@ -154,8 +155,8 @@ FROM [dbo].[Products]
 WHERE ProductId <= 20;
 
 -- Movement 3: Initial stock to Distribution Center
-INSERT INTO [dbo].[StockMovements] ([MovementType], [MovementDate], [SourceWarehouseId], [DestinationWarehouseId], [Notes], [CreatedBy])
-VALUES (0, DATEADD(DAY, -80, GETDATE()), NULL, @DistributionWarehouseId, 'Initial stock - Distribution Center', @AdminUserId);
+INSERT INTO [dbo].[StockMovements] ([MovementNumber], [MovementType], [MovementDate], [SourceWarehouseId], [DestinationWarehouseId], [Notes], [CreatedBy])
+VALUES ('SM-' + FORMAT(GETDATE(), 'yyyyMMdd') + '-003', 'IN', DATEADD(DAY, -80, GETDATE()), NULL, @DistributionWarehouseId, 'Initial stock - Distribution Center', @AdminUserId);
 
 DECLARE @Movement3Id INT = SCOPE_IDENTITY();
 
@@ -170,8 +171,8 @@ SELECT @Movement3Id, ProductId,
 FROM [dbo].[Products];
 
 -- Movement 4: Transfer between warehouses
-INSERT INTO [dbo].[StockMovements] ([MovementType], [MovementDate], [SourceWarehouseId], [DestinationWarehouseId], [Notes], [CreatedBy])
-VALUES (2, DATEADD(DAY, -60, GETDATE()), @MainWarehouseId, @SecondaryWarehouseId, 'Stock transfer for rebalancing', @AdminUserId);
+INSERT INTO [dbo].[StockMovements] ([MovementNumber], [MovementType], [MovementDate], [SourceWarehouseId], [DestinationWarehouseId], [Notes], [CreatedBy])
+VALUES ('SM-' + FORMAT(GETDATE(), 'yyyyMMdd') + '-004', 'TRANSFER', DATEADD(DAY, -60, GETDATE()), @MainWarehouseId, @SecondaryWarehouseId, 'Stock transfer for rebalancing', @AdminUserId);
 
 DECLARE @Movement4Id INT = SCOPE_IDENTITY();
 
@@ -182,8 +183,8 @@ WHERE Category IN ('Cases', 'Screen Protectors')
 AND ProductId <= 10;
 
 -- Movement 5: Stock adjustment
-INSERT INTO [dbo].[StockMovements] ([MovementType], [MovementDate], [SourceWarehouseId], [DestinationWarehouseId], [Notes], [CreatedBy])
-VALUES (3, DATEADD(DAY, -45, GETDATE()), @MainWarehouseId, @MainWarehouseId, 'Inventory adjustment', @AdminUserId);
+INSERT INTO [dbo].[StockMovements] ([MovementNumber], [MovementType], [MovementDate], [SourceWarehouseId], [DestinationWarehouseId], [Notes], [CreatedBy])
+VALUES ('SM-' + FORMAT(GETDATE(), 'yyyyMMdd') + '-005', 'ADJUSTMENT', DATEADD(DAY, -45, GETDATE()), @MainWarehouseId, @MainWarehouseId, 'Inventory adjustment', @AdminUserId);
 
 DECLARE @Movement5Id INT = SCOPE_IDENTITY();
 
@@ -221,6 +222,8 @@ DECLARE @Quantity INT;
 DECLARE @UnitPrice DECIMAL(18,2);
 DECLARE @LineTotal DECIMAL(18,2);
 DECLARE @TotalAmount DECIMAL(18,2);
+DECLARE @SaleCounter INT;
+DECLARE @SaleNumberCounter INT = 1;
 
 WHILE @CurrentDay < @DaysAgo
 BEGIN
@@ -239,11 +242,12 @@ BEGIN
         SELECT TOP 1 @SellerName = SellerName FROM @Sellers ORDER BY NEWID();
         
         -- Create sale
-        INSERT INTO [dbo].[Sales] ([SaleDate], [ClientId], [SellerName], [TotalAmount], [CreatedBy])
-        VALUES (@SaleDate, @ClientId, @SellerName, 0, 1); -- TotalAmount will be updated
+        INSERT INTO [dbo].[Sales] ([SaleNumber], [SaleDate], [ClientId], [SellerName], [TotalAmount], [CreatedBy])
+        VALUES ('SALE-' + FORMAT(GETDATE(), 'yyyyMMdd') + '-' + RIGHT('000' + CAST(@SaleNumberCounter AS VARCHAR(3)), 3), @SaleDate, @ClientId, @SellerName, 0, 1); -- TotalAmount will be updated
         
         SET @SaleId = SCOPE_IDENTITY();
         SET @TotalAmount = 0;
+        SET @SaleNumberCounter = @SaleNumberCounter + 1;
         
         -- Add 1-5 products to this sale
         DECLARE @ProductsInSale INT = 1 + (ABS(CHECKSUM(NEWID())) % 5);
