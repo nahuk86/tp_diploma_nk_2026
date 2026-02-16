@@ -14,7 +14,8 @@
     "No": "No",
     "Error": "Error",
     "Validation": "Validation",
-    "Confirmation": "Confirmation"
+    "Confirmation": "Confirmation",
+    "Success": "Success"
   },
   "Login": {
     "UsernameRequired": "Please enter your username.",
@@ -254,7 +255,8 @@
     "PasswordNeedsUppercase": "Password must contain at least one uppercase letter.",
     "PasswordNeedsNumber": "Password must contain at least one number.",
     "PasswordsDoNotMatch": "Passwords do not match.",
-    "Success": "Password configured successfully. Please log in with your credentials."
+    "Success": "Password configured successfully. Please log in with your credentials.",
+    "Error": "Error setting up password"
   },
   "Reports": {
     "Title": "Reports",

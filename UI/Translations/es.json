@@ -14,7 +14,8 @@
     "No": "No",
     "Error": "Error",
     "Validation": "Validación",
-    "Confirmation": "Confirmación"
+    "Confirmation": "Confirmación",
+    "Success": "Éxito"
   },
   "Login": {
     "UsernameRequired": "Por favor ingrese su usuario.",
@@ -254,7 +255,8 @@
     "PasswordNeedsUppercase": "La contraseña debe contener al menos una letra mayúscula.",
     "PasswordNeedsNumber": "La contraseña debe contener al menos un número.",
     "PasswordsDoNotMatch": "Las contraseñas no coinciden.",
-    "Success": "Contraseña configurada exitosamente. Por favor inicie sesión con sus credenciales."
+    "Success": "Contraseña configurada exitosamente. Por favor inicie sesión con sus credenciales.",
+    "Error": "Error al configurar la contraseña"
   },
   "Reports": {
     "Title": "Reportes",
