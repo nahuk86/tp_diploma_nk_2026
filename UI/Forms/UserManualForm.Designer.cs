@@ -28,7 +28,7 @@ namespace UI.Forms
         /// </summary>
         private void InitializeComponent()
         {
-            this.txtManualContent = new System.Windows.Forms.TextBox();
+            this.txtManualContent = new System.Windows.Forms.RichTextBox();
             this.btnClose = new System.Windows.Forms.Button();
             this.lblTitle = new System.Windows.Forms.Label();
             this.SuspendLayout();
@@ -38,15 +38,12 @@ namespace UI.Forms
             this.txtManualContent.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtManualContent.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtManualContent.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtManualContent.Location = new System.Drawing.Point(12, 45);
-            this.txtManualContent.Multiline = true;
             this.txtManualContent.Name = "txtManualContent";
             this.txtManualContent.ReadOnly = true;
-            this.txtManualContent.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.txtManualContent.Size = new System.Drawing.Size(860, 540);
             this.txtManualContent.TabIndex = 0;
-            this.txtManualContent.WordWrap = false;
             // 
             // btnClose
             // 
@@ -89,7 +86,7 @@ namespace UI.Forms
 
         #endregion
 
-        private System.Windows.Forms.TextBox txtManualContent;
+        private System.Windows.Forms.RichTextBox txtManualContent;
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.Label lblTitle;
     }
