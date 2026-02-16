@@ -77,8 +77,8 @@ namespace UI.Forms
             grpLines.Text = _localizationService.GetString("Sales.Products") ?? "Productos";
             
             // Labels
-            lblSaleNumber.Text = _localizationService.GetString("Sales.Number") ?? "Número:";
-            lblSaleDate.Text = _localizationService.GetString("Sales.Date") ?? "Fecha:";
+            lblSaleNumber.Text = _localizationService.GetString("Sales.SaleNumber") ?? "Número:";
+            lblSaleDate.Text = _localizationService.GetString("Sales.SaleDate") ?? "Fecha:";
             lblSellerName.Text = _localizationService.GetString("Sales.SellerName") ?? "Vendedor:";
             lblClient.Text = _localizationService.GetString("Sales.Client") ?? "Cliente:";
             lblNotes.Text = _localizationService.GetString("Sales.Notes") ?? "Notas:";
@@ -94,8 +94,8 @@ namespace UI.Forms
             btnCancel.Text = _localizationService.GetString("Common.Cancel") ?? "Cancelar";
             
             // DataGridView columns - Sales
-            colSaleNumber.HeaderText = _localizationService.GetString("Sales.Number") ?? "Número";
-            colSaleDate.HeaderText = _localizationService.GetString("Sales.Date") ?? "Fecha";
+            colSaleNumber.HeaderText = _localizationService.GetString("Sales.SaleNumber") ?? "Número";
+            colSaleDate.HeaderText = _localizationService.GetString("Sales.SaleDate") ?? "Fecha";
             colSellerName.HeaderText = _localizationService.GetString("Sales.SellerName") ?? "Vendedor";
             colClientName.HeaderText = _localizationService.GetString("Sales.Client") ?? "Cliente";
             colTotalAmount.HeaderText = _localizationService.GetString("Sales.TotalAmount") ?? "Total";
@@ -105,7 +105,7 @@ namespace UI.Forms
             colQuantity.HeaderText = _localizationService.GetString("Sales.Quantity") ?? "Cantidad";
             colUnitPrice.HeaderText = _localizationService.GetString("Sales.UnitPrice") ?? "Precio Unit.";
             colLineTotal.HeaderText = _localizationService.GetString("Sales.LineTotal") ?? "Subtotal";
-            colStock.HeaderText = _localizationService.GetString("Sales.Stock") ?? "Stock Disponible";
+            colStock.HeaderText = _localizationService.GetString("Sales.StockAvailable") ?? "Stock Disponible";
         }
 
         private void ConfigurePermissions()
@@ -236,8 +236,8 @@ namespace UI.Forms
             if (dgvSales.CurrentRow == null)
             {
                 MessageBox.Show(
-                    "Por favor seleccione una venta.",
-                    "Validación",
+                    _localizationService.GetString("Sales.SelectSale") ?? "Por favor seleccione una venta.",
+                    _localizationService.GetString("Common.Validation") ?? "Validación",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
                 return;
@@ -310,8 +310,8 @@ namespace UI.Forms
                 if (lines.Count == 0)
                 {
                     MessageBox.Show(
-                        "Debe agregar al menos un producto a la venta.",
-                        "Validación",
+                        _localizationService.GetString("Sales.AtLeastOneProduct") ?? "Debe agregar al menos un producto a la venta.",
+                        _localizationService.GetString("Common.Validation") ?? "Validación",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Warning);
                     return;
@@ -322,8 +322,8 @@ namespace UI.Forms
                 var saleId = _saleService.CreateSale(sale, lines, currentUserId);
 
                 MessageBox.Show(
-                    "Venta creada exitosamente.",
-                    "Éxito",
+                    _localizationService.GetString("Sales.SaleCreatedSuccess") ?? "Venta creada exitosamente.",
+                    _localizationService.GetString("Common.Confirmation") ?? "Confirmación",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
 
@@ -531,8 +531,11 @@ namespace UI.Forms
         {
             if (string.IsNullOrWhiteSpace(txtSellerName.Text))
             {
-                MessageBox.Show("Debe ingresar el nombre del vendedor.", "Validación", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    _localizationService.GetString("Sales.SellerNameRequired") ?? "Debe ingresar el nombre del vendedor.",
+                    _localizationService.GetString("Common.Validation") ?? "Validación", 
+                    MessageBoxButtons.OK, 
+                    MessageBoxIcon.Warning);
                 txtSellerName.Focus();
                 return false;
             }
