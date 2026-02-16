@@ -59,6 +59,14 @@
     <Compile Include="Entities\StockMovement.cs" />
     <Compile Include="Entities\StockMovementLine.cs" />
     <Compile Include="Entities\AuditLog.cs" />
+    <Compile Include="Entities\Reports\TopProductsReportDTO.cs" />
+    <Compile Include="Entities\Reports\ClientPurchasesReportDTO.cs" />
+    <Compile Include="Entities\Reports\PriceVariationReportDTO.cs" />
+    <Compile Include="Entities\Reports\SellerPerformanceReportDTO.cs" />
+    <Compile Include="Entities\Reports\CategorySalesReportDTO.cs" />
+    <Compile Include="Entities\Reports\RevenueByDateReportDTO.cs" />
+    <Compile Include="Entities\Reports\ClientProductRankingReportDTO.cs" />
+    <Compile Include="Entities\Reports\ClientTicketAverageReportDTO.cs" />
     <Compile Include="Enums\MovementType.cs" />
     <Compile Include="Enums\LogLevel.cs" />
     <Compile Include="Enums\AuditAction.cs" />
@@ -73,6 +81,7 @@
     <Compile Include="Contracts\IStockRepository.cs" />
     <Compile Include="Contracts\IStockMovementRepository.cs" />
     <Compile Include="Contracts\IAuditLogRepository.cs" />
+    <Compile Include="Contracts\IReportRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

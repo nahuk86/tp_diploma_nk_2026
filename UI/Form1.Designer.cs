@@ -44,6 +44,7 @@
             this.menuSales = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStockMovements = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStockQuery = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuReports = new System.Windows.Forms.ToolStripMenuItem();
             this.menuSettings = new System.Windows.Forms.ToolStripMenuItem();
             this.menuLanguage = new System.Windows.Forms.ToolStripMenuItem();
             this.menuLanguageSpanish = new System.Windows.Forms.ToolStripMenuItem();
@@ -159,7 +160,8 @@
             this.menuOperations.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuSales,
             this.menuStockMovements,
-            this.menuStockQuery});
+            this.menuStockQuery,
+            this.menuReports});
             this.menuOperations.Name = "menuOperations";
             this.menuOperations.Size = new System.Drawing.Size(85, 20);
             this.menuOperations.Text = "&Operaciones";
@@ -184,6 +186,13 @@
             this.menuStockQuery.Size = new System.Drawing.Size(180, 22);
             this.menuStockQuery.Text = "&Consultar Stock";
             this.menuStockQuery.Click += new System.EventHandler(this.menuStockQuery_Click);
+            // 
+            // menuReports
+            // 
+            this.menuReports.Name = "menuReports";
+            this.menuReports.Size = new System.Drawing.Size(180, 22);
+            this.menuReports.Text = "&Reportes";
+            this.menuReports.Click += new System.EventHandler(this.menuReports_Click);
             // 
             // menuSettings
             // 
@@ -288,6 +297,7 @@
         private System.Windows.Forms.ToolStripMenuItem menuSales;
         private System.Windows.Forms.ToolStripMenuItem menuStockMovements;
         private System.Windows.Forms.ToolStripMenuItem menuStockQuery;
+        private System.Windows.Forms.ToolStripMenuItem menuReports;
         private System.Windows.Forms.ToolStripMenuItem menuSettings;
         private System.Windows.Forms.ToolStripMenuItem menuLanguage;
         private System.Windows.Forms.ToolStripMenuItem menuLanguageSpanish;
