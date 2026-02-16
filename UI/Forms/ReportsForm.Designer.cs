@@ -854,10 +854,12 @@ namespace UI.Forms
             // cboRevenueByDateMovementType
             this.cboRevenueByDateMovementType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboRevenueByDateMovementType.FormattingEnabled = true;
+            this.cboRevenueByDateMovementType.Items.AddRange(new object[] { "-- Todos --", "In", "Out", "Transfer", "Adjustment" });
             this.cboRevenueByDateMovementType.Location = new System.Drawing.Point(455, 12);
             this.cboRevenueByDateMovementType.Name = "cboRevenueByDateMovementType";
             this.cboRevenueByDateMovementType.Size = new System.Drawing.Size(150, 21);
             this.cboRevenueByDateMovementType.TabIndex = 4;
+            this.cboRevenueByDateMovementType.SelectedIndex = 0;
             
             // lblRevenueByDateWarehouse
             this.lblRevenueByDateWarehouse.AutoSize = true;

@@ -523,7 +523,14 @@ namespace UI.Forms
             {
                 var startDate = dtpRevenueByDateStart.Value.Date;
                 var endDate = dtpRevenueByDateEnd.Value.Date.AddDays(1).AddSeconds(-1);
-                var movementType = cboRevenueByDateMovementType.SelectedIndex > 0 ? cboRevenueByDateMovementType.SelectedItem.ToString() : null;
+                
+                // Extract movement type - items are: "-- Todos --", "In", "Out", "Transfer", "Adjustment"
+                string movementType = null;
+                if (cboRevenueByDateMovementType.SelectedIndex > 0)
+                {
+                    movementType = cboRevenueByDateMovementType.SelectedItem.ToString();
+                }
+                
                 var warehouseItem = cboRevenueByDateWarehouse.SelectedItem as ComboBoxItem;
                 var warehouseId = warehouseItem?.Value as int?;
 
