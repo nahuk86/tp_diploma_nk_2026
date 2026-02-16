@@ -84,6 +84,7 @@ namespace UI
             menuSales.Text = _localizationService.GetString("Menu.Sales") ?? "&Ventas";
             menuStockMovements.Text = _localizationService.GetString("Menu.StockMovements") ?? "&Movimientos";
             menuStockQuery.Text = _localizationService.GetString("Menu.StockQuery") ?? "&Consultar Stock";
+            menuReports.Text = _localizationService.GetString("Menu.Reports") ?? "&Reportes";
             
             menuSettings.Text = _localizationService.GetString("Menu.Settings") ?? "&Configuración";
             menuLanguage.Text = _localizationService.GetString("Menu.Language") ?? "&Idioma";
@@ -127,6 +128,10 @@ namespace UI
                                         _authorizationService.HasPermission(userId, "Stock.Transfer") ||
                                         _authorizationService.HasPermission(userId, "Stock.Adjust");
             menuStockQuery.Enabled = _authorizationService.HasPermission(userId, "Stock.View");
+            
+            // Enable reports if user has sales or stock view permission
+            menuReports.Enabled = _authorizationService.HasPermission(userId, "Sales.View") ||
+                                  _authorizationService.HasPermission(userId, "Stock.View");
 
             // Hide entire admin menu if user has no admin permissions
             menuAdmin.Visible = menuUsers.Enabled || menuRoles.Enabled;
@@ -258,6 +263,30 @@ namespace UI
             var stockQueryForm = new Forms.StockQueryForm();
             stockQueryForm.MdiParent = this;
             stockQueryForm.Show();
+        }
+
+        private void menuReports_Click(object sender, EventArgs e)
+        {
+            if (!SessionContext.CurrentUserId.HasValue)
+                return;
+
+            var userId = SessionContext.CurrentUserId.Value;
+            
+            // Allow access if user has sales or stock view permission
+            if (!_authorizationService.HasPermission(userId, "Sales.View") &&
+                !_authorizationService.HasPermission(userId, "Stock.View"))
+            {
+                MessageBox.Show(
+                    _localizationService.GetString("Error.Unauthorized") ?? "No tiene permisos para ver reportes.",
+                    _localizationService.GetString("Common.Error") ?? "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            var reportsForm = new Forms.ReportsForm();
+            reportsForm.MdiParent = this;
+            reportsForm.Show();
         }
 
         private void menuLanguageSpanish_Click(object sender, EventArgs e)
