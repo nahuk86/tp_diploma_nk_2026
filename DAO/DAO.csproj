@@ -53,6 +53,7 @@
     <Compile Include="Repositories\StockRepository.cs" />
     <Compile Include="Repositories\StockMovementRepository.cs" />
     <Compile Include="Repositories\AuditLogRepository.cs" />
+    <Compile Include="Repositories\ReportRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
