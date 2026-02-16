@@ -146,16 +146,9 @@ namespace BLL.Services
                 int saleId = _saleRepo.CreateWithLines(sale, saleLines);
 
                 // Log audit
-                _auditRepo.Create(new AuditLog
-                {
-                    TableName = "Sales",
-                    RecordId = saleId,
-                    Action = AuditAction.Insert,
-                    OldValues = null,
-                    NewValues = $"Sale {sale.SaleNumber} created with {saleLines.Count} items, Total: {sale.TotalAmount:C}",
-                    ChangedBy = currentUserId,
-                    ChangedAt = DateTime.Now
-                });
+                _auditRepo.LogChange("Sales", saleId, AuditAction.Insert, null, null, 
+                    $"Sale {sale.SaleNumber} created with {saleLines.Count} items, Total: {sale.TotalAmount:C}", 
+                    currentUserId);
 
                 _logService.Info($"Sale {sale.SaleNumber} created successfully by user {currentUserId}");
                 
@@ -187,16 +180,10 @@ namespace BLL.Services
                 _saleRepo.Update(sale);
 
                 // Log audit
-                _auditRepo.Create(new AuditLog
-                {
-                    TableName = "Sales",
-                    RecordId = sale.SaleId,
-                    Action = AuditAction.Update,
-                    OldValues = $"Seller: {existingSale.SellerName}, Total: {existingSale.TotalAmount:C}",
-                    NewValues = $"Seller: {sale.SellerName}, Total: {sale.TotalAmount:C}",
-                    ChangedBy = currentUserId,
-                    ChangedAt = DateTime.Now
-                });
+                _auditRepo.LogChange("Sales", sale.SaleId, AuditAction.Update, null,
+                    $"Seller: {existingSale.SellerName}, Total: {existingSale.TotalAmount:C}",
+                    $"Seller: {sale.SellerName}, Total: {sale.TotalAmount:C}",
+                    currentUserId);
 
                 _logService.Info($"Sale {sale.SaleNumber} updated by user {currentUserId}");
             }
@@ -218,16 +205,10 @@ namespace BLL.Services
                 _saleRepo.Delete(saleId);
 
                 // Log audit
-                _auditRepo.Create(new AuditLog
-                {
-                    TableName = "Sales",
-                    RecordId = saleId,
-                    Action = AuditAction.Delete,
-                    OldValues = $"Sale {sale.SaleNumber} - Total: {sale.TotalAmount:C}",
-                    NewValues = "Deleted (soft delete)",
-                    ChangedBy = currentUserId,
-                    ChangedAt = DateTime.Now
-                });
+                _auditRepo.LogChange("Sales", saleId, AuditAction.Delete, null,
+                    $"Sale {sale.SaleNumber} - Total: {sale.TotalAmount:C}",
+                    "Deleted (soft delete)",
+                    currentUserId);
 
                 _logService.Info($"Sale {sale.SaleNumber} deleted by user {currentUserId}");
             }

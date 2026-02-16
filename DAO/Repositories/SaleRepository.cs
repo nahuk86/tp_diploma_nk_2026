@@ -68,6 +68,12 @@ namespace DAO.Repositories
             return sales;
         }
 
+        public List<Sale> GetAllActive()
+        {
+            // Same as GetAll() for Sales since GetAll() already filters by IsActive = 1
+            return GetAll();
+        }
+
         public List<Sale> GetAllWithDetails()
         {
             var sales = GetAll();
@@ -180,6 +186,12 @@ namespace DAO.Repositories
             }
         }
 
+        public int Insert(Sale entity)
+        {
+            // Alias for Create() to satisfy IRepository interface
+            return Create(entity);
+        }
+
         public int CreateWithLines(Sale sale, List<SaleLine> saleLines)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -272,6 +284,22 @@ namespace DAO.Repositories
                 using (var command = new SqlCommand(query, connection))
                 {
                     command.Parameters.Add(DatabaseHelper.CreateParameter("@SaleId", saleId));
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void SoftDelete(int id, int deletedBy)
+        {
+            using (var connection = DatabaseHelper.GetConnection())
+            {
+                var query = @"UPDATE Sales SET IsActive = 0, UpdatedAt = GETDATE(), UpdatedBy = @UpdatedBy 
+                             WHERE SaleId = @SaleId";
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.Add(DatabaseHelper.CreateParameter("@SaleId", id));
+                    command.Parameters.Add(DatabaseHelper.CreateParameter("@UpdatedBy", deletedBy));
                     connection.Open();
                     command.ExecuteNonQuery();
                 }
