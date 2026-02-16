@@ -50,6 +50,7 @@
             this.menuLanguageSpanish = new System.Windows.Forms.ToolStripMenuItem();
             this.menuLanguageEnglish = new System.Windows.Forms.ToolStripMenuItem();
             this.menuHelp = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuUserManual = new System.Windows.Forms.ToolStripMenuItem();
             this.menuAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -230,10 +231,18 @@
             // menuHelp
             // 
             this.menuHelp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuUserManual,
             this.menuAbout});
             this.menuHelp.Name = "menuHelp";
             this.menuHelp.Size = new System.Drawing.Size(53, 20);
             this.menuHelp.Text = "Ay&uda";
+            // 
+            // menuUserManual
+            // 
+            this.menuUserManual.Name = "menuUserManual";
+            this.menuUserManual.Size = new System.Drawing.Size(180, 22);
+            this.menuUserManual.Text = "&Manual de Uso";
+            this.menuUserManual.Click += new System.EventHandler(this.menuUserManual_Click);
             // 
             // menuAbout
             // 
@@ -303,6 +312,7 @@
         private System.Windows.Forms.ToolStripMenuItem menuLanguageSpanish;
         private System.Windows.Forms.ToolStripMenuItem menuLanguageEnglish;
         private System.Windows.Forms.ToolStripMenuItem menuHelp;
+        private System.Windows.Forms.ToolStripMenuItem menuUserManual;
         private System.Windows.Forms.ToolStripMenuItem menuAbout;
         private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.ToolStripStatusLabel statusLabel;

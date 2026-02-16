@@ -90,6 +90,7 @@ namespace UI
             menuLanguage.Text = _localizationService.GetString("Menu.Language") ?? "&Idioma";
             
             menuHelp.Text = _localizationService.GetString("Menu.Help") ?? "Ay&uda";
+            menuUserManual.Text = _localizationService.GetString("Menu.UserManual") ?? "&Manual de Uso";
             menuAbout.Text = _localizationService.GetString("Menu.About") ?? "&Acerca de...";
             
             statusLabel.Text = _localizationService.GetString("Status.Ready") ?? "Listo";
@@ -314,6 +315,13 @@ namespace UI
                 _localizationService.GetString("Menu.About") ?? "Acerca de...",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
+        }
+
+        private void menuUserManual_Click(object sender, EventArgs e)
+        {
+            var userManualForm = new Forms.UserManualForm();
+            userManualForm.MdiParent = this;
+            userManualForm.Show();
         }
 
         private bool CheckPermission(string permissionCode, string errorMessage)
