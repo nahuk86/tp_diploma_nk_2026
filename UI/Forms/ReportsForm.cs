@@ -316,19 +316,33 @@ namespace UI.Forms
 
         private void FormatTopProductsGrid()
         {
-            if (dgvTopProducts.DataSource != null)
+            if (dgvTopProducts.DataSource != null && dgvTopProducts.Columns.Count > 0)
             {
-                dgvTopProducts.Columns["Ranking"].HeaderText = "Posición";
-                dgvTopProducts.Columns["SKU"].HeaderText = "SKU";
-                dgvTopProducts.Columns["ProductName"].HeaderText = "Producto";
-                dgvTopProducts.Columns["Category"].HeaderText = "Categoría";
-                dgvTopProducts.Columns["UnitsSold"].HeaderText = "Unidades Vendidas";
-                dgvTopProducts.Columns["Revenue"].HeaderText = "Ingresos";
-                dgvTopProducts.Columns["Revenue"].DefaultCellStyle.Format = "C2";
-                dgvTopProducts.Columns["ListPrice"].HeaderText = "Precio Lista";
-                dgvTopProducts.Columns["ListPrice"].DefaultCellStyle.Format = "C2";
-                dgvTopProducts.Columns["AverageSalePrice"].HeaderText = "Precio Promedio Venta";
-                dgvTopProducts.Columns["AverageSalePrice"].DefaultCellStyle.Format = "C2";
+                if (dgvTopProducts.Columns.Contains("Ranking"))
+                    dgvTopProducts.Columns["Ranking"].HeaderText = "Posición";
+                if (dgvTopProducts.Columns.Contains("SKU"))
+                    dgvTopProducts.Columns["SKU"].HeaderText = "SKU";
+                if (dgvTopProducts.Columns.Contains("ProductName"))
+                    dgvTopProducts.Columns["ProductName"].HeaderText = "Producto";
+                if (dgvTopProducts.Columns.Contains("Category"))
+                    dgvTopProducts.Columns["Category"].HeaderText = "Categoría";
+                if (dgvTopProducts.Columns.Contains("UnitsSold"))
+                    dgvTopProducts.Columns["UnitsSold"].HeaderText = "Unidades Vendidas";
+                if (dgvTopProducts.Columns.Contains("Revenue"))
+                {
+                    dgvTopProducts.Columns["Revenue"].HeaderText = "Ingresos";
+                    dgvTopProducts.Columns["Revenue"].DefaultCellStyle.Format = "C2";
+                }
+                if (dgvTopProducts.Columns.Contains("ListPrice"))
+                {
+                    dgvTopProducts.Columns["ListPrice"].HeaderText = "Precio Lista";
+                    dgvTopProducts.Columns["ListPrice"].DefaultCellStyle.Format = "C2";
+                }
+                if (dgvTopProducts.Columns.Contains("AverageSalePrice"))
+                {
+                    dgvTopProducts.Columns["AverageSalePrice"].HeaderText = "Precio Promedio Venta";
+                    dgvTopProducts.Columns["AverageSalePrice"].DefaultCellStyle.Format = "C2";
+                }
             }
         }
 
@@ -362,20 +376,34 @@ namespace UI.Forms
 
         private void FormatClientPurchasesGrid()
         {
-            if (dgvClientPurchases.DataSource != null)
+            if (dgvClientPurchases.DataSource != null && dgvClientPurchases.Columns.Count > 0)
             {
-                dgvClientPurchases.Columns["ClientId"].Visible = false;
-                dgvClientPurchases.Columns["ClientFullName"].HeaderText = "Cliente";
-                dgvClientPurchases.Columns["DNI"].HeaderText = "DNI";
-                dgvClientPurchases.Columns["Email"].HeaderText = "Email";
-                dgvClientPurchases.Columns["PurchaseCount"].HeaderText = "# Compras";
-                dgvClientPurchases.Columns["TotalSpent"].HeaderText = "Total Gastado";
-                dgvClientPurchases.Columns["TotalSpent"].DefaultCellStyle.Format = "C2";
-                dgvClientPurchases.Columns["TotalUnits"].HeaderText = "Total Unidades";
-                dgvClientPurchases.Columns["DistinctProducts"].HeaderText = "Productos Distintos";
-                dgvClientPurchases.Columns["AverageTicket"].HeaderText = "Ticket Promedio";
-                dgvClientPurchases.Columns["AverageTicket"].DefaultCellStyle.Format = "C2";
-                dgvClientPurchases.Columns["ProductDetails"].Visible = false;
+                if (dgvClientPurchases.Columns.Contains("ClientId"))
+                    dgvClientPurchases.Columns["ClientId"].Visible = false;
+                if (dgvClientPurchases.Columns.Contains("ClientFullName"))
+                    dgvClientPurchases.Columns["ClientFullName"].HeaderText = "Cliente";
+                if (dgvClientPurchases.Columns.Contains("DNI"))
+                    dgvClientPurchases.Columns["DNI"].HeaderText = "DNI";
+                if (dgvClientPurchases.Columns.Contains("Email"))
+                    dgvClientPurchases.Columns["Email"].HeaderText = "Email";
+                if (dgvClientPurchases.Columns.Contains("PurchaseCount"))
+                    dgvClientPurchases.Columns["PurchaseCount"].HeaderText = "# Compras";
+                if (dgvClientPurchases.Columns.Contains("TotalSpent"))
+                {
+                    dgvClientPurchases.Columns["TotalSpent"].HeaderText = "Total Gastado";
+                    dgvClientPurchases.Columns["TotalSpent"].DefaultCellStyle.Format = "C2";
+                }
+                if (dgvClientPurchases.Columns.Contains("TotalUnits"))
+                    dgvClientPurchases.Columns["TotalUnits"].HeaderText = "Total Unidades";
+                if (dgvClientPurchases.Columns.Contains("DistinctProducts"))
+                    dgvClientPurchases.Columns["DistinctProducts"].HeaderText = "Productos Distintos";
+                if (dgvClientPurchases.Columns.Contains("AverageTicket"))
+                {
+                    dgvClientPurchases.Columns["AverageTicket"].HeaderText = "Ticket Promedio";
+                    dgvClientPurchases.Columns["AverageTicket"].DefaultCellStyle.Format = "C2";
+                }
+                if (dgvClientPurchases.Columns.Contains("ProductDetails"))
+                    dgvClientPurchases.Columns["ProductDetails"].Visible = false;
             }
         }
 
@@ -409,23 +437,44 @@ namespace UI.Forms
 
         private void FormatPriceVariationGrid()
         {
-            if (dgvPriceVariation.DataSource != null)
+            if (dgvPriceVariation.DataSource != null && dgvPriceVariation.Columns.Count > 0)
             {
-                dgvPriceVariation.Columns["SKU"].HeaderText = "SKU";
-                dgvPriceVariation.Columns["ProductName"].HeaderText = "Producto";
-                dgvPriceVariation.Columns["Category"].HeaderText = "Categoría";
-                dgvPriceVariation.Columns["ListPrice"].HeaderText = "Precio Lista";
-                dgvPriceVariation.Columns["ListPrice"].DefaultCellStyle.Format = "C2";
-                dgvPriceVariation.Columns["MinSalePrice"].HeaderText = "Precio Venta Min";
-                dgvPriceVariation.Columns["MinSalePrice"].DefaultCellStyle.Format = "C2";
-                dgvPriceVariation.Columns["MaxSalePrice"].HeaderText = "Precio Venta Max";
-                dgvPriceVariation.Columns["MaxSalePrice"].DefaultCellStyle.Format = "C2";
-                dgvPriceVariation.Columns["AverageSalePrice"].HeaderText = "Precio Venta Promedio";
-                dgvPriceVariation.Columns["AverageSalePrice"].DefaultCellStyle.Format = "C2";
-                dgvPriceVariation.Columns["AbsoluteVariation"].HeaderText = "Variación Absoluta";
-                dgvPriceVariation.Columns["AbsoluteVariation"].DefaultCellStyle.Format = "C2";
-                dgvPriceVariation.Columns["PercentageVariation"].HeaderText = "Variación %";
-                dgvPriceVariation.Columns["PercentageVariation"].DefaultCellStyle.Format = "N2";
+                if (dgvPriceVariation.Columns.Contains("SKU"))
+                    dgvPriceVariation.Columns["SKU"].HeaderText = "SKU";
+                if (dgvPriceVariation.Columns.Contains("ProductName"))
+                    dgvPriceVariation.Columns["ProductName"].HeaderText = "Producto";
+                if (dgvPriceVariation.Columns.Contains("Category"))
+                    dgvPriceVariation.Columns["Category"].HeaderText = "Categoría";
+                if (dgvPriceVariation.Columns.Contains("ListPrice"))
+                {
+                    dgvPriceVariation.Columns["ListPrice"].HeaderText = "Precio Lista";
+                    dgvPriceVariation.Columns["ListPrice"].DefaultCellStyle.Format = "C2";
+                }
+                if (dgvPriceVariation.Columns.Contains("MinSalePrice"))
+                {
+                    dgvPriceVariation.Columns["MinSalePrice"].HeaderText = "Precio Venta Min";
+                    dgvPriceVariation.Columns["MinSalePrice"].DefaultCellStyle.Format = "C2";
+                }
+                if (dgvPriceVariation.Columns.Contains("MaxSalePrice"))
+                {
+                    dgvPriceVariation.Columns["MaxSalePrice"].HeaderText = "Precio Venta Max";
+                    dgvPriceVariation.Columns["MaxSalePrice"].DefaultCellStyle.Format = "C2";
+                }
+                if (dgvPriceVariation.Columns.Contains("AverageSalePrice"))
+                {
+                    dgvPriceVariation.Columns["AverageSalePrice"].HeaderText = "Precio Venta Promedio";
+                    dgvPriceVariation.Columns["AverageSalePrice"].DefaultCellStyle.Format = "C2";
+                }
+                if (dgvPriceVariation.Columns.Contains("AbsoluteVariation"))
+                {
+                    dgvPriceVariation.Columns["AbsoluteVariation"].HeaderText = "Variación Absoluta";
+                    dgvPriceVariation.Columns["AbsoluteVariation"].DefaultCellStyle.Format = "C2";
+                }
+                if (dgvPriceVariation.Columns.Contains("PercentageVariation"))
+                {
+                    dgvPriceVariation.Columns["PercentageVariation"].HeaderText = "Variación %";
+                    dgvPriceVariation.Columns["PercentageVariation"].DefaultCellStyle.Format = "N2";
+                }
             }
         }
 
@@ -458,17 +507,28 @@ namespace UI.Forms
 
         private void FormatSellerPerformanceGrid()
         {
-            if (dgvSellerPerformance.DataSource != null)
+            if (dgvSellerPerformance.DataSource != null && dgvSellerPerformance.Columns.Count > 0)
             {
-                dgvSellerPerformance.Columns["SellerName"].HeaderText = "Vendedor";
-                dgvSellerPerformance.Columns["TotalSales"].HeaderText = "Total Ventas";
-                dgvSellerPerformance.Columns["TotalUnits"].HeaderText = "Total Unidades";
-                dgvSellerPerformance.Columns["TotalRevenue"].HeaderText = "Facturación Total";
-                dgvSellerPerformance.Columns["TotalRevenue"].DefaultCellStyle.Format = "C2";
-                dgvSellerPerformance.Columns["AverageTicket"].HeaderText = "Ticket Promedio";
-                dgvSellerPerformance.Columns["AverageTicket"].DefaultCellStyle.Format = "C2";
-                dgvSellerPerformance.Columns["TopProduct"].HeaderText = "Producto Top";
-                dgvSellerPerformance.Columns["TopProductQuantity"].HeaderText = "Cant. Producto Top";
+                if (dgvSellerPerformance.Columns.Contains("SellerName"))
+                    dgvSellerPerformance.Columns["SellerName"].HeaderText = "Vendedor";
+                if (dgvSellerPerformance.Columns.Contains("TotalSales"))
+                    dgvSellerPerformance.Columns["TotalSales"].HeaderText = "Total Ventas";
+                if (dgvSellerPerformance.Columns.Contains("TotalUnits"))
+                    dgvSellerPerformance.Columns["TotalUnits"].HeaderText = "Total Unidades";
+                if (dgvSellerPerformance.Columns.Contains("TotalRevenue"))
+                {
+                    dgvSellerPerformance.Columns["TotalRevenue"].HeaderText = "Facturación Total";
+                    dgvSellerPerformance.Columns["TotalRevenue"].DefaultCellStyle.Format = "C2";
+                }
+                if (dgvSellerPerformance.Columns.Contains("AverageTicket"))
+                {
+                    dgvSellerPerformance.Columns["AverageTicket"].HeaderText = "Ticket Promedio";
+                    dgvSellerPerformance.Columns["AverageTicket"].DefaultCellStyle.Format = "C2";
+                }
+                if (dgvSellerPerformance.Columns.Contains("TopProduct"))
+                    dgvSellerPerformance.Columns["TopProduct"].HeaderText = "Producto Top";
+                if (dgvSellerPerformance.Columns.Contains("TopProductQuantity"))
+                    dgvSellerPerformance.Columns["TopProductQuantity"].HeaderText = "Cant. Producto Top";
             }
         }
 
@@ -500,14 +560,22 @@ namespace UI.Forms
 
         private void FormatCategorySalesGrid()
         {
-            if (dgvCategorySales.DataSource != null)
+            if (dgvCategorySales.DataSource != null && dgvCategorySales.Columns.Count > 0)
             {
-                dgvCategorySales.Columns["Category"].HeaderText = "Categoría";
-                dgvCategorySales.Columns["UnitsSold"].HeaderText = "Unidades Vendidas";
-                dgvCategorySales.Columns["TotalRevenue"].HeaderText = "Facturación Total";
-                dgvCategorySales.Columns["TotalRevenue"].DefaultCellStyle.Format = "C2";
-                dgvCategorySales.Columns["PercentageOfTotal"].HeaderText = "% del Total";
-                dgvCategorySales.Columns["PercentageOfTotal"].DefaultCellStyle.Format = "N2";
+                if (dgvCategorySales.Columns.Contains("Category"))
+                    dgvCategorySales.Columns["Category"].HeaderText = "Categoría";
+                if (dgvCategorySales.Columns.Contains("UnitsSold"))
+                    dgvCategorySales.Columns["UnitsSold"].HeaderText = "Unidades Vendidas";
+                if (dgvCategorySales.Columns.Contains("TotalRevenue"))
+                {
+                    dgvCategorySales.Columns["TotalRevenue"].HeaderText = "Facturación Total";
+                    dgvCategorySales.Columns["TotalRevenue"].DefaultCellStyle.Format = "C2";
+                }
+                if (dgvCategorySales.Columns.Contains("PercentageOfTotal"))
+                {
+                    dgvCategorySales.Columns["PercentageOfTotal"].HeaderText = "% del Total";
+                    dgvCategorySales.Columns["PercentageOfTotal"].DefaultCellStyle.Format = "N2";
+                }
             }
         }
 
@@ -548,16 +616,26 @@ namespace UI.Forms
 
         private void FormatRevenueByDateGrid()
         {
-            if (dgvRevenueByDate.DataSource != null)
+            if (dgvRevenueByDate.DataSource != null && dgvRevenueByDate.Columns.Count > 0)
             {
-                dgvRevenueByDate.Columns["ReportDate"].HeaderText = "Fecha";
-                dgvRevenueByDate.Columns["ReportDate"].DefaultCellStyle.Format = "dd/MM/yyyy";
-                dgvRevenueByDate.Columns["SalesRevenue"].HeaderText = "Ingresos Ventas";
-                dgvRevenueByDate.Columns["SalesRevenue"].DefaultCellStyle.Format = "C2";
-                dgvRevenueByDate.Columns["StockInMovements"].HeaderText = "Movimientos Entrada";
-                dgvRevenueByDate.Columns["StockInUnits"].HeaderText = "Unidades Entrada";
-                dgvRevenueByDate.Columns["StockOutMovements"].HeaderText = "Movimientos Salida";
-                dgvRevenueByDate.Columns["StockOutUnits"].HeaderText = "Unidades Salida";
+                if (dgvRevenueByDate.Columns.Contains("ReportDate"))
+                {
+                    dgvRevenueByDate.Columns["ReportDate"].HeaderText = "Fecha";
+                    dgvRevenueByDate.Columns["ReportDate"].DefaultCellStyle.Format = "dd/MM/yyyy";
+                }
+                if (dgvRevenueByDate.Columns.Contains("SalesRevenue"))
+                {
+                    dgvRevenueByDate.Columns["SalesRevenue"].HeaderText = "Ingresos Ventas";
+                    dgvRevenueByDate.Columns["SalesRevenue"].DefaultCellStyle.Format = "C2";
+                }
+                if (dgvRevenueByDate.Columns.Contains("StockInMovements"))
+                    dgvRevenueByDate.Columns["StockInMovements"].HeaderText = "Movimientos Entrada";
+                if (dgvRevenueByDate.Columns.Contains("StockInUnits"))
+                    dgvRevenueByDate.Columns["StockInUnits"].HeaderText = "Unidades Entrada";
+                if (dgvRevenueByDate.Columns.Contains("StockOutMovements"))
+                    dgvRevenueByDate.Columns["StockOutMovements"].HeaderText = "Movimientos Salida";
+                if (dgvRevenueByDate.Columns.Contains("StockOutUnits"))
+                    dgvRevenueByDate.Columns["StockOutUnits"].HeaderText = "Unidades Salida";
             }
         }
 
@@ -592,19 +670,32 @@ namespace UI.Forms
 
         private void FormatClientProductRankingGrid()
         {
-            if (dgvClientProductRanking.DataSource != null)
+            if (dgvClientProductRanking.DataSource != null && dgvClientProductRanking.Columns.Count > 0)
             {
-                dgvClientProductRanking.Columns["ClientId"].Visible = false;
-                dgvClientProductRanking.Columns["ClientFullName"].HeaderText = "Cliente";
-                dgvClientProductRanking.Columns["DNI"].HeaderText = "DNI";
-                dgvClientProductRanking.Columns["ProductName"].HeaderText = "Producto";
-                dgvClientProductRanking.Columns["SKU"].HeaderText = "SKU";
-                dgvClientProductRanking.Columns["Category"].HeaderText = "Categoría";
-                dgvClientProductRanking.Columns["UnitsPurchased"].HeaderText = "Unidades Compradas";
-                dgvClientProductRanking.Columns["TotalSpent"].HeaderText = "Total Gastado";
-                dgvClientProductRanking.Columns["TotalSpent"].DefaultCellStyle.Format = "C2";
-                dgvClientProductRanking.Columns["PercentageOfProductSales"].HeaderText = "% del Producto";
-                dgvClientProductRanking.Columns["PercentageOfProductSales"].DefaultCellStyle.Format = "N2";
+                if (dgvClientProductRanking.Columns.Contains("ClientId"))
+                    dgvClientProductRanking.Columns["ClientId"].Visible = false;
+                if (dgvClientProductRanking.Columns.Contains("ClientFullName"))
+                    dgvClientProductRanking.Columns["ClientFullName"].HeaderText = "Cliente";
+                if (dgvClientProductRanking.Columns.Contains("DNI"))
+                    dgvClientProductRanking.Columns["DNI"].HeaderText = "DNI";
+                if (dgvClientProductRanking.Columns.Contains("ProductName"))
+                    dgvClientProductRanking.Columns["ProductName"].HeaderText = "Producto";
+                if (dgvClientProductRanking.Columns.Contains("SKU"))
+                    dgvClientProductRanking.Columns["SKU"].HeaderText = "SKU";
+                if (dgvClientProductRanking.Columns.Contains("Category"))
+                    dgvClientProductRanking.Columns["Category"].HeaderText = "Categoría";
+                if (dgvClientProductRanking.Columns.Contains("UnitsPurchased"))
+                    dgvClientProductRanking.Columns["UnitsPurchased"].HeaderText = "Unidades Compradas";
+                if (dgvClientProductRanking.Columns.Contains("TotalSpent"))
+                {
+                    dgvClientProductRanking.Columns["TotalSpent"].HeaderText = "Total Gastado";
+                    dgvClientProductRanking.Columns["TotalSpent"].DefaultCellStyle.Format = "C2";
+                }
+                if (dgvClientProductRanking.Columns.Contains("PercentageOfProductSales"))
+                {
+                    dgvClientProductRanking.Columns["PercentageOfProductSales"].HeaderText = "% del Producto";
+                    dgvClientProductRanking.Columns["PercentageOfProductSales"].DefaultCellStyle.Format = "N2";
+                }
             }
         }
 
@@ -638,22 +729,41 @@ namespace UI.Forms
 
         private void FormatClientTicketAverageGrid()
         {
-            if (dgvClientTicketAverage.DataSource != null)
+            if (dgvClientTicketAverage.DataSource != null && dgvClientTicketAverage.Columns.Count > 0)
             {
-                dgvClientTicketAverage.Columns["ClientId"].Visible = false;
-                dgvClientTicketAverage.Columns["ClientFullName"].HeaderText = "Cliente";
-                dgvClientTicketAverage.Columns["DNI"].HeaderText = "DNI";
-                dgvClientTicketAverage.Columns["PurchaseCount"].HeaderText = "# Compras";
-                dgvClientTicketAverage.Columns["TotalSpent"].HeaderText = "Total Gastado";
-                dgvClientTicketAverage.Columns["TotalSpent"].DefaultCellStyle.Format = "C2";
-                dgvClientTicketAverage.Columns["AverageTicket"].HeaderText = "Ticket Promedio";
-                dgvClientTicketAverage.Columns["AverageTicket"].DefaultCellStyle.Format = "C2";
-                dgvClientTicketAverage.Columns["MinTicket"].HeaderText = "Ticket Mínimo";
-                dgvClientTicketAverage.Columns["MinTicket"].DefaultCellStyle.Format = "C2";
-                dgvClientTicketAverage.Columns["MaxTicket"].HeaderText = "Ticket Máximo";
-                dgvClientTicketAverage.Columns["MaxTicket"].DefaultCellStyle.Format = "C2";
-                dgvClientTicketAverage.Columns["StdDeviation"].HeaderText = "Desv. Estándar";
-                dgvClientTicketAverage.Columns["StdDeviation"].DefaultCellStyle.Format = "C2";
+                if (dgvClientTicketAverage.Columns.Contains("ClientId"))
+                    dgvClientTicketAverage.Columns["ClientId"].Visible = false;
+                if (dgvClientTicketAverage.Columns.Contains("ClientFullName"))
+                    dgvClientTicketAverage.Columns["ClientFullName"].HeaderText = "Cliente";
+                if (dgvClientTicketAverage.Columns.Contains("DNI"))
+                    dgvClientTicketAverage.Columns["DNI"].HeaderText = "DNI";
+                if (dgvClientTicketAverage.Columns.Contains("PurchaseCount"))
+                    dgvClientTicketAverage.Columns["PurchaseCount"].HeaderText = "# Compras";
+                if (dgvClientTicketAverage.Columns.Contains("TotalSpent"))
+                {
+                    dgvClientTicketAverage.Columns["TotalSpent"].HeaderText = "Total Gastado";
+                    dgvClientTicketAverage.Columns["TotalSpent"].DefaultCellStyle.Format = "C2";
+                }
+                if (dgvClientTicketAverage.Columns.Contains("AverageTicket"))
+                {
+                    dgvClientTicketAverage.Columns["AverageTicket"].HeaderText = "Ticket Promedio";
+                    dgvClientTicketAverage.Columns["AverageTicket"].DefaultCellStyle.Format = "C2";
+                }
+                if (dgvClientTicketAverage.Columns.Contains("MinTicket"))
+                {
+                    dgvClientTicketAverage.Columns["MinTicket"].HeaderText = "Ticket Mínimo";
+                    dgvClientTicketAverage.Columns["MinTicket"].DefaultCellStyle.Format = "C2";
+                }
+                if (dgvClientTicketAverage.Columns.Contains("MaxTicket"))
+                {
+                    dgvClientTicketAverage.Columns["MaxTicket"].HeaderText = "Ticket Máximo";
+                    dgvClientTicketAverage.Columns["MaxTicket"].DefaultCellStyle.Format = "C2";
+                }
+                if (dgvClientTicketAverage.Columns.Contains("StdDeviation"))
+                {
+                    dgvClientTicketAverage.Columns["StdDeviation"].HeaderText = "Desv. Estándar";
+                    dgvClientTicketAverage.Columns["StdDeviation"].DefaultCellStyle.Format = "C2";
+                }
             }
         }
 
