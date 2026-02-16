@@ -82,6 +82,9 @@
     "SaleCreatedSuccess": "Venta creada exitosamente.",
     "SelectSale": "Por favor seleccione una venta de la lista.",
     "ConfirmDelete": "¿Está seguro que desea eliminar esta venta?",
-    "SaleDeletedSuccess": "Venta eliminada exitosamente."
+    "SaleDeletedSuccess": "Venta eliminada exitosamente.",
+    "NoClient": "(Sin cliente)",
+    "Unknown": "(Desconocido)",
+    "NoStock": "Sin stock"
   }
 }

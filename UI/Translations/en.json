@@ -82,6 +82,9 @@
     "SaleCreatedSuccess": "Sale created successfully.",
     "SelectSale": "Please select a sale from the list.",
     "ConfirmDelete": "Are you sure you want to delete this sale?",
-    "SaleDeletedSuccess": "Sale deleted successfully."
+    "SaleDeletedSuccess": "Sale deleted successfully.",
+    "NoClient": "(No client)",
+    "Unknown": "(Unknown)",
+    "NoStock": "No stock"
   }
 }

@@ -215,7 +215,7 @@ namespace UI
 
         private void menuSales_Click(object sender, EventArgs e)
         {
-            if (!CheckPermission("Sales.View", "No tiene permisos para ver ventas."))
+            if (!CheckPermission("Sales.View", _localizationService.GetString("Error.Unauthorized") ?? "No tiene permisos para realizar esta acción."))
                 return;
 
             var salesForm = new Forms.SalesForm();
