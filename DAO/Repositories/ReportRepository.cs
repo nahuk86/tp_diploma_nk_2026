@@ -91,7 +91,7 @@ namespace DAO.Repositories
                         {
                             reports.Add(new TopProductsReportDTO
                             {
-                                Ranking = reader.GetInt32(reader.GetOrdinal("Ranking")),
+                                Ranking = Convert.ToInt32(reader.GetInt64(reader.GetOrdinal("Ranking"))),
                                 SKU = reader.GetString(reader.GetOrdinal("SKU")),
                                 ProductName = reader.GetString(reader.GetOrdinal("ProductName")),
                                 Category = reader.IsDBNull(reader.GetOrdinal("Category")) ? "" : reader.GetString(reader.GetOrdinal("Category")),
