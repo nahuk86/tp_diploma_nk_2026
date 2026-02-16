@@ -70,7 +70,6 @@ namespace UI.Forms
             tabSellerPerformance.Text = _localizationService.GetString("Reports.SellerPerformance") ?? "Ventas por Vendedor";
             tabCategorySales.Text = _localizationService.GetString("Reports.CategorySales") ?? "Ventas por Categoría";
             tabClientProductRanking.Text = _localizationService.GetString("Reports.ClientProductRanking") ?? "Ranking Clientes-Productos";
-            tabClientTicketAverage.Text = _localizationService.GetString("Reports.ClientTicketAverage") ?? "Ticket Promedio";
         }
 
         private void LoadCommonData()
@@ -139,12 +138,6 @@ namespace UI.Forms
                 dtpClientProductRankingStart.Value = today.AddMonths(-1);
             if (dtpClientProductRankingEnd != null)
                 dtpClientProductRankingEnd.Value = today;
-            
-            // Report 8: Client Ticket Average
-            if (dtpClientTicketAverageStart != null)
-                dtpClientTicketAverageStart.Value = today.AddMonths(-1);
-            if (dtpClientTicketAverageEnd != null)
-                dtpClientTicketAverageEnd.Value = today;
         }
 
         private void PopulateCategories()
@@ -207,23 +200,6 @@ namespace UI.Forms
                 cboClientPurchasesClient.DisplayMember = "Text";
                 cboClientPurchasesClient.ValueMember = "Value";
                 cboClientPurchasesClient.SelectedIndex = 0;
-            }
-
-            if (cboClientTicketAverageClient != null)
-            {
-                cboClientTicketAverageClient.Items.Clear();
-                cboClientTicketAverageClient.Items.Add(new ComboBoxItem { Text = "-- Todos los Clientes --", Value = null });
-                foreach (var client in _clients)
-                {
-                    cboClientTicketAverageClient.Items.Add(new ComboBoxItem 
-                    { 
-                        Text = $"{client.Nombre} {client.Apellido} - {client.DNI}", 
-                        Value = client.ClientId 
-                    });
-                }
-                cboClientTicketAverageClient.DisplayMember = "Text";
-                cboClientTicketAverageClient.ValueMember = "Value";
-                cboClientTicketAverageClient.SelectedIndex = 0;
             }
         }
 
@@ -622,74 +598,6 @@ namespace UI.Forms
         private void btnExportClientProductRanking_Click(object sender, EventArgs e)
         {
             ExportToCSV(dgvClientProductRanking, "Ranking_Clientes_Productos");
-        }
-
-        // Report 8: Client Ticket Average
-        private void btnGenerateClientTicketAverage_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                var startDate = dtpClientTicketAverageStart.Value.Date;
-                var endDate = dtpClientTicketAverageEnd.Value.Date.AddDays(1).AddSeconds(-1);
-                var clientItem = cboClientTicketAverageClient.SelectedItem as ComboBoxItem;
-                var clientId = clientItem?.Value as int?;
-                var minPurchases = chkClientTicketAverageMinPurchases.Checked ? (int?)nudClientTicketAverageMinPurchases.Value : null;
-
-                var data = _reportService.GetClientTicketAverageReport(startDate, endDate, clientId, minPurchases);
-                dgvClientTicketAverage.DataSource = data;
-
-                FormatClientTicketAverageGrid();
-                _logService.Info($"Reporte Ticket Promedio por Cliente generado con {data.Count} registros");
-            }
-            catch (Exception ex)
-            {
-                _errorHandler.HandleError(ex, "Error generando reporte de ticket promedio por cliente");
-            }
-        }
-
-        private void FormatClientTicketAverageGrid()
-        {
-            if (dgvClientTicketAverage.DataSource != null && dgvClientTicketAverage.Columns.Count > 0)
-            {
-                if (dgvClientTicketAverage.Columns.Contains("ClientId"))
-                    dgvClientTicketAverage.Columns["ClientId"].Visible = false;
-                if (dgvClientTicketAverage.Columns.Contains("ClientFullName"))
-                    dgvClientTicketAverage.Columns["ClientFullName"].HeaderText = "Cliente";
-                if (dgvClientTicketAverage.Columns.Contains("DNI"))
-                    dgvClientTicketAverage.Columns["DNI"].HeaderText = "DNI";
-                if (dgvClientTicketAverage.Columns.Contains("PurchaseCount"))
-                    dgvClientTicketAverage.Columns["PurchaseCount"].HeaderText = "# Compras";
-                if (dgvClientTicketAverage.Columns.Contains("TotalSpent"))
-                {
-                    dgvClientTicketAverage.Columns["TotalSpent"].HeaderText = "Total Gastado";
-                    dgvClientTicketAverage.Columns["TotalSpent"].DefaultCellStyle.Format = "C2";
-                }
-                if (dgvClientTicketAverage.Columns.Contains("AverageTicket"))
-                {
-                    dgvClientTicketAverage.Columns["AverageTicket"].HeaderText = "Ticket Promedio";
-                    dgvClientTicketAverage.Columns["AverageTicket"].DefaultCellStyle.Format = "C2";
-                }
-                if (dgvClientTicketAverage.Columns.Contains("MinTicket"))
-                {
-                    dgvClientTicketAverage.Columns["MinTicket"].HeaderText = "Ticket Mínimo";
-                    dgvClientTicketAverage.Columns["MinTicket"].DefaultCellStyle.Format = "C2";
-                }
-                if (dgvClientTicketAverage.Columns.Contains("MaxTicket"))
-                {
-                    dgvClientTicketAverage.Columns["MaxTicket"].HeaderText = "Ticket Máximo";
-                    dgvClientTicketAverage.Columns["MaxTicket"].DefaultCellStyle.Format = "C2";
-                }
-                if (dgvClientTicketAverage.Columns.Contains("StdDeviation"))
-                {
-                    dgvClientTicketAverage.Columns["StdDeviation"].HeaderText = "Desv. Estándar";
-                    dgvClientTicketAverage.Columns["StdDeviation"].DefaultCellStyle.Format = "C2";
-                }
-            }
-        }
-
-        private void btnExportClientTicketAverage_Click(object sender, EventArgs e)
-        {
-            ExportToCSV(dgvClientTicketAverage, "Ticket_Promedio_Cliente");
         }
 
         // Helper Methods

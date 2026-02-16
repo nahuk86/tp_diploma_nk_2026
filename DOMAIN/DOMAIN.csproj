@@ -66,7 +66,6 @@
     <Compile Include="Entities\Reports\CategorySalesReportDTO.cs" />
     <Compile Include="Entities\Reports\RevenueByDateReportDTO.cs" />
     <Compile Include="Entities\Reports\ClientProductRankingReportDTO.cs" />
-    <Compile Include="Entities\Reports\ClientTicketAverageReportDTO.cs" />
     <Compile Include="Enums\MovementType.cs" />
     <Compile Include="Enums\LogLevel.cs" />
     <Compile Include="Enums\AuditAction.cs" />

@@ -150,24 +150,5 @@ namespace BLL.Services
                 throw;
             }
         }
-
-        // Report 8: Client Ticket Average
-        public List<ClientTicketAverageReportDTO> GetClientTicketAverageReport(
-            DateTime? startDate, 
-            DateTime? endDate, 
-            int? clientId = null,
-            int? minPurchases = null)
-        {
-            try
-            {
-                _logService.Info($"Generating Client Ticket Average Report. DateRange: {startDate?.ToString("yyyy-MM-dd")} to {endDate?.ToString("yyyy-MM-dd")}, ClientId: {clientId}, MinPurchases: {minPurchases}");
-                return _reportRepo.GetClientTicketAverageReport(startDate, endDate, clientId, minPurchases);
-            }
-            catch (Exception ex)
-            {
-                _logService.Error("Error generating Client Ticket Average Report", ex);
-                throw;
-            }
-        }
     }
 }

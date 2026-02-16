@@ -24,7 +24,6 @@ namespace UI.Forms
             this.tabSellerPerformance = new System.Windows.Forms.TabPage();
             this.tabCategorySales = new System.Windows.Forms.TabPage();
             this.tabClientProductRanking = new System.Windows.Forms.TabPage();
-            this.tabClientTicketAverage = new System.Windows.Forms.TabPage();
             
             this.tabControl1.SuspendLayout();
             this.tabTopProducts.SuspendLayout();
@@ -33,7 +32,6 @@ namespace UI.Forms
             this.tabSellerPerformance.SuspendLayout();
             this.tabCategorySales.SuspendLayout();
             this.tabClientProductRanking.SuspendLayout();
-            this.tabClientTicketAverage.SuspendLayout();
             this.SuspendLayout();
             
             // Initialize all tabs with essential controls
@@ -43,7 +41,6 @@ namespace UI.Forms
             InitializeSellerPerformanceTab();
             InitializeCategorySalesTab();
             InitializeClientProductRankingTab();
-            InitializeClientTicketAverageTab();
             
             // 
             // tabControl1
@@ -54,7 +51,6 @@ namespace UI.Forms
             this.tabControl1.Controls.Add(this.tabSellerPerformance);
             this.tabControl1.Controls.Add(this.tabCategorySales);
             this.tabControl1.Controls.Add(this.tabClientProductRanking);
-            this.tabControl1.Controls.Add(this.tabClientTicketAverage);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
@@ -91,7 +87,6 @@ namespace UI.Forms
             this.tabSellerPerformance.ResumeLayout(false);
             this.tabCategorySales.ResumeLayout(false);
             this.tabClientProductRanking.ResumeLayout(false);
-            this.tabClientTicketAverage.ResumeLayout(false);
             this.ResumeLayout(false);
         }
 
@@ -939,142 +934,6 @@ namespace UI.Forms
             ((System.ComponentModel.ISupportInitialize)(this.nudClientProductRankingLimit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvClientProductRanking)).EndInit();
         }
-
-        private void InitializeClientTicketAverageTab()
-        {
-            // Initialize controls
-            this.pnlClientTicketAverageFilters = new System.Windows.Forms.Panel();
-            this.lblClientTicketAverageDateRange = new System.Windows.Forms.Label();
-            this.dtpClientTicketAverageStart = new System.Windows.Forms.DateTimePicker();
-            this.dtpClientTicketAverageEnd = new System.Windows.Forms.DateTimePicker();
-            this.lblClientTicketAverageClient = new System.Windows.Forms.Label();
-            this.cboClientTicketAverageClient = new System.Windows.Forms.ComboBox();
-            this.chkClientTicketAverageMinPurchases = new System.Windows.Forms.CheckBox();
-            this.nudClientTicketAverageMinPurchases = new System.Windows.Forms.NumericUpDown();
-            this.btnGenerateClientTicketAverage = new System.Windows.Forms.Button();
-            this.btnExportClientTicketAverage = new System.Windows.Forms.Button();
-            this.dgvClientTicketAverage = new System.Windows.Forms.DataGridView();
-            
-            ((System.ComponentModel.ISupportInitialize)(this.dgvClientTicketAverage)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudClientTicketAverageMinPurchases)).BeginInit();
-            
-            // pnlClientTicketAverageFilters
-            this.pnlClientTicketAverageFilters.Controls.Add(this.lblClientTicketAverageDateRange);
-            this.pnlClientTicketAverageFilters.Controls.Add(this.dtpClientTicketAverageStart);
-            this.pnlClientTicketAverageFilters.Controls.Add(this.dtpClientTicketAverageEnd);
-            this.pnlClientTicketAverageFilters.Controls.Add(this.lblClientTicketAverageClient);
-            this.pnlClientTicketAverageFilters.Controls.Add(this.cboClientTicketAverageClient);
-            this.pnlClientTicketAverageFilters.Controls.Add(this.chkClientTicketAverageMinPurchases);
-            this.pnlClientTicketAverageFilters.Controls.Add(this.nudClientTicketAverageMinPurchases);
-            this.pnlClientTicketAverageFilters.Controls.Add(this.btnGenerateClientTicketAverage);
-            this.pnlClientTicketAverageFilters.Controls.Add(this.btnExportClientTicketAverage);
-            this.pnlClientTicketAverageFilters.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlClientTicketAverageFilters.Location = new System.Drawing.Point(3, 3);
-            this.pnlClientTicketAverageFilters.Name = "pnlClientTicketAverageFilters";
-            this.pnlClientTicketAverageFilters.Size = new System.Drawing.Size(1186, 80);
-            this.pnlClientTicketAverageFilters.TabIndex = 0;
-            
-            // lblClientTicketAverageDateRange
-            this.lblClientTicketAverageDateRange.AutoSize = true;
-            this.lblClientTicketAverageDateRange.Location = new System.Drawing.Point(10, 15);
-            this.lblClientTicketAverageDateRange.Name = "lblClientTicketAverageDateRange";
-            this.lblClientTicketAverageDateRange.Size = new System.Drawing.Size(100, 13);
-            this.lblClientTicketAverageDateRange.TabIndex = 0;
-            this.lblClientTicketAverageDateRange.Text = "Rango de Fechas:";
-            
-            // dtpClientTicketAverageStart
-            this.dtpClientTicketAverageStart.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpClientTicketAverageStart.Location = new System.Drawing.Point(120, 12);
-            this.dtpClientTicketAverageStart.Name = "dtpClientTicketAverageStart";
-            this.dtpClientTicketAverageStart.Size = new System.Drawing.Size(100, 20);
-            this.dtpClientTicketAverageStart.TabIndex = 1;
-            
-            // dtpClientTicketAverageEnd
-            this.dtpClientTicketAverageEnd.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpClientTicketAverageEnd.Location = new System.Drawing.Point(230, 12);
-            this.dtpClientTicketAverageEnd.Name = "dtpClientTicketAverageEnd";
-            this.dtpClientTicketAverageEnd.Size = new System.Drawing.Size(100, 20);
-            this.dtpClientTicketAverageEnd.TabIndex = 2;
-            
-            // lblClientTicketAverageClient
-            this.lblClientTicketAverageClient.AutoSize = true;
-            this.lblClientTicketAverageClient.Location = new System.Drawing.Point(350, 15);
-            this.lblClientTicketAverageClient.Name = "lblClientTicketAverageClient";
-            this.lblClientTicketAverageClient.Size = new System.Drawing.Size(100, 13);
-            this.lblClientTicketAverageClient.TabIndex = 3;
-            this.lblClientTicketAverageClient.Text = "Cliente:";
-            
-            // cboClientTicketAverageClient
-            this.cboClientTicketAverageClient.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboClientTicketAverageClient.FormattingEnabled = true;
-            this.cboClientTicketAverageClient.Location = new System.Drawing.Point(405, 12);
-            this.cboClientTicketAverageClient.Name = "cboClientTicketAverageClient";
-            this.cboClientTicketAverageClient.Size = new System.Drawing.Size(250, 21);
-            this.cboClientTicketAverageClient.TabIndex = 4;
-            
-            // chkClientTicketAverageMinPurchases
-            this.chkClientTicketAverageMinPurchases.AutoSize = true;
-            this.chkClientTicketAverageMinPurchases.Location = new System.Drawing.Point(10, 45);
-            this.chkClientTicketAverageMinPurchases.Name = "chkClientTicketAverageMinPurchases";
-            this.chkClientTicketAverageMinPurchases.Size = new System.Drawing.Size(100, 17);
-            this.chkClientTicketAverageMinPurchases.TabIndex = 5;
-            this.chkClientTicketAverageMinPurchases.Text = "Compras Mínimas:";
-            this.chkClientTicketAverageMinPurchases.UseVisualStyleBackColor = true;
-            
-            // nudClientTicketAverageMinPurchases
-            this.nudClientTicketAverageMinPurchases.Location = new System.Drawing.Point(130, 43);
-            this.nudClientTicketAverageMinPurchases.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
-            this.nudClientTicketAverageMinPurchases.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
-            this.nudClientTicketAverageMinPurchases.Name = "nudClientTicketAverageMinPurchases";
-            this.nudClientTicketAverageMinPurchases.Size = new System.Drawing.Size(80, 20);
-            this.nudClientTicketAverageMinPurchases.TabIndex = 6;
-            this.nudClientTicketAverageMinPurchases.Value = new decimal(new int[] { 10, 0, 0, 0 });
-            
-            // btnGenerateClientTicketAverage
-            this.btnGenerateClientTicketAverage.Location = new System.Drawing.Point(230, 42);
-            this.btnGenerateClientTicketAverage.Name = "btnGenerateClientTicketAverage";
-            this.btnGenerateClientTicketAverage.Size = new System.Drawing.Size(80, 25);
-            this.btnGenerateClientTicketAverage.TabIndex = 7;
-            this.btnGenerateClientTicketAverage.Text = "Generar";
-            this.btnGenerateClientTicketAverage.UseVisualStyleBackColor = true;
-            this.btnGenerateClientTicketAverage.Click += new System.EventHandler(this.btnGenerateClientTicketAverage_Click);
-            
-            // btnExportClientTicketAverage
-            this.btnExportClientTicketAverage.Location = new System.Drawing.Point(320, 42);
-            this.btnExportClientTicketAverage.Name = "btnExportClientTicketAverage";
-            this.btnExportClientTicketAverage.Size = new System.Drawing.Size(100, 25);
-            this.btnExportClientTicketAverage.TabIndex = 8;
-            this.btnExportClientTicketAverage.Text = "Exportar CSV";
-            this.btnExportClientTicketAverage.UseVisualStyleBackColor = true;
-            this.btnExportClientTicketAverage.Click += new System.EventHandler(this.btnExportClientTicketAverage_Click);
-            
-            // dgvClientTicketAverage
-            this.dgvClientTicketAverage.AllowUserToAddRows = false;
-            this.dgvClientTicketAverage.AllowUserToDeleteRows = false;
-            this.dgvClientTicketAverage.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dgvClientTicketAverage.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvClientTicketAverage.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvClientTicketAverage.Location = new System.Drawing.Point(3, 83);
-            this.dgvClientTicketAverage.Name = "dgvClientTicketAverage";
-            this.dgvClientTicketAverage.ReadOnly = true;
-            this.dgvClientTicketAverage.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvClientTicketAverage.Size = new System.Drawing.Size(1186, 588);
-            this.dgvClientTicketAverage.TabIndex = 9;
-            
-            // tabClientTicketAverage
-            this.tabClientTicketAverage.Controls.Add(this.dgvClientTicketAverage);
-            this.tabClientTicketAverage.Controls.Add(this.pnlClientTicketAverageFilters);
-            this.tabClientTicketAverage.Location = new System.Drawing.Point(4, 22);
-            this.tabClientTicketAverage.Name = "tabClientTicketAverage";
-            this.tabClientTicketAverage.Padding = new System.Windows.Forms.Padding(3);
-            this.tabClientTicketAverage.Size = new System.Drawing.Size(1192, 674);
-            this.tabClientTicketAverage.TabIndex = 7;
-            this.tabClientTicketAverage.Text = "Ticket Promedio por Cliente";
-            this.tabClientTicketAverage.UseVisualStyleBackColor = true;
-            
-            ((System.ComponentModel.ISupportInitialize)(this.nudClientTicketAverageMinPurchases)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvClientTicketAverage)).EndInit();
-        }
         #endregion
 
         private System.Windows.Forms.TabControl tabControl1;
@@ -1084,7 +943,6 @@ namespace UI.Forms
         private System.Windows.Forms.TabPage tabSellerPerformance;
         private System.Windows.Forms.TabPage tabCategorySales;
         private System.Windows.Forms.TabPage tabClientProductRanking;
-        private System.Windows.Forms.TabPage tabClientTicketAverage;
 
         // Tab 1: Top Products
         private System.Windows.Forms.Panel pnlTopProductsFilters;
@@ -1165,19 +1023,6 @@ namespace UI.Forms
         private System.Windows.Forms.Button btnGenerateClientProductRanking;
         private System.Windows.Forms.Button btnExportClientProductRanking;
         private System.Windows.Forms.DataGridView dgvClientProductRanking;
-
-        // Tab 8: Client Ticket Average
-        private System.Windows.Forms.Panel pnlClientTicketAverageFilters;
-        private System.Windows.Forms.Label lblClientTicketAverageDateRange;
-        private System.Windows.Forms.DateTimePicker dtpClientTicketAverageStart;
-        private System.Windows.Forms.DateTimePicker dtpClientTicketAverageEnd;
-        private System.Windows.Forms.Label lblClientTicketAverageClient;
-        private System.Windows.Forms.ComboBox cboClientTicketAverageClient;
-        private System.Windows.Forms.CheckBox chkClientTicketAverageMinPurchases;
-        private System.Windows.Forms.NumericUpDown nudClientTicketAverageMinPurchases;
-        private System.Windows.Forms.Button btnGenerateClientTicketAverage;
-        private System.Windows.Forms.Button btnExportClientTicketAverage;
-        private System.Windows.Forms.DataGridView dgvClientTicketAverage;
 
         // Note: Tab initialization methods can be added here in the future
         // For now, tabs will need to be manually configured in the designer or at runtime

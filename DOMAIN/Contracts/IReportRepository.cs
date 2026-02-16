@@ -55,12 +55,5 @@ namespace DOMAIN.Contracts
             int? productId = null, 
             string category = null,
             int? topN = null);
-
-        // Report 8: Client Ticket Average
-        List<ClientTicketAverageReportDTO> GetClientTicketAverageReport(
-            DateTime? startDate, 
-            DateTime? endDate, 
-            int? clientId = null,
-            int? minPurchases = null);
     }
 }
