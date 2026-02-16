@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace DOMAIN.Entities
 {
@@ -16,5 +17,8 @@ namespace DOMAIN.Entities
         public int? CreatedBy { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public int? UpdatedBy { get; set; }
+        
+        // Navigation properties
+        public List<SaleLine> SaleLines { get; set; }
     }
 }
