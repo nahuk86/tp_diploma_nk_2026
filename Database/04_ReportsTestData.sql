@@ -78,7 +78,7 @@ IF NOT EXISTS (SELECT 1 FROM [dbo].[Clients] WHERE DNI = '25789014')
     INSERT INTO [dbo].[Clients] ([Nombre], [Apellido], [DNI], [Correo], [Telefono], [Direccion], [CreatedBy]) 
     VALUES ('Martín', 'Castro', '25789014', 'martin.castro@email.com', '11-4567-8915', 'Av. Paseo Colón 1617, CABA', 1);
 
-PRINT 'Clients seeded (inserted if not exists): 15';
+PRINT 'Clients seeded (15 clients available, new ones inserted if needed)';
 GO
 
 -- ============================================
@@ -178,7 +178,7 @@ IF NOT EXISTS (SELECT 1 FROM [dbo].[Products] WHERE SKU = 'KEYBOARD-BT-01')
     INSERT INTO [dbo].[Products] ([SKU], [Name], [Description], [Category], [UnitPrice], [MinStockLevel], [CreatedBy]) 
     VALUES ('KEYBOARD-BT-01', 'Bluetooth Keyboard', 'Compact Bluetooth keyboard', 'Peripherals', 34.99, 8, 1);
 
-PRINT 'Additional products seeded (inserted if not exists): 21';
+PRINT 'Additional products seeded (21 products available, new ones inserted if needed)';
 GO
 
 -- ============================================
