@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using DAO.Helpers;
@@ -613,26 +614,27 @@ namespace DAO.Repositories
                     dateFilterMovements = "AND CAST(sm.MovementDate AS DATE) >= @StartDate AND CAST(sm.MovementDate AS DATE) <= @EndDate";
                 }
                 
+                // Determine movement type value and whether to apply filter
+                int? movementTypeValue = null;
                 if (!string.IsNullOrEmpty(movementType))
                 {
-                    int? typeValue = null;
-                    switch (movementType.ToLower())
+                    switch (movementType.ToLower().Trim())
                     {
                         case "in":
-                            typeValue = 0;
+                            movementTypeValue = 0;
                             break;
                         case "out":
-                            typeValue = 1;
+                            movementTypeValue = 1;
                             break;
                         case "transfer":
-                            typeValue = 2;
+                            movementTypeValue = 2;
                             break;
                         case "adjustment":
-                            typeValue = 3;
+                            movementTypeValue = 3;
                             break;
                     }
                     
-                    if (typeValue.HasValue)
+                    if (movementTypeValue.HasValue)
                     {
                         movementTypeFilter = "AND sm.MovementType = @MovementType";
                     }
@@ -653,25 +655,14 @@ namespace DAO.Repositories
                         command.Parameters.Add(DatabaseHelper.CreateParameter("@EndDate", endDate.Value.Date));
                     }
                     
-                    if (!string.IsNullOrEmpty(movementType) && movementTypeFilter != "")
+                    // Add movement type parameter if filter was applied
+                    if (movementTypeValue.HasValue)
                     {
-                        int typeValue = 0;
-                        switch (movementType.ToLower())
+                        var param = new SqlParameter("@MovementType", SqlDbType.Int)
                         {
-                            case "in":
-                                typeValue = 0;
-                                break;
-                            case "out":
-                                typeValue = 1;
-                                break;
-                            case "transfer":
-                                typeValue = 2;
-                                break;
-                            case "adjustment":
-                                typeValue = 3;
-                                break;
-                        }
-                        command.Parameters.Add(DatabaseHelper.CreateParameter("@MovementType", typeValue));
+                            Value = movementTypeValue.Value
+                        };
+                        command.Parameters.Add(param);
                     }
                     
                     if (warehouseId.HasValue)
