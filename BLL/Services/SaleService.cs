@@ -273,7 +273,31 @@ namespace BLL.Services
                     throw new InvalidOperationException($"Client {sale.ClientId} not found or inactive");
             }
 
-            // Validate sale lines
+            // Group sale lines by product to validate total quantities
+            var productQuantities = saleLines
+                .GroupBy(l => l.ProductId)
+                .ToDictionary(g => g.Key, g => g.Sum(l => l.Quantity));
+
+            // Validate aggregated quantities against stock for each unique product
+            foreach (var productGroup in productQuantities)
+            {
+                var productId = productGroup.Key;
+                var totalQuantity = productGroup.Value;
+
+                var product = _productRepo.GetById(productId);
+                if (product == null || !product.IsActive)
+                    throw new InvalidOperationException($"Product {productId} not found or inactive");
+
+                var availableStock = GetTotalAvailableStock(productId);
+                if (totalQuantity > availableStock)
+                {
+                    throw new InvalidOperationException(
+                        $"Cantidad insuficiente para el producto '{product.Name}'. " +
+                        $"Total solicitado: {totalQuantity}, Disponible: {availableStock}");
+                }
+            }
+
+            // Validate individual sale lines
             foreach (var line in saleLines)
             {
                 if (line.Quantity <= 0)
@@ -281,20 +305,6 @@ namespace BLL.Services
 
                 if (line.UnitPrice < 0)
                     throw new ArgumentException($"Unit price cannot be negative for product {line.ProductId}");
-
-                // Verify product exists
-                var product = _productRepo.GetById(line.ProductId);
-                if (product == null || !product.IsActive)
-                    throw new InvalidOperationException($"Product {line.ProductId} not found or inactive");
-
-                // Validate stock availability
-                var availableStock = GetTotalAvailableStock(line.ProductId);
-                if (line.Quantity > availableStock)
-                {
-                    throw new InvalidOperationException(
-                        $"Cantidad insuficiente para el producto '{product.Name}'. " +
-                        $"Solicitado: {line.Quantity}, Disponible: {availableStock}");
-                }
 
                 // Calculate line total
                 line.LineTotal = line.Quantity * line.UnitPrice;
