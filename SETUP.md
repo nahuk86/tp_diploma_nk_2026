@@ -358,9 +358,25 @@ El sistema incluye datos semilla:
 5. Configurar almacenes
 6. Iniciar registro de stock
 
+## Despliegue y Distribución
+
+Para crear paquetes de instalación o distribuir la aplicación:
+
+**IMPORTANTE:** Para que las traducciones (etiquetas y mensajes de la interfaz) funcionen correctamente en la instalación, consulte la guía completa de despliegue:
+
+📄 **[DEPLOYMENT_TRANSLATION_FILES.md](DEPLOYMENT_TRANSLATION_FILES.md)** - Guía detallada sobre cómo incluir archivos de traducción en su paquete de instalación
+
+Esta guía cubre:
+- Publicación a carpeta (Folder Publishing)
+- Despliegue ClickOnce
+- Creación de instaladores MSI
+- Despliegue manual (XCopy)
+- Verificación y solución de problemas
+
 ## Soporte
 
 Para problemas o consultas:
 1. Revisar logs en carpeta `Logs/`
 2. Consultar `README.md` para arquitectura
-3. Contactar al equipo de desarrollo
+3. Consultar `DEPLOYMENT_TRANSLATION_FILES.md` para problemas con traducciones
+4. Contactar al equipo de desarrollo

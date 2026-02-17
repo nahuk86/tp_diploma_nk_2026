@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+This is a TEMPLATE for a folder publish profile.
+Copy this file and rename it to "FolderProfile.pubxml" to use it.
+
+The translation files (en.json, es.json) are automatically included in the publish output
+because they are marked as <Content> in UI.csproj.
+
+To use this profile:
+1. Copy this file to "FolderProfile.pubxml" in the same directory
+2. Adjust the PublishDir if needed
+3. In Visual Studio: Right-click UI project → Publish → Use existing profile
+   OR
+   Command line: msbuild UI\UI.csproj /t:Publish /p:Configuration=Release /p:PublishProfile=FolderProfile
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PublishProtocol>FileSystem</PublishProtocol>
+    <Configuration>Release</Configuration>
+    <Platform>Any CPU</Platform>
+    <TargetFramework>net48</TargetFramework>
+    <!-- Adjust this path to your desired publish location -->
+    <PublishDir>bin\Publish\</PublishDir>
+    <SelfContained>false</SelfContained>
+    <PublishSingleFile>false</PublishSingleFile>
+    <PublishReadyToRun>false</PublishReadyToRun>
+  </PropertyGroup>
+</Project>
