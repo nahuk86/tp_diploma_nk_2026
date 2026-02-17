@@ -15,12 +15,22 @@ namespace SERVICES.Implementations
             _localizationService = localizationService ?? throw new ArgumentNullException(nameof(localizationService));
         }
 
+        /// <summary>
+        /// Procesa y registra una excepción con contexto opcional
+        /// </summary>
+        /// <param name="ex">Excepción a procesar</param>
+        /// <param name="context">Información contextual sobre dónde ocurrió el error (opcional)</param>
         public void HandleError(Exception ex, string context = null)
         {
             var contextMessage = string.IsNullOrEmpty(context) ? "An error occurred" : context;
             _logService.Error(contextMessage, ex);
         }
 
+        /// <summary>
+        /// Convierte una excepción técnica en un mensaje amigable para el usuario
+        /// </summary>
+        /// <param name="ex">Excepción a traducir</param>
+        /// <returns>Mensaje de error comprensible para el usuario</returns>
         public string GetFriendlyMessage(Exception ex)
         {
             if (ex == null)
@@ -71,6 +81,11 @@ namespace SERVICES.Implementations
                    "An unexpected error occurred. Please try again or contact support.";
         }
 
+        /// <summary>
+        /// Procesa una excepción y muestra un mensaje de error al usuario
+        /// </summary>
+        /// <param name="ex">Excepción a mostrar</param>
+        /// <param name="context">Información contextual sobre dónde ocurrió el error (opcional)</param>
         public void ShowError(Exception ex, string context = null)
         {
             HandleError(ex, context);

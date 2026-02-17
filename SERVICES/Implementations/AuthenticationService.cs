@@ -17,6 +17,12 @@ namespace SERVICES.Implementations
             _logService = logService ?? throw new ArgumentNullException(nameof(logService));
         }
 
+        /// <summary>
+        /// Autentica un usuario verificando sus credenciales contra la base de datos
+        /// </summary>
+        /// <param name="username">Nombre de usuario</param>
+        /// <param name="password">Contraseña en texto plano</param>
+        /// <returns>Objeto User si la autenticación es exitosa, null en caso contrario</returns>
         public User Authenticate(string username, string password)
         {
             try
@@ -67,6 +73,12 @@ namespace SERVICES.Implementations
             }
         }
 
+        /// <summary>
+        /// Genera un hash seguro de la contraseña utilizando PBKDF2 con un salt aleatorio
+        /// </summary>
+        /// <param name="password">Contraseña en texto plano</param>
+        /// <param name="salt">Parámetro de salida que contiene el salt generado en Base64</param>
+        /// <returns>Hash de la contraseña en formato Base64</returns>
         public string HashPassword(string password, out string salt)
         {
             // Generate a random salt
@@ -82,6 +94,13 @@ namespace SERVICES.Implementations
             return Convert.ToBase64String(hash);
         }
 
+        /// <summary>
+        /// Verifica si una contraseña coincide con un hash almacenado
+        /// </summary>
+        /// <param name="password">Contraseña en texto plano a verificar</param>
+        /// <param name="hash">Hash almacenado en Base64</param>
+        /// <param name="salt">Salt utilizado en el hash original en Base64</param>
+        /// <returns>True si la contraseña es correcta, false en caso contrario</returns>
         public bool VerifyPassword(string password, string hash, string salt)
         {
             try
@@ -98,6 +117,11 @@ namespace SERVICES.Implementations
             }
         }
 
+        /// <summary>
+        /// Inicializa o actualiza la contraseña de un usuario administrativo
+        /// </summary>
+        /// <param name="username">Nombre del usuario</param>
+        /// <param name="newPassword">Nueva contraseña en texto plano</param>
         public void InitializeAdminPassword(string username, string newPassword)
         {
             try
@@ -124,6 +148,12 @@ namespace SERVICES.Implementations
             }
         }
 
+        /// <summary>
+        /// Genera un hash de contraseña usando PBKDF2 con el salt proporcionado
+        /// </summary>
+        /// <param name="password">Contraseña en texto plano</param>
+        /// <param name="salt">Salt en formato de bytes</param>
+        /// <returns>Hash de la contraseña en formato de bytes</returns>
         private byte[] HashPasswordWithSalt(string password, byte[] salt)
         {
             using (var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 10000))

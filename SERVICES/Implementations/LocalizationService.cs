@@ -20,10 +20,14 @@ namespace SERVICES.Implementations
 
         public event EventHandler LanguageChanged;
 
-        // Singleton instance property
+        /// <summary>
+        /// Obtiene la instancia única del servicio de localización (patrón Singleton)
+        /// </summary>
         public static LocalizationService Instance => _instance.Value;
 
-        // Private constructor to enforce singleton pattern
+        /// <summary>
+        /// Constructor privado para implementar el patrón Singleton e inicializar el servicio de localización
+        /// </summary>
         private LocalizationService()
         {
             _connectionString = ConfigurationManager.ConnectionStrings["StockManagerDB"]?.ConnectionString;
@@ -36,21 +40,38 @@ namespace SERVICES.Implementations
             LoadAllTranslations();
         }
 
+        /// <summary>
+        /// Obtiene el código del idioma actual
+        /// </summary>
         public string CurrentLanguage
         {
             get { return _currentLanguage; }
         }
 
+        /// <summary>
+        /// Obtiene la lista de idiomas disponibles en la aplicación
+        /// </summary>
         public List<string> AvailableLanguages
         {
             get { return new List<string> { "es", "en" }; }
         }
 
+        /// <summary>
+        /// Obtiene una cadena traducida usando el idioma actual
+        /// </summary>
+        /// <param name="key">Clave de la cadena a traducir</param>
+        /// <returns>Cadena traducida o la clave si no se encuentra traducción</returns>
         public string GetString(string key)
         {
             return GetString(key, _currentLanguage);
         }
 
+        /// <summary>
+        /// Obtiene una cadena traducida en el idioma especificado
+        /// </summary>
+        /// <param name="key">Clave de la cadena a traducir</param>
+        /// <param name="language">Código del idioma (ej: 'es', 'en')</param>
+        /// <returns>Cadena traducida o la clave si no se encuentra traducción</returns>
         public string GetString(string key, string language)
         {
             // Try to get from JSON translations first
@@ -71,6 +92,10 @@ namespace SERVICES.Implementations
             return key; // Return the key itself if no translation found
         }
 
+        /// <summary>
+        /// Establece el idioma actual de la aplicación
+        /// </summary>
+        /// <param name="language">Código del idioma a establecer</param>
         public void SetLanguage(string language)
         {
             if (AvailableLanguages.Contains(language) && _currentLanguage != language)
@@ -86,11 +111,17 @@ namespace SERVICES.Implementations
             }
         }
 
+        /// <summary>
+        /// Dispara el evento de cambio de idioma para notificar a los suscriptores
+        /// </summary>
         protected virtual void OnLanguageChanged()
         {
             LanguageChanged?.Invoke(this, EventArgs.Empty);
         }
 
+        /// <summary>
+        /// Carga todas las traducciones desde JSON, base de datos y valores predeterminados
+        /// </summary>
         private void LoadAllTranslations()
         {
             _languageTranslations.Clear();
@@ -108,6 +139,9 @@ namespace SERVICES.Implementations
             }
         }
 
+        /// <summary>
+        /// Carga las traducciones desde archivos JSON ubicados en el directorio de traducciones
+        /// </summary>
         private void LoadTranslationsFromJson()
         {
             try
@@ -140,6 +174,11 @@ namespace SERVICES.Implementations
             }
         }
 
+        /// <summary>
+        /// Analiza el contenido JSON y convierte las traducciones en un diccionario clave-valor
+        /// </summary>
+        /// <param name="jsonContent">Contenido del archivo JSON</param>
+        /// <returns>Diccionario con las traducciones parseadas</returns>
         private Dictionary<string, string> ParseJsonTranslations(string jsonContent)
         {
             var translations = new Dictionary<string, string>();
@@ -232,6 +271,9 @@ namespace SERVICES.Implementations
             return translations;
         }
 
+        /// <summary>
+        /// Carga las traducciones desde la base de datos si está configurada
+        /// </summary>
         private void LoadTranslationsFromDatabase()
         {
             try
@@ -276,6 +318,9 @@ namespace SERVICES.Implementations
             }
         }
 
+        /// <summary>
+        /// Carga traducciones predeterminadas en español e inglés si no se encuentran otras fuentes
+        /// </summary>
         private void LoadDefaultTranslations()
         {
             // Initialize dictionaries for each language

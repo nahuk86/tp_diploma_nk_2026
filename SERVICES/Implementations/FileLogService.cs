@@ -23,31 +23,65 @@ namespace SERVICES.Implementations
             }
         }
 
+        /// <summary>
+        /// Registra un mensaje de depuración para propósitos de desarrollo
+        /// </summary>
+        /// <param name="message">Mensaje a registrar</param>
+        /// <param name="logger">Nombre del logger (opcional)</param>
         public void Debug(string message, string logger = null)
         {
             Log(LogLevel.Debug, message, null, logger);
         }
 
+        /// <summary>
+        /// Registra un mensaje informativo sobre el funcionamiento normal de la aplicación
+        /// </summary>
+        /// <param name="message">Mensaje a registrar</param>
+        /// <param name="logger">Nombre del logger (opcional)</param>
         public void Info(string message, string logger = null)
         {
             Log(LogLevel.Info, message, null, logger);
         }
 
+        /// <summary>
+        /// Registra una advertencia sobre situaciones que requieren atención pero no son errores
+        /// </summary>
+        /// <param name="message">Mensaje a registrar</param>
+        /// <param name="logger">Nombre del logger (opcional)</param>
         public void Warning(string message, string logger = null)
         {
             Log(LogLevel.Warning, message, null, logger);
         }
 
+        /// <summary>
+        /// Registra un error que afecta el funcionamiento de la aplicación
+        /// </summary>
+        /// <param name="message">Mensaje de error</param>
+        /// <param name="exception">Excepción asociada (opcional)</param>
+        /// <param name="logger">Nombre del logger (opcional)</param>
         public void Error(string message, Exception exception = null, string logger = null)
         {
             Log(LogLevel.Error, message, exception, logger);
         }
 
+        /// <summary>
+        /// Registra un error crítico que puede causar la terminación de la aplicación
+        /// </summary>
+        /// <param name="message">Mensaje de error crítico</param>
+        /// <param name="exception">Excepción asociada (opcional)</param>
+        /// <param name="logger">Nombre del logger (opcional)</param>
         public void Fatal(string message, Exception exception = null, string logger = null)
         {
             Log(LogLevel.Fatal, message, exception, logger);
         }
 
+        /// <summary>
+        /// Registra un mensaje con un nivel de severidad específico
+        /// </summary>
+        /// <param name="level">Nivel de severidad del log</param>
+        /// <param name="message">Mensaje a registrar</param>
+        /// <param name="exception">Excepción asociada (opcional)</param>
+        /// <param name="logger">Nombre del logger (opcional)</param>
         public void Log(LogLevel level, string message, Exception exception = null, string logger = null)
         {
             try
@@ -66,6 +100,14 @@ namespace SERVICES.Implementations
             }
         }
 
+        /// <summary>
+        /// Formatea una entrada de log con marca de tiempo, nivel, contexto y detalles de excepción
+        /// </summary>
+        /// <param name="level">Nivel de severidad del log</param>
+        /// <param name="message">Mensaje a registrar</param>
+        /// <param name="exception">Excepción asociada (opcional)</param>
+        /// <param name="logger">Nombre del logger (opcional)</param>
+        /// <returns>Cadena formateada para escribir en el archivo de log</returns>
         private string FormatLogEntry(LogLevel level, string message, Exception exception, string logger)
         {
             var timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
@@ -89,12 +131,20 @@ namespace SERVICES.Implementations
             return entry;
         }
 
+        /// <summary>
+        /// Obtiene la ruta del archivo de log basado en la fecha actual
+        /// </summary>
+        /// <returns>Ruta completa del archivo de log</returns>
         private string GetLogFilePath()
         {
             var fileName = $"{_logFilePrefix}_{DateTime.Now:yyyyMMdd}.log";
             return Path.Combine(_logDirectory, fileName);
         }
 
+        /// <summary>
+        /// Elimina archivos de log antiguos según el período de retención especificado
+        /// </summary>
+        /// <param name="daysToKeep">Número de días a mantener los archivos de log (por defecto 30)</param>
         public void CleanOldLogs(int daysToKeep = 30)
         {
             try
