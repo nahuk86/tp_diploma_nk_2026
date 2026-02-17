@@ -19,6 +19,9 @@ namespace UI.Forms
         private Warehouse _currentWarehouse;
         private bool _isEditing = false;
 
+        /// <summary>
+        /// Inicializa una nueva instancia del formulario de gestión de almacenes
+        /// </summary>
         public WarehousesForm()
         {
             InitializeComponent();
@@ -39,6 +42,9 @@ namespace UI.Forms
             LoadWarehouses();
         }
 
+        /// <summary>
+        /// Aplica la localización a todos los controles del formulario según el idioma actual
+        /// </summary>
         private void ApplyLocalization()
         {
             this.Text = _localizationService.GetString("Warehouses.Title") ?? "Gestión de Almacenes";
@@ -61,6 +67,9 @@ namespace UI.Forms
             colAddress.HeaderText = _localizationService.GetString("Warehouses.Address") ?? "Dirección";
         }
 
+        /// <summary>
+        /// Configura los permisos de los botones según los permisos del usuario actual
+        /// </summary>
         private void ConfigurePermissions()
         {
             if (!SessionContext.CurrentUserId.HasValue)
@@ -73,6 +82,9 @@ namespace UI.Forms
             btnDelete.Enabled = _authorizationService.HasPermission(userId, "Warehouses.Delete");
         }
 
+        /// <summary>
+        /// Carga la lista de almacenes activos en el DataGridView
+        /// </summary>
         private void LoadWarehouses()
         {
             try
@@ -102,6 +114,11 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Nuevo para crear un nuevo almacén
+        /// </summary>
+        /// <param name="sender">El objeto que generó el evento</param>
+        /// <param name="e">Los datos del evento</param>
         private void btnNew_Click(object sender, EventArgs e)
         {
             _currentWarehouse = new Warehouse();
@@ -111,6 +128,11 @@ namespace UI.Forms
             txtCode.Focus();
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Editar para modificar el almacén seleccionado
+        /// </summary>
+        /// <param name="sender">El objeto que generó el evento</param>
+        /// <param name="e">Los datos del evento</param>
         private void btnEdit_Click(object sender, EventArgs e)
         {
             if (dgvWarehouses.CurrentRow == null)
@@ -130,6 +152,11 @@ namespace UI.Forms
             txtName.Focus();
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Eliminar para eliminar el almacén seleccionado
+        /// </summary>
+        /// <param name="sender">El objeto que generó el evento</param>
+        /// <param name="e">Los datos del evento</param>
         private void btnDelete_Click(object sender, EventArgs e)
         {
             if (dgvWarehouses.CurrentRow == null)
@@ -169,6 +196,11 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Guardar para guardar los cambios del almacén
+        /// </summary>
+        /// <param name="sender">El objeto que generó el evento</param>
+        /// <param name="e">Los datos del evento</param>
         private void btnSave_Click(object sender, EventArgs e)
         {
             if (!ValidateForm())
@@ -205,12 +237,21 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Cancelar para cancelar la operación actual
+        /// </summary>
+        /// <param name="sender">El objeto que generó el evento</param>
+        /// <param name="e">Los datos del evento</param>
         private void btnCancel_Click(object sender, EventArgs e)
         {
             EnableForm(false);
             ClearForm();
         }
 
+        /// <summary>
+        /// Valida que los campos del formulario contengan datos válidos
+        /// </summary>
+        /// <returns>True si el formulario es válido; de lo contrario, False</returns>
         private bool ValidateForm()
         {
             if (string.IsNullOrWhiteSpace(txtCode.Text))
@@ -238,6 +279,10 @@ namespace UI.Forms
             return true;
         }
 
+        /// <summary>
+        /// Carga los datos del almacén en los controles del formulario
+        /// </summary>
+        /// <param name="warehouse">El almacén cuyos datos se cargarán en el formulario</param>
         private void LoadWarehouseToForm(Warehouse warehouse)
         {
             txtCode.Text = warehouse.Code;
@@ -245,6 +290,9 @@ namespace UI.Forms
             txtAddress.Text = warehouse.Address;
         }
 
+        /// <summary>
+        /// Obtiene los datos del formulario y los asigna al almacén actual
+        /// </summary>
         private void GetWarehouseFromForm()
         {
             _currentWarehouse.Code = txtCode.Text.Trim();
@@ -252,6 +300,9 @@ namespace UI.Forms
             _currentWarehouse.Address = txtAddress.Text.Trim();
         }
 
+        /// <summary>
+        /// Limpia todos los campos del formulario
+        /// </summary>
         private void ClearForm()
         {
             txtCode.Clear();
@@ -259,6 +310,10 @@ namespace UI.Forms
             txtAddress.Clear();
         }
 
+        /// <summary>
+        /// Habilita o deshabilita los controles del formulario según el estado de edición
+        /// </summary>
+        /// <param name="enabled">True para habilitar los controles de edición; False para deshabilitarlos</param>
         private void EnableForm(bool enabled)
         {
             grpDetails.Enabled = enabled;

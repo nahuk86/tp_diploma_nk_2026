@@ -19,6 +19,9 @@ namespace UI.Forms
         private Role _currentRole;
         private bool _isEditing = false;
 
+        /// <summary>
+        /// Inicializa una nueva instancia del formulario de gestión de roles
+        /// </summary>
         public RolesForm()
         {
             InitializeComponent();
@@ -39,6 +42,9 @@ namespace UI.Forms
             LoadRoles();
         }
 
+        /// <summary>
+        /// Aplica la localización de textos a los controles del formulario según el idioma seleccionado
+        /// </summary>
         private void ApplyLocalization()
         {
             this.Text = _localizationService.GetString("Roles.Title") ?? "Gestión de Roles";
@@ -60,6 +66,9 @@ namespace UI.Forms
             colDescription.HeaderText = _localizationService.GetString("Roles.Description") ?? "Descripción";
         }
 
+        /// <summary>
+        /// Configura los permisos de los botones según los permisos del usuario actual
+        /// </summary>
         private void ConfigurePermissions()
         {
             if (!SessionContext.CurrentUserId.HasValue)
@@ -73,6 +82,9 @@ namespace UI.Forms
             btnManagePermissions.Enabled = _authorizationService.HasPermission(userId, "Roles.Edit");
         }
 
+        /// <summary>
+        /// Carga la lista de roles activos en el DataGridView
+        /// </summary>
         private void LoadRoles()
         {
             try
@@ -102,6 +114,11 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Nuevo para crear un nuevo rol
+        /// </summary>
+        /// <param name="sender">El objeto que generó el evento</param>
+        /// <param name="e">Los datos del evento</param>
         private void btnNew_Click(object sender, EventArgs e)
         {
             _currentRole = new Role();
@@ -111,6 +128,11 @@ namespace UI.Forms
             txtRoleName.Focus();
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Editar para modificar el rol seleccionado
+        /// </summary>
+        /// <param name="sender">El objeto que generó el evento</param>
+        /// <param name="e">Los datos del evento</param>
         private void btnEdit_Click(object sender, EventArgs e)
         {
             if (dgvRoles.CurrentRow == null)
@@ -130,6 +152,11 @@ namespace UI.Forms
             txtDescription.Focus();
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Eliminar para eliminar el rol seleccionado
+        /// </summary>
+        /// <param name="sender">El objeto que generó el evento</param>
+        /// <param name="e">Los datos del evento</param>
         private void btnDelete_Click(object sender, EventArgs e)
         {
             if (dgvRoles.CurrentRow == null)
@@ -169,6 +196,11 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Guardar para guardar el rol actual
+        /// </summary>
+        /// <param name="sender">El objeto que generó el evento</param>
+        /// <param name="e">Los datos del evento</param>
         private void btnSave_Click(object sender, EventArgs e)
         {
             if (!ValidateForm())
@@ -205,12 +237,22 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Cancelar para cancelar la operación actual
+        /// </summary>
+        /// <param name="sender">El objeto que generó el evento</param>
+        /// <param name="e">Los datos del evento</param>
         private void btnCancel_Click(object sender, EventArgs e)
         {
             EnableForm(false);
             ClearForm();
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Gestionar Permisos para abrir el formulario de permisos del rol seleccionado
+        /// </summary>
+        /// <param name="sender">El objeto que generó el evento</param>
+        /// <param name="e">Los datos del evento</param>
         private void btnManagePermissions_Click(object sender, EventArgs e)
         {
             if (dgvRoles.CurrentRow == null)
@@ -229,6 +271,10 @@ namespace UI.Forms
             permissionsForm.ShowDialog();
         }
 
+        /// <summary>
+        /// Valida que los campos requeridos del formulario estén completos
+        /// </summary>
+        /// <returns>True si la validación es exitosa, false en caso contrario</returns>
         private bool ValidateForm()
         {
             if (string.IsNullOrWhiteSpace(txtRoleName.Text))
@@ -245,24 +291,38 @@ namespace UI.Forms
             return true;
         }
 
+        /// <summary>
+        /// Carga los datos de un rol en los controles del formulario
+        /// </summary>
+        /// <param name="role">El rol cuyos datos se cargarán en el formulario</param>
         private void LoadRoleToForm(Role role)
         {
             txtRoleName.Text = role.RoleName;
             txtDescription.Text = role.Description;
         }
 
+        /// <summary>
+        /// Obtiene los datos del formulario y los asigna al rol actual
+        /// </summary>
         private void GetRoleFromForm()
         {
             _currentRole.RoleName = txtRoleName.Text.Trim();
             _currentRole.Description = txtDescription.Text.Trim();
         }
 
+        /// <summary>
+        /// Limpia todos los campos del formulario
+        /// </summary>
         private void ClearForm()
         {
             txtRoleName.Clear();
             txtDescription.Clear();
         }
 
+        /// <summary>
+        /// Habilita o deshabilita los controles del formulario según el modo de operación
+        /// </summary>
+        /// <param name="enabled">True para habilitar el modo de edición, false para deshabilitarlo</param>
         private void EnableForm(bool enabled)
         {
             grpDetails.Enabled = enabled;

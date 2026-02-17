@@ -11,6 +11,12 @@ namespace UI.Forms
         private readonly ILogService _logService;
         private readonly ILocalizationService _localizationService;
 
+        /// <summary>
+        /// Inicializa una nueva instancia del formulario de configuración inicial de contraseña de administrador
+        /// </summary>
+        /// <param name="authService">Servicio de autenticación</param>
+        /// <param name="logService">Servicio de registro de logs</param>
+        /// <param name="localizationService">Servicio de localización</param>
         public AdminPasswordInitForm(IAuthenticationService authService, ILogService logService, ILocalizationService localizationService)
         {
             InitializeComponent();
@@ -22,6 +28,9 @@ namespace UI.Forms
             ApplyLocalization();
         }
 
+        /// <summary>
+        /// Aplica los textos localizados a los controles del formulario
+        /// </summary>
         private void ApplyLocalization()
         {
             // Try to get localized strings, fallback to Spanish
@@ -37,6 +46,9 @@ namespace UI.Forms
             btnCancel.Text = _localizationService.GetString("Common.Cancel") ?? "Cancelar";
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Inicializar para configurar la contraseña del administrador
+        /// </summary>
         private void btnInitialize_Click(object sender, EventArgs e)
         {
             try
@@ -138,6 +150,10 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Habilita o deshabilita los controles del formulario
+        /// </summary>
+        /// <param name="enabled">True para habilitar, false para deshabilitar</param>
         private void SetControlsEnabled(bool enabled)
         {
             txtPassword.Enabled = enabled;

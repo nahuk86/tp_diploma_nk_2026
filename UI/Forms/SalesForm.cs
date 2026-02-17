@@ -28,6 +28,9 @@ namespace UI.Forms
         private List<Warehouse> _activeWarehouses;
         private Dictionary<int, Dictionary<int, int>> _productStockCache;
 
+        /// <summary>
+        /// Inicializa una nueva instancia del formulario de gestión de ventas
+        /// </summary>
         public SalesForm()
         {
             InitializeComponent();
@@ -56,6 +59,9 @@ namespace UI.Forms
             InitializeForm();
         }
 
+        /// <summary>
+        /// Inicializa el formulario y carga los datos necesarios
+        /// </summary>
         private void InitializeForm()
         {
             ApplyLocalization();
@@ -67,6 +73,9 @@ namespace UI.Forms
             EnableForm(false);
         }
 
+        /// <summary>
+        /// Aplica la localización de textos al formulario según el idioma seleccionado
+        /// </summary>
         private void ApplyLocalization()
         {
             this.Text = _localizationService.GetString("Sales.Title") ?? "Gestión de Ventas";
@@ -108,6 +117,9 @@ namespace UI.Forms
             colStock.HeaderText = _localizationService.GetString("Sales.StockAvailable") ?? "Stock Disponible";
         }
 
+        /// <summary>
+        /// Configura los permisos del usuario actual para las acciones del formulario
+        /// </summary>
         private void ConfigurePermissions()
         {
             if (!SessionContext.CurrentUserId.HasValue)
@@ -118,6 +130,9 @@ namespace UI.Forms
             btnNew.Enabled = _authorizationService.HasPermission(userId, "Sales.Create");
         }
 
+        /// <summary>
+        /// Carga la lista de clientes activos en el ComboBox
+        /// </summary>
         private void LoadClients()
         {
             try
@@ -144,6 +159,9 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Carga la lista de productos activos en el DataGridView de líneas de venta
+        /// </summary>
         private void LoadProducts()
         {
             try
@@ -170,6 +188,9 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Carga la lista de almacenes activos
+        /// </summary>
         private void LoadWarehouses()
         {
             try
@@ -182,6 +203,9 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Carga la lista de ventas con sus detalles en el DataGridView principal
+        /// </summary>
         private void LoadSales()
         {
             try
@@ -217,12 +241,22 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Obtiene el nombre completo de un cliente por su ID
+        /// </summary>
+        /// <param name="clientId">ID del cliente</param>
+        /// <returns>Nombre completo del cliente o "(Desconocido)" si no se encuentra</returns>
         private string GetClientNameById(int clientId)
         {
             var client = _activeClients.FirstOrDefault(c => c.ClientId == clientId);
             return client != null ? $"{client.Nombre} {client.Apellido}" : _localizationService.GetString("Sales.Unknown") ?? "(Desconocido)";
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Nuevo para crear una nueva venta
+        /// </summary>
+        /// <param name="sender">Objeto que genera el evento</param>
+        /// <param name="e">Argumentos del evento</param>
         private void btnNew_Click(object sender, EventArgs e)
         {
             _isCreating = true;
@@ -231,6 +265,11 @@ namespace UI.Forms
             cmbClient.Focus();  // Focus on client instead of seller name since it's read-only
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Ver Detalles para mostrar los detalles de una venta seleccionada
+        /// </summary>
+        /// <param name="sender">Objeto que genera el evento</param>
+        /// <param name="e">Argumentos del evento</param>
         private void btnViewDetails_Click(object sender, EventArgs e)
         {
             if (dgvSales.CurrentRow == null)
@@ -253,6 +292,11 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Nuevo Cliente para abrir el formulario de gestión de clientes
+        /// </summary>
+        /// <param name="sender">Objeto que genera el evento</param>
+        /// <param name="e">Argumentos del evento</param>
         private void btnNewClient_Click(object sender, EventArgs e)
         {
             try
@@ -267,6 +311,11 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Guardar para crear una nueva venta con sus líneas
+        /// </summary>
+        /// <param name="sender">Objeto que genera el evento</param>
+        /// <param name="e">Argumentos del evento</param>
         private void btnSave_Click(object sender, EventArgs e)
         {
             try
@@ -337,6 +386,11 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Cancelar para descartar los cambios y cerrar el modo de edición
+        /// </summary>
+        /// <param name="sender">Objeto que genera el evento</param>
+        /// <param name="e">Argumentos del evento</param>
         private void btnCancel_Click(object sender, EventArgs e)
         {
             ClearForm();
@@ -344,12 +398,22 @@ namespace UI.Forms
             _isCreating = false;
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Agregar Línea para añadir una nueva línea de producto a la venta
+        /// </summary>
+        /// <param name="sender">Objeto que genera el evento</param>
+        /// <param name="e">Argumentos del evento</param>
         private void btnAddLine_Click(object sender, EventArgs e)
         {
             dgvLines.Rows.Add();
             dgvLines.Focus();
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Quitar Línea para eliminar una línea de producto de la venta
+        /// </summary>
+        /// <param name="sender">Objeto que genera el evento</param>
+        /// <param name="e">Argumentos del evento</param>
         private void btnRemoveLine_Click(object sender, EventArgs e)
         {
             if (dgvLines.CurrentRow != null && !dgvLines.CurrentRow.IsNewRow)
@@ -359,6 +423,11 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Maneja el evento CellValueChanged del DataGridView de líneas para recalcular totales y actualizar stock
+        /// </summary>
+        /// <param name="sender">Objeto que genera el evento</param>
+        /// <param name="e">Argumentos del evento con información de la celda modificada</param>
         private void dgvLines_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0) return;
@@ -388,6 +457,11 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Maneja el cambio de estado de la celda actual para confirmar los cambios inmediatamente
+        /// </summary>
+        /// <param name="sender">Objeto que genera el evento</param>
+        /// <param name="e">Argumentos del evento</param>
         private void dgvLines_CurrentCellDirtyStateChanged(object sender, EventArgs e)
         {
             if (dgvLines.IsCurrentCellDirty)
@@ -396,6 +470,10 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Calcula el total de una línea de venta multiplicando cantidad por precio unitario
+        /// </summary>
+        /// <param name="row">Fila del DataGridView que contiene la línea de venta</param>
         private void CalculateLineTotal(DataGridViewRow row)
         {
             var quantity = row.Cells[colQuantity.Index].Value;
@@ -410,6 +488,9 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Calcula el total de la venta sumando todas las líneas de productos
+        /// </summary>
         private void CalculateTotal()
         {
             decimal total = 0;
@@ -423,6 +504,11 @@ namespace UI.Forms
             txtTotalAmount.Text = total.ToString("C2");
         }
 
+        /// <summary>
+        /// Actualiza la visualización del stock disponible para un producto en los diferentes almacenes
+        /// </summary>
+        /// <param name="row">Fila del DataGridView donde se mostrará el stock</param>
+        /// <param name="productId">ID del producto para consultar su stock</param>
         private void UpdateStockDisplay(DataGridViewRow row, int productId)
         {
             try
@@ -458,6 +544,10 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Habilita o deshabilita los controles del formulario según el modo de edición
+        /// </summary>
+        /// <param name="enable">True para habilitar edición, False para deshabilitar</param>
         private void EnableForm(bool enable)
         {
             grpDetails.Enabled = enable;
@@ -470,6 +560,9 @@ namespace UI.Forms
             dgvSales.Enabled = !enable;
         }
 
+        /// <summary>
+        /// Limpia todos los campos del formulario y restablece los valores por defecto
+        /// </summary>
         private void ClearForm()
         {
             txtSaleNumber.Text = _localizationService.GetString("Sales.AutoGenerated") ?? "(Autogenerado)";
@@ -492,6 +585,10 @@ namespace UI.Forms
             _productStockCache.Clear();
         }
 
+        /// <summary>
+        /// Carga los datos de una venta existente en el formulario para visualización
+        /// </summary>
+        /// <param name="sale">Objeto Sale con los datos a mostrar</param>
         private void LoadSaleToForm(Sale sale)
         {
             txtSaleNumber.Text = sale.SaleNumber;
@@ -552,6 +649,10 @@ namespace UI.Forms
             txtTotalAmount.Text = sale.TotalAmount.ToString("C2");
         }
 
+        /// <summary>
+        /// Valida que los campos requeridos del formulario estén completos antes de guardar
+        /// </summary>
+        /// <returns>True si la validación es exitosa, False en caso contrario</returns>
         private bool ValidateForm()
         {
             // Seller name is automatically set from current user, no need to validate
@@ -572,6 +673,10 @@ namespace UI.Forms
             return true;
         }
 
+        /// <summary>
+        /// Obtiene el ID del cliente seleccionado en el ComboBox
+        /// </summary>
+        /// <returns>ID del cliente seleccionado o null si no hay selección válida</returns>
         private int? GetSelectedClientId()
         {
             if (cmbClient.SelectedItem == null)
@@ -582,16 +687,37 @@ namespace UI.Forms
         }
 
         // Helper classes
+        /// <summary>
+        /// Clase auxiliar para representar elementos en un ComboBox con texto y valor
+        /// </summary>
         private class ComboBoxItem
         {
+            /// <summary>
+            /// Obtiene o establece el texto a mostrar en el ComboBox
+            /// </summary>
             public string Text { get; set; }
+            /// <summary>
+            /// Obtiene o establece el valor asociado al elemento
+            /// </summary>
             public int? Value { get; set; }
         }
 
+        /// <summary>
+        /// Clase auxiliar para representar productos en el DataGridView de líneas de venta
+        /// </summary>
         private class ProductItem
         {
+            /// <summary>
+            /// Obtiene o establece el ID del producto
+            /// </summary>
             public int ProductId { get; set; }
+            /// <summary>
+            /// Obtiene o establece el texto a mostrar para el producto
+            /// </summary>
             public string DisplayText { get; set; }
+            /// <summary>
+            /// Obtiene o establece el precio unitario del producto
+            /// </summary>
             public decimal UnitPrice { get; set; }
         }
     }

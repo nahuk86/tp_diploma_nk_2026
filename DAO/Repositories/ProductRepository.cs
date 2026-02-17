@@ -9,6 +9,11 @@ namespace DAO.Repositories
 {
     public class ProductRepository : IProductRepository
     {
+        /// <summary>
+        /// Obtiene un producto por su identificador
+        /// </summary>
+        /// <param name="id">Identificador del producto</param>
+        /// <returns>El producto encontrado o null si no existe</returns>
         public Product GetById(int id)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -34,6 +39,11 @@ namespace DAO.Repositories
             return null;
         }
 
+        /// <summary>
+        /// Obtiene un producto por su código SKU
+        /// </summary>
+        /// <param name="sku">Código SKU del producto</param>
+        /// <returns>El producto encontrado o null si no existe</returns>
         public Product GetBySKU(string sku)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -59,6 +69,10 @@ namespace DAO.Repositories
             return null;
         }
 
+        /// <summary>
+        /// Obtiene la lista completa de productos ordenados por nombre
+        /// </summary>
+        /// <returns>Lista de todos los productos</returns>
         public List<Product> GetAll()
         {
             var products = new List<Product>();
@@ -86,6 +100,10 @@ namespace DAO.Repositories
             return products;
         }
 
+        /// <summary>
+        /// Obtiene la lista de productos activos ordenados por nombre
+        /// </summary>
+        /// <returns>Lista de productos activos</returns>
         public List<Product> GetAllActive()
         {
             var products = new List<Product>();
@@ -113,6 +131,11 @@ namespace DAO.Repositories
             return products;
         }
 
+        /// <summary>
+        /// Busca productos por término de búsqueda en SKU, nombre o descripción
+        /// </summary>
+        /// <param name="searchTerm">Término de búsqueda</param>
+        /// <returns>Lista de productos que coinciden con la búsqueda</returns>
         public List<Product> Search(string searchTerm)
         {
             var products = new List<Product>();
@@ -143,6 +166,11 @@ namespace DAO.Repositories
             return products;
         }
 
+        /// <summary>
+        /// Obtiene la lista de productos filtrados por categoría
+        /// </summary>
+        /// <param name="category">Categoría del producto</param>
+        /// <returns>Lista de productos de la categoría especificada</returns>
         public List<Product> GetByCategory(string category)
         {
             var products = new List<Product>();
@@ -171,6 +199,12 @@ namespace DAO.Repositories
             return products;
         }
 
+        /// <summary>
+        /// Verifica si un código SKU ya existe en la base de datos
+        /// </summary>
+        /// <param name="sku">Código SKU a verificar</param>
+        /// <param name="excludeProductId">Identificador de producto a excluir de la búsqueda (opcional)</param>
+        /// <returns>True si el SKU existe, false en caso contrario</returns>
         public bool SKUExists(string sku, int? excludeProductId = null)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -193,6 +227,11 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Inserta un nuevo producto en la base de datos
+        /// </summary>
+        /// <param name="entity">Entidad de producto a insertar</param>
+        /// <returns>Identificador del producto creado</returns>
         public int Insert(Product entity)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -219,6 +258,10 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Actualiza los datos de un producto existente
+        /// </summary>
+        /// <param name="entity">Entidad de producto con los datos actualizados</param>
         public void Update(Product entity)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -254,6 +297,10 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Elimina físicamente un producto de la base de datos
+        /// </summary>
+        /// <param name="id">Identificador del producto a eliminar</param>
         public void Delete(int id)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -269,6 +316,11 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Realiza una eliminación lógica marcando el producto como inactivo
+        /// </summary>
+        /// <param name="id">Identificador del producto a desactivar</param>
+        /// <param name="deletedBy">Identificador del usuario que realiza la eliminación</param>
         public void SoftDelete(int id, int deletedBy)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -288,6 +340,11 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Mapea los datos del lector SQL a una entidad de producto
+        /// </summary>
+        /// <param name="reader">Lector de datos SQL</param>
+        /// <returns>Entidad de producto mapeada</returns>
         private Product MapProduct(SqlDataReader reader)
         {
             return new Product

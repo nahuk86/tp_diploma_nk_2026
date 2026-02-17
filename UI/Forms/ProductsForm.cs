@@ -20,6 +20,9 @@ namespace UI.Forms
         private Product _currentProduct;
         private bool _isEditing = false;
 
+        /// <summary>
+        /// Inicializa una nueva instancia del formulario de gestión de productos
+        /// </summary>
         public ProductsForm()
         {
             InitializeComponent();
@@ -40,6 +43,9 @@ namespace UI.Forms
             LoadProducts();
         }
 
+        /// <summary>
+        /// Aplica la localización a los textos del formulario según el idioma seleccionado
+        /// </summary>
         private void ApplyLocalization()
         {
             this.Text = _localizationService.GetString("Products.Title") ?? "Gestión de Productos";
@@ -72,6 +78,9 @@ namespace UI.Forms
             colMinStock.HeaderText = _localizationService.GetString("Products.MinStock") ?? "Stock Mín.";
         }
 
+        /// <summary>
+        /// Configura los permisos de los botones según los permisos del usuario actual
+        /// </summary>
         private void ConfigurePermissions()
         {
             if (!SessionContext.CurrentUserId.HasValue)
@@ -84,6 +93,9 @@ namespace UI.Forms
             btnDelete.Enabled = _authorizationService.HasPermission(userId, "Products.Delete");
         }
 
+        /// <summary>
+        /// Carga la lista de productos activos en el DataGridView
+        /// </summary>
         private void LoadProducts()
         {
             try
@@ -115,6 +127,11 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Nuevo para crear un nuevo producto
+        /// </summary>
+        /// <param name="sender">Objeto que genera el evento</param>
+        /// <param name="e">Argumentos del evento</param>
         private void btnNew_Click(object sender, EventArgs e)
         {
             _currentProduct = new Product();
@@ -124,6 +141,11 @@ namespace UI.Forms
             txtSKU.Focus();
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Editar para modificar un producto existente
+        /// </summary>
+        /// <param name="sender">Objeto que genera el evento</param>
+        /// <param name="e">Argumentos del evento</param>
         private void btnEdit_Click(object sender, EventArgs e)
         {
             if (dgvProducts.CurrentRow == null)
@@ -143,6 +165,11 @@ namespace UI.Forms
             txtName.Focus();
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Eliminar para eliminar un producto
+        /// </summary>
+        /// <param name="sender">Objeto que genera el evento</param>
+        /// <param name="e">Argumentos del evento</param>
         private void btnDelete_Click(object sender, EventArgs e)
         {
             if (dgvProducts.CurrentRow == null)
@@ -182,6 +209,11 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Guardar para crear o actualizar el producto
+        /// </summary>
+        /// <param name="sender">Objeto que genera el evento</param>
+        /// <param name="e">Argumentos del evento</param>
         private void btnSave_Click(object sender, EventArgs e)
         {
             if (!ValidateForm())
@@ -218,12 +250,22 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Cancelar para cancelar la operación actual
+        /// </summary>
+        /// <param name="sender">Objeto que genera el evento</param>
+        /// <param name="e">Argumentos del evento</param>
         private void btnCancel_Click(object sender, EventArgs e)
         {
             EnableForm(false);
             ClearForm();
         }
 
+        /// <summary>
+        /// Maneja el evento TextChanged del campo de búsqueda para filtrar productos
+        /// </summary>
+        /// <param name="sender">Objeto que genera el evento</param>
+        /// <param name="e">Argumentos del evento</param>
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
             try
@@ -241,6 +283,10 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Valida que los campos requeridos del formulario estén completos
+        /// </summary>
+        /// <returns>True si la validación es exitosa, false en caso contrario</returns>
         private bool ValidateForm()
         {
             if (string.IsNullOrWhiteSpace(txtSKU.Text))
@@ -301,6 +347,10 @@ namespace UI.Forms
             return true;
         }
 
+        /// <summary>
+        /// Carga los datos de un producto en los campos del formulario
+        /// </summary>
+        /// <param name="product">Producto a cargar en el formulario</param>
         private void LoadProductToForm(Product product)
         {
             txtSKU.Text = product.SKU;
@@ -311,6 +361,9 @@ namespace UI.Forms
             txtMinStock.Text = product.MinStockLevel.ToString();
         }
 
+        /// <summary>
+        /// Obtiene los datos del formulario y los asigna al producto actual
+        /// </summary>
         private void GetProductFromForm()
         {
             _currentProduct.SKU = txtSKU.Text.Trim();
@@ -321,6 +374,9 @@ namespace UI.Forms
             _currentProduct.MinStockLevel = int.Parse(txtMinStock.Text);
         }
 
+        /// <summary>
+        /// Limpia todos los campos del formulario
+        /// </summary>
         private void ClearForm()
         {
             txtSKU.Clear();
@@ -331,6 +387,10 @@ namespace UI.Forms
             txtMinStock.Text = "0";
         }
 
+        /// <summary>
+        /// Habilita o deshabilita los controles del formulario según el estado de edición
+        /// </summary>
+        /// <param name="enabled">True para habilitar el formulario, false para deshabilitarlo</param>
         private void EnableForm(bool enabled)
         {
             grpDetails.Enabled = enabled;

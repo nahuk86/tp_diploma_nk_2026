@@ -18,6 +18,15 @@ namespace BLL.Services
         private readonly IAuditLogRepository _auditRepo;
         private readonly ILogService _logService;
 
+        /// <summary>
+        /// Inicializa el servicio de ventas con sus dependencias
+        /// </summary>
+        /// <param name="saleRepo">Repositorio de ventas</param>
+        /// <param name="clientRepo">Repositorio de clientes</param>
+        /// <param name="productRepo">Repositorio de productos</param>
+        /// <param name="stockRepo">Repositorio de inventario</param>
+        /// <param name="auditRepo">Repositorio de auditoría</param>
+        /// <param name="logService">Servicio de registro de eventos</param>
         public SaleService(
             ISaleRepository saleRepo,
             IClientRepository clientRepo,
@@ -34,6 +43,10 @@ namespace BLL.Services
             _logService = logService ?? throw new ArgumentNullException(nameof(logService));
         }
 
+        /// <summary>
+        /// Obtiene todas las ventas del sistema
+        /// </summary>
+        /// <returns>Lista de todas las ventas</returns>
         public List<Sale> GetAllSales()
         {
             try
@@ -47,6 +60,10 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Obtiene todas las ventas con sus detalles completos
+        /// </summary>
+        /// <returns>Lista de ventas con información de cliente y vendedor</returns>
         public List<Sale> GetAllSalesWithDetails()
         {
             try
@@ -60,6 +77,11 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Obtiene una venta por su identificador
+        /// </summary>
+        /// <param name="saleId">Identificador de la venta</param>
+        /// <returns>Venta encontrada o null si no existe</returns>
         public Sale GetSaleById(int saleId)
         {
             try
@@ -73,6 +95,11 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Obtiene una venta con sus líneas de detalle
+        /// </summary>
+        /// <param name="saleId">Identificador de la venta</param>
+        /// <returns>Venta con sus líneas de detalle</returns>
         public Sale GetSaleByIdWithLines(int saleId)
         {
             try
@@ -86,6 +113,11 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Obtiene las ventas realizadas por un vendedor específico
+        /// </summary>
+        /// <param name="sellerName">Nombre del vendedor</param>
+        /// <returns>Lista de ventas del vendedor</returns>
         public List<Sale> GetSalesBySeller(string sellerName)
         {
             try
@@ -99,6 +131,11 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Obtiene las ventas realizadas a un cliente específico
+        /// </summary>
+        /// <param name="clientId">Identificador del cliente</param>
+        /// <returns>Lista de ventas del cliente</returns>
         public List<Sale> GetSalesByClient(int clientId)
         {
             try
@@ -112,6 +149,12 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Obtiene las ventas realizadas en un rango de fechas
+        /// </summary>
+        /// <param name="startDate">Fecha de inicio</param>
+        /// <param name="endDate">Fecha de fin</param>
+        /// <returns>Lista de ventas en el rango de fechas</returns>
         public List<Sale> GetSalesByDateRange(DateTime startDate, DateTime endDate)
         {
             try
@@ -125,6 +168,13 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Crea una nueva venta con sus líneas de detalle y descuenta el inventario
+        /// </summary>
+        /// <param name="sale">Datos de la venta</param>
+        /// <param name="saleLines">Líneas de detalle de la venta</param>
+        /// <param name="currentUserId">Identificador del usuario que registra la venta</param>
+        /// <returns>Identificador de la venta creada</returns>
         public int CreateSale(Sale sale, List<SaleLine> saleLines, int currentUserId)
         {
             try
@@ -164,6 +214,11 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Actualiza los datos de una venta existente
+        /// </summary>
+        /// <param name="sale">Datos actualizados de la venta</param>
+        /// <param name="currentUserId">Identificador del usuario que actualiza</param>
         public void UpdateSale(Sale sale, int currentUserId)
         {
             try
@@ -197,6 +252,11 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Elimina una venta del sistema
+        /// </summary>
+        /// <param name="saleId">Identificador de la venta a eliminar</param>
+        /// <param name="currentUserId">Identificador del usuario que elimina</param>
         public void DeleteSale(int saleId, int currentUserId)
         {
             try
@@ -222,6 +282,11 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Obtiene el stock disponible de un producto por almacén
+        /// </summary>
+        /// <param name="productId">Identificador del producto</param>
+        /// <returns>Diccionario con el stock disponible por almacén</returns>
         public Dictionary<int, int> GetAvailableStockByWarehouse(int productId)
         {
             try
@@ -243,6 +308,11 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Obtiene el stock total disponible de un producto en todos los almacenes
+        /// </summary>
+        /// <param name="productId">Identificador del producto</param>
+        /// <returns>Cantidad total disponible</returns>
         public int GetTotalAvailableStock(int productId)
         {
             try
@@ -257,6 +327,11 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Valida que los datos de la venta y sus líneas cumplan con las reglas de negocio
+        /// </summary>
+        /// <param name="sale">Venta a validar</param>
+        /// <param name="saleLines">Líneas de detalle de la venta</param>
         private void ValidateSale(Sale sale, List<SaleLine> saleLines)
         {
             if (sale == null)
@@ -383,6 +458,10 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Genera un número único para la venta
+        /// </summary>
+        /// <returns>Número de venta generado</returns>
         private string GenerateSaleNumber()
         {
             return "S-" + DateTime.Now.ToString("yyyyMMdd-HHmmss");

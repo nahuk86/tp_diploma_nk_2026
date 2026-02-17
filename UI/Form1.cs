@@ -14,12 +14,20 @@ using SERVICES.Implementations;
 
 namespace UI
 {
+    /// <summary>
+    /// Formulario principal de la aplicación que contiene el menú y maneja las ventanas MDI
+    /// </summary>
     public partial class Form1 : Form
     {
         private readonly ILocalizationService _localizationService;
         private readonly ILogService _logService;
         private readonly IAuthorizationService _authorizationService;
 
+        /// <summary>
+        /// Inicializa una nueva instancia del formulario principal
+        /// </summary>
+        /// <param name="localizationService">Servicio de localización</param>
+        /// <param name="logService">Servicio de registro de logs</param>
         public Form1(ILocalizationService localizationService, ILogService logService)
         {
             InitializeComponent();
@@ -39,6 +47,9 @@ namespace UI
             ConfigureMenuByPermissions();
         }
 
+        /// <summary>
+        /// Maneja el evento de cambio de idioma y actualiza todos los formularios
+        /// </summary>
         private void OnLanguageChanged(object sender, EventArgs e)
         {
             // Refresh the main form
@@ -48,6 +59,9 @@ namespace UI
             RefreshMdiChildren();
         }
 
+        /// <summary>
+        /// Actualiza la localización de todos los formularios hijos MDI
+        /// </summary>
         private void RefreshMdiChildren()
         {
             foreach (Form childForm in this.MdiChildren)
@@ -62,6 +76,9 @@ namespace UI
             }
         }
 
+        /// <summary>
+        /// Aplica los textos localizados a todos los menús y controles
+        /// </summary>
         private void ApplyLocalization()
         {
             this.Text = $"{_localizationService.GetString("App.Title") ?? "Stock Manager"} - {SessionContext.CurrentUsername ?? "User"}";
@@ -96,6 +113,9 @@ namespace UI
             statusLabel.Text = _localizationService.GetString("Status.Ready") ?? "Listo";
         }
 
+        /// <summary>
+        /// Inicializa las propiedades del formulario principal
+        /// </summary>
         private void InitializeMainForm()
         {
             // Set form properties
@@ -105,6 +125,9 @@ namespace UI
             _logService.Info($"Main form initialized for user: {SessionContext.CurrentUsername ?? "Unknown"}");
         }
 
+        /// <summary>
+        /// Configura la visibilidad y estado de los menús según los permisos del usuario
+        /// </summary>
         private void ConfigureMenuByPermissions()
         {
             if (!SessionContext.CurrentUserId.HasValue)
@@ -137,6 +160,9 @@ namespace UI
             menuAdmin.Visible = menuUsers.Enabled || menuRoles.Enabled;
         }
 
+        /// <summary>
+        /// Maneja el evento Click del menú Cerrar Sesión
+        /// </summary>
         private void menuLogout_Click(object sender, EventArgs e)
         {
             var result = MessageBox.Show(
@@ -153,6 +179,9 @@ namespace UI
             }
         }
 
+        /// <summary>
+        /// Maneja el evento Click del menú Salir de la aplicación
+        /// </summary>
         private void menuExit_Click(object sender, EventArgs e)
         {
             var result = MessageBox.Show(
@@ -168,6 +197,9 @@ namespace UI
             }
         }
 
+        /// <summary>
+        /// Maneja el evento Click del menú Usuarios
+        /// </summary>
         private void menuUsers_Click(object sender, EventArgs e)
         {
             if (!CheckPermission("Users.View", "No tiene permisos para ver usuarios."))
@@ -178,6 +210,9 @@ namespace UI
             usersForm.Show();
         }
 
+        /// <summary>
+        /// Maneja el evento Click del menú Roles
+        /// </summary>
         private void menuRoles_Click(object sender, EventArgs e)
         {
             if (!CheckPermission("Roles.View", "No tiene permisos para ver roles."))
@@ -188,6 +223,9 @@ namespace UI
             rolesForm.Show();
         }
 
+        /// <summary>
+        /// Maneja el evento Click del menú Productos
+        /// </summary>
         private void menuProducts_Click(object sender, EventArgs e)
         {
             if (!CheckPermission("Products.View", "No tiene permisos para ver productos."))
@@ -198,6 +236,9 @@ namespace UI
             productsForm.Show();
         }
 
+        /// <summary>
+        /// Maneja el evento Click del menú Almacenes
+        /// </summary>
         private void menuWarehouses_Click(object sender, EventArgs e)
         {
             if (!CheckPermission("Warehouses.View", "No tiene permisos para ver almacenes."))
@@ -208,6 +249,9 @@ namespace UI
             warehousesForm.Show();
         }
 
+        /// <summary>
+        /// Maneja el evento Click del menú Clientes
+        /// </summary>
         private void menuClients_Click(object sender, EventArgs e)
         {
             if (!CheckPermission("Clients.View", "No tiene permisos para ver clientes."))
@@ -218,6 +262,9 @@ namespace UI
             clientsForm.Show();
         }
 
+        /// <summary>
+        /// Maneja el evento Click del menú Ventas
+        /// </summary>
         private void menuSales_Click(object sender, EventArgs e)
         {
             if (!CheckPermission("Sales.View", _localizationService.GetString("Error.Unauthorized") ?? "No tiene permisos para realizar esta acción."))
@@ -228,6 +275,9 @@ namespace UI
             salesForm.Show();
         }
 
+        /// <summary>
+        /// Maneja el evento Click del menú Movimientos de Stock
+        /// </summary>
         private void menuStockMovements_Click(object sender, EventArgs e)
         {
             if (!SessionContext.CurrentUserId.HasValue)
@@ -255,6 +305,9 @@ namespace UI
             stockMovementForm.Show();
         }
 
+        /// <summary>
+        /// Maneja el evento Click del menú Consultar Stock
+        /// </summary>
         private void menuStockQuery_Click(object sender, EventArgs e)
         {
             if (!CheckPermission("Stock.View", "No tiene permisos para consultar stock."))
@@ -265,6 +318,9 @@ namespace UI
             stockQueryForm.Show();
         }
 
+        /// <summary>
+        /// Maneja el evento Click del menú Reportes
+        /// </summary>
         private void menuReports_Click(object sender, EventArgs e)
         {
             if (!SessionContext.CurrentUserId.HasValue)
@@ -289,6 +345,9 @@ namespace UI
             reportsForm.Show();
         }
 
+        /// <summary>
+        /// Maneja el evento Click del menú Idioma - Español
+        /// </summary>
         private void menuLanguageSpanish_Click(object sender, EventArgs e)
         {
             _localizationService.SetLanguage("es");
@@ -297,6 +356,9 @@ namespace UI
             _logService.Info("Language changed to Spanish");
         }
 
+        /// <summary>
+        /// Maneja el evento Click del menú Idioma - Inglés
+        /// </summary>
         private void menuLanguageEnglish_Click(object sender, EventArgs e)
         {
             _localizationService.SetLanguage("en");
@@ -305,6 +367,9 @@ namespace UI
             _logService.Info("Language changed to English");
         }
 
+        /// <summary>
+        /// Maneja el evento Click del menú Acerca de
+        /// </summary>
         private void menuAbout_Click(object sender, EventArgs e)
         {
             MessageBox.Show(
@@ -317,6 +382,9 @@ namespace UI
                 MessageBoxIcon.Information);
         }
 
+        /// <summary>
+        /// Maneja el evento Click del menú Manual de Usuario
+        /// </summary>
         private void menuUserManual_Click(object sender, EventArgs e)
         {
             var userManualForm = new Forms.UserManualForm();
@@ -324,6 +392,12 @@ namespace UI
             userManualForm.Show();
         }
 
+        /// <summary>
+        /// Verifica si el usuario actual tiene un permiso específico
+        /// </summary>
+        /// <param name="permissionCode">Código del permiso a verificar</param>
+        /// <param name="errorMessage">Mensaje de error a mostrar si no tiene permiso</param>
+        /// <returns>True si tiene permiso, false en caso contrario</returns>
         private bool CheckPermission(string permissionCode, string errorMessage)
         {
             if (!SessionContext.CurrentUserId.HasValue)

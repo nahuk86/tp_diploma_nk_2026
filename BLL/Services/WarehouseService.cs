@@ -14,6 +14,12 @@ namespace BLL.Services
         private readonly IAuditLogRepository _auditRepo;
         private readonly ILogService _logService;
 
+        /// <summary>
+        /// Inicializa el servicio de almacenes con sus dependencias
+        /// </summary>
+        /// <param name="warehouseRepo">Repositorio de almacenes</param>
+        /// <param name="auditRepo">Repositorio de auditoría</param>
+        /// <param name="logService">Servicio de registro de eventos</param>
         public WarehouseService(IWarehouseRepository warehouseRepo, IAuditLogRepository auditRepo, ILogService logService)
         {
             _warehouseRepo = warehouseRepo ?? throw new ArgumentNullException(nameof(warehouseRepo));
@@ -21,6 +27,10 @@ namespace BLL.Services
             _logService = logService ?? throw new ArgumentNullException(nameof(logService));
         }
 
+        /// <summary>
+        /// Obtiene todos los almacenes del sistema
+        /// </summary>
+        /// <returns>Lista de todos los almacenes</returns>
         public List<Warehouse> GetAllWarehouses()
         {
             try
@@ -34,6 +44,10 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Obtiene todos los almacenes activos del sistema
+        /// </summary>
+        /// <returns>Lista de almacenes activos</returns>
         public List<Warehouse> GetActiveWarehouses()
         {
             try
@@ -47,6 +61,11 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Obtiene un almacén por su identificador
+        /// </summary>
+        /// <param name="warehouseId">Identificador del almacén</param>
+        /// <returns>Almacén encontrado o null si no existe</returns>
         public Warehouse GetWarehouseById(int warehouseId)
         {
             try
@@ -60,6 +79,11 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Crea un nuevo almacén en el sistema
+        /// </summary>
+        /// <param name="warehouse">Datos del almacén a crear</param>
+        /// <returns>Identificador del almacén creado</returns>
         public int CreateWarehouse(Warehouse warehouse)
         {
             try
@@ -96,6 +120,10 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Actualiza los datos de un almacén existente
+        /// </summary>
+        /// <param name="warehouse">Datos actualizados del almacén</param>
         public void UpdateWarehouse(Warehouse warehouse)
         {
             try
@@ -136,6 +164,10 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Elimina un almacén del sistema (borrado lógico)
+        /// </summary>
+        /// <param name="warehouseId">Identificador del almacén a eliminar</param>
         public void DeleteWarehouse(int warehouseId)
         {
             try
@@ -161,6 +193,10 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Valida que los datos del almacén cumplan con las reglas de negocio
+        /// </summary>
+        /// <param name="warehouse">Almacén a validar</param>
         private void ValidateWarehouse(Warehouse warehouse)
         {
             if (warehouse == null)
@@ -179,6 +215,14 @@ namespace BLL.Services
                 throw new ArgumentException("Name must be 100 characters or less.", nameof(warehouse.Name));
         }
 
+        /// <summary>
+        /// Registra un cambio de campo en la auditoría si el valor ha cambiado
+        /// </summary>
+        /// <param name="tableName">Nombre de la tabla</param>
+        /// <param name="recordId">Identificador del registro</param>
+        /// <param name="fieldName">Nombre del campo</param>
+        /// <param name="oldValue">Valor anterior</param>
+        /// <param name="newValue">Valor nuevo</param>
         private void LogFieldChange(string tableName, int recordId, string fieldName, string oldValue, string newValue)
         {
             if (oldValue != newValue)

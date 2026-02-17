@@ -12,7 +12,15 @@ namespace DAO.Repositories
 {
     public class ReportRepository : IReportRepository
     {
-        // Report 1: Top Products
+        /// <summary>
+        /// Genera el reporte de productos más vendidos con ranking y estadísticas
+        /// </summary>
+        /// <param name="startDate">Fecha de inicio del período del reporte (opcional)</param>
+        /// <param name="endDate">Fecha de fin del período del reporte (opcional)</param>
+        /// <param name="category">Categoría de productos para filtrar (opcional)</param>
+        /// <param name="topN">Número máximo de productos a retornar (opcional)</param>
+        /// <param name="orderBy">Criterio de ordenamiento: "units" para unidades vendidas o "revenue" para ingresos (por defecto: "units")</param>
+        /// <returns>Lista de productos más vendidos con ranking, unidades vendidas, ingresos y precios</returns>
         public List<TopProductsReportDTO> GetTopProductsReport(
             DateTime? startDate, 
             DateTime? endDate, 
@@ -108,7 +116,14 @@ namespace DAO.Repositories
             return reports;
         }
 
-        // Report 2: Client Purchases
+        /// <summary>
+        /// Genera el reporte de compras por cliente con estadísticas de compra
+        /// </summary>
+        /// <param name="startDate">Fecha de inicio del período del reporte (opcional)</param>
+        /// <param name="endDate">Fecha de fin del período del reporte (opcional)</param>
+        /// <param name="clientId">ID del cliente específico para filtrar (opcional)</param>
+        /// <param name="topN">Número máximo de clientes a retornar (opcional)</param>
+        /// <returns>Lista de clientes con sus estadísticas de compra, incluyendo total gastado, número de compras y productos adquiridos</returns>
         public List<ClientPurchasesReportDTO> GetClientPurchasesReport(
             DateTime? startDate, 
             DateTime? endDate, 
@@ -199,6 +214,13 @@ namespace DAO.Repositories
             return reports;
         }
 
+        /// <summary>
+        /// Obtiene el detalle de productos comprados por un cliente específico
+        /// </summary>
+        /// <param name="clientId">ID del cliente</param>
+        /// <param name="startDate">Fecha de inicio del período (opcional)</param>
+        /// <param name="endDate">Fecha de fin del período (opcional)</param>
+        /// <returns>Lista de detalles de productos comprados por el cliente, incluyendo cantidad y monto total</returns>
         private List<ClientProductDetail> GetClientProductDetails(int clientId, DateTime? startDate, DateTime? endDate)
         {
             var details = new List<ClientProductDetail>();
@@ -255,7 +277,14 @@ namespace DAO.Repositories
             return details;
         }
 
-        // Report 3: Price Variation
+        /// <summary>
+        /// Genera el reporte de variación de precios de productos
+        /// </summary>
+        /// <param name="startDate">Fecha de inicio del período del reporte (opcional)</param>
+        /// <param name="endDate">Fecha de fin del período del reporte (opcional)</param>
+        /// <param name="productId">ID del producto específico para filtrar (opcional)</param>
+        /// <param name="category">Categoría de productos para filtrar (opcional)</param>
+        /// <returns>Lista de productos con sus precios de lista, precios de venta mínimos, máximos y promedios</returns>
         public List<PriceVariationReportDTO> GetPriceVariationReport(
             DateTime? startDate, 
             DateTime? endDate, 
@@ -352,7 +381,14 @@ namespace DAO.Repositories
             return reports;
         }
 
-        // Report 4: Seller Performance
+        /// <summary>
+        /// Genera el reporte de rendimiento de vendedores con métricas de ventas
+        /// </summary>
+        /// <param name="startDate">Fecha de inicio del período del reporte (opcional)</param>
+        /// <param name="endDate">Fecha de fin del período del reporte (opcional)</param>
+        /// <param name="sellerName">Nombre del vendedor para filtrar (opcional, permite búsqueda parcial)</param>
+        /// <param name="category">Categoría de productos para filtrar (opcional)</param>
+        /// <returns>Lista de vendedores con sus estadísticas de rendimiento, incluyendo ventas totales, unidades vendidas, ingresos y producto más vendido</returns>
         public List<SellerPerformanceReportDTO> GetSellerPerformanceReport(
             DateTime? startDate, 
             DateTime? endDate, 
@@ -467,7 +503,13 @@ namespace DAO.Repositories
             return reports;
         }
 
-        // Report 5: Category Sales
+        /// <summary>
+        /// Genera el reporte de ventas por categoría de productos
+        /// </summary>
+        /// <param name="startDate">Fecha de inicio del período del reporte (opcional)</param>
+        /// <param name="endDate">Fecha de fin del período del reporte (opcional)</param>
+        /// <param name="category">Categoría específica para filtrar (opcional)</param>
+        /// <returns>Lista de categorías con sus estadísticas de ventas, incluyendo productos vendidos, unidades totales, ingresos y porcentaje del total</returns>
         public List<CategorySalesReportDTO> GetCategorySalesReport(
             DateTime? startDate, 
             DateTime? endDate, 
@@ -553,7 +595,14 @@ namespace DAO.Repositories
             return reports;
         }
 
-        // Report 6: Revenue by Date
+        /// <summary>
+        /// Genera el reporte de ingresos agrupados por fecha
+        /// </summary>
+        /// <param name="startDate">Fecha de inicio del período del reporte (opcional)</param>
+        /// <param name="endDate">Fecha de fin del período del reporte (opcional)</param>
+        /// <param name="movementType">Tipo de movimiento de inventario para filtrar: "in", "out", "transfer" o "adjustment" (opcional)</param>
+        /// <param name="warehouseId">ID del almacén para filtrar movimientos (opcional)</param>
+        /// <returns>Lista de ingresos diarios con información de ventas y movimientos de inventario</returns>
         public List<RevenueByDateReportDTO> GetRevenueByDateReport(
             DateTime? startDate, 
             DateTime? endDate, 
@@ -691,7 +740,15 @@ namespace DAO.Repositories
             return reports;
         }
 
-        // Report 7: Client Product Ranking
+        /// <summary>
+        /// Genera el reporte de ranking de productos por cliente
+        /// </summary>
+        /// <param name="startDate">Fecha de inicio del período del reporte (opcional)</param>
+        /// <param name="endDate">Fecha de fin del período del reporte (opcional)</param>
+        /// <param name="productId">ID del producto específico para filtrar (opcional)</param>
+        /// <param name="category">Categoría de productos para filtrar (opcional)</param>
+        /// <param name="topN">Número máximo de clientes a retornar (opcional)</param>
+        /// <returns>Lista de clientes rankeados por sus compras de productos específicos, incluyendo cantidades y montos totales</returns>
         public List<ClientProductRankingReportDTO> GetClientProductRankingReport(
             DateTime? startDate, 
             DateTime? endDate, 

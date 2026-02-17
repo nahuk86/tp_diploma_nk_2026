@@ -30,6 +30,9 @@ namespace UI.Forms
         private List<Warehouse> _warehouses;
         private List<string> _categories;
 
+        /// <summary>
+        /// Inicializa una nueva instancia del formulario de reportes
+        /// </summary>
         public ReportsForm()
         {
             InitializeComponent();
@@ -52,6 +55,9 @@ namespace UI.Forms
             InitializeForm();
         }
 
+        /// <summary>
+        /// Inicializa el formulario y configura los controles iniciales
+        /// </summary>
         private void InitializeForm()
         {
             ApplyLocalization();
@@ -59,6 +65,9 @@ namespace UI.Forms
             SetupDateRanges();
         }
 
+        /// <summary>
+        /// Aplica la localización a todos los controles del formulario según el idioma seleccionado
+        /// </summary>
         private void ApplyLocalization()
         {
             this.Text = _localizationService.GetString("Reports.Title") ?? "Reportes";
@@ -72,6 +81,9 @@ namespace UI.Forms
             tabClientProductRanking.Text = _localizationService.GetString("Reports.ClientProductRanking") ?? "Ranking Clientes-Productos";
         }
 
+        /// <summary>
+        /// Carga los datos comunes necesarios para los reportes (productos, clientes, almacenes)
+        /// </summary>
         private void LoadCommonData()
         {
             try
@@ -99,6 +111,9 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Configura los rangos de fechas por defecto para todos los reportes
+        /// </summary>
         private void SetupDateRanges()
         {
             var today = DateTime.Today;
@@ -140,6 +155,9 @@ namespace UI.Forms
                 dtpClientProductRankingEnd.Value = today;
         }
 
+        /// <summary>
+        /// Llena los combo boxes de categorías con las categorías disponibles
+        /// </summary>
         private void PopulateCategories()
         {
             if (cboTopProductsCategory != null)
@@ -183,6 +201,9 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Llena el combo box de clientes con los clientes activos disponibles
+        /// </summary>
         private void PopulateClients()
         {
             if (cboClientPurchasesClient != null)
@@ -203,6 +224,9 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Llena los combo boxes de productos con los productos activos disponibles
+        /// </summary>
         private void PopulateProducts()
         {
             if (cboPriceVariationProduct != null)
@@ -240,12 +264,20 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Método reservado para llenar combo boxes de almacenes (actualmente no utilizado)
+        /// </summary>
         private void PopulateWarehouses()
         {
             // Warehouse population removed - no longer needed
         }
 
         // Report 1: Top Products
+        /// <summary>
+        /// Genera el reporte de productos más vendidos según los criterios seleccionados
+        /// </summary>
+        /// <param name="sender">Objeto que genera el evento</param>
+        /// <param name="e">Argumentos del evento</param>
         private void btnGenerateTopProducts_Click(object sender, EventArgs e)
         {
             try
@@ -268,6 +300,9 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Aplica formato y localización a las columnas del grid de productos más vendidos
+        /// </summary>
         private void FormatTopProductsGrid()
         {
             if (dgvTopProducts.DataSource != null && dgvTopProducts.Columns.Count > 0)
@@ -300,12 +335,22 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Exporta el reporte de productos más vendidos a un archivo CSV
+        /// </summary>
+        /// <param name="sender">Objeto que genera el evento</param>
+        /// <param name="e">Argumentos del evento</param>
         private void btnExportTopProducts_Click(object sender, EventArgs e)
         {
             ExportToCSV(dgvTopProducts, "Productos_Mas_Vendidos");
         }
 
         // Report 2: Client Purchases
+        /// <summary>
+        /// Genera el reporte de compras por cliente según los criterios seleccionados
+        /// </summary>
+        /// <param name="sender">Objeto que genera el evento</param>
+        /// <param name="e">Argumentos del evento</param>
         private void btnGenerateClientPurchases_Click(object sender, EventArgs e)
         {
             try
@@ -328,6 +373,9 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Aplica formato y localización a las columnas del grid de compras por cliente
+        /// </summary>
         private void FormatClientPurchasesGrid()
         {
             if (dgvClientPurchases.DataSource != null && dgvClientPurchases.Columns.Count > 0)
@@ -361,12 +409,22 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Exporta el reporte de compras por cliente a un archivo CSV
+        /// </summary>
+        /// <param name="sender">Objeto que genera el evento</param>
+        /// <param name="e">Argumentos del evento</param>
         private void btnExportClientPurchases_Click(object sender, EventArgs e)
         {
             ExportToCSV(dgvClientPurchases, "Compras_Por_Cliente");
         }
 
         // Report 3: Price Variation
+        /// <summary>
+        /// Genera el reporte de variación de precios según los criterios seleccionados
+        /// </summary>
+        /// <param name="sender">Objeto que genera el evento</param>
+        /// <param name="e">Argumentos del evento</param>
         private void btnGeneratePriceVariation_Click(object sender, EventArgs e)
         {
             try
@@ -389,6 +447,9 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Aplica formato y localización a las columnas del grid de variación de precios
+        /// </summary>
         private void FormatPriceVariationGrid()
         {
             if (dgvPriceVariation.DataSource != null && dgvPriceVariation.Columns.Count > 0)
@@ -432,12 +493,22 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Exporta el reporte de variación de precios a un archivo CSV
+        /// </summary>
+        /// <param name="sender">Objeto que genera el evento</param>
+        /// <param name="e">Argumentos del evento</param>
         private void btnExportPriceVariation_Click(object sender, EventArgs e)
         {
             ExportToCSV(dgvPriceVariation, "Variacion_Precios");
         }
 
         // Report 4: Seller Performance
+        /// <summary>
+        /// Genera el reporte de ventas por vendedor según los criterios seleccionados
+        /// </summary>
+        /// <param name="sender">Objeto que genera el evento</param>
+        /// <param name="e">Argumentos del evento</param>
         private void btnGenerateSellerPerformance_Click(object sender, EventArgs e)
         {
             try
@@ -459,6 +530,9 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Aplica formato y localización a las columnas del grid de ventas por vendedor
+        /// </summary>
         private void FormatSellerPerformanceGrid()
         {
             if (dgvSellerPerformance.DataSource != null && dgvSellerPerformance.Columns.Count > 0)
@@ -486,12 +560,22 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Exporta el reporte de ventas por vendedor a un archivo CSV
+        /// </summary>
+        /// <param name="sender">Objeto que genera el evento</param>
+        /// <param name="e">Argumentos del evento</param>
         private void btnExportSellerPerformance_Click(object sender, EventArgs e)
         {
             ExportToCSV(dgvSellerPerformance, "Ventas_Por_Vendedor");
         }
 
         // Report 5: Category Sales
+        /// <summary>
+        /// Genera el reporte de ventas por categoría según los criterios seleccionados
+        /// </summary>
+        /// <param name="sender">Objeto que genera el evento</param>
+        /// <param name="e">Argumentos del evento</param>
         private void btnGenerateCategorySales_Click(object sender, EventArgs e)
         {
             try
@@ -512,6 +596,9 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Aplica formato y localización a las columnas del grid de ventas por categoría
+        /// </summary>
         private void FormatCategorySalesGrid()
         {
             if (dgvCategorySales.DataSource != null && dgvCategorySales.Columns.Count > 0)
@@ -533,6 +620,11 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Exporta el reporte de ventas por categoría a un archivo CSV
+        /// </summary>
+        /// <param name="sender">Objeto que genera el evento</param>
+        /// <param name="e">Argumentos del evento</param>
         private void btnExportCategorySales_Click(object sender, EventArgs e)
         {
             ExportToCSV(dgvCategorySales, "Ventas_Por_Categoria");
@@ -541,6 +633,11 @@ namespace UI.Forms
 
 
         // Report 7: Client Product Ranking
+        /// <summary>
+        /// Genera el reporte de ranking de clientes por producto según los criterios seleccionados
+        /// </summary>
+        /// <param name="sender">Objeto que genera el evento</param>
+        /// <param name="e">Argumentos del evento</param>
         private void btnGenerateClientProductRanking_Click(object sender, EventArgs e)
         {
             try
@@ -564,6 +661,9 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Aplica formato y localización a las columnas del grid de ranking clientes-productos
+        /// </summary>
         private void FormatClientProductRankingGrid()
         {
             if (dgvClientProductRanking.DataSource != null && dgvClientProductRanking.Columns.Count > 0)
@@ -595,12 +695,22 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Exporta el reporte de ranking clientes-productos a un archivo CSV
+        /// </summary>
+        /// <param name="sender">Objeto que genera el evento</param>
+        /// <param name="e">Argumentos del evento</param>
         private void btnExportClientProductRanking_Click(object sender, EventArgs e)
         {
             ExportToCSV(dgvClientProductRanking, "Ranking_Clientes_Productos");
         }
 
         // Helper Methods
+        /// <summary>
+        /// Exporta los datos de un DataGridView a un archivo CSV con codificación UTF-8
+        /// </summary>
+        /// <param name="dgv">El DataGridView que contiene los datos a exportar</param>
+        /// <param name="fileName">Nombre base para el archivo CSV (sin extensión)</param>
         private void ExportToCSV(DataGridView dgv, string fileName)
         {
             try
@@ -658,9 +768,19 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Clase auxiliar para representar elementos en los ComboBox con texto de visualización y valor asociado
+        /// </summary>
         private class ComboBoxItem
         {
+            /// <summary>
+            /// Obtiene o establece el texto visible del elemento
+            /// </summary>
             public string Text { get; set; }
+            
+            /// <summary>
+            /// Obtiene o establece el valor asociado al elemento
+            /// </summary>
             public object Value { get; set; }
         }
     }

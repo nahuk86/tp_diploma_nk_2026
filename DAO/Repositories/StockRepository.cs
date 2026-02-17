@@ -9,6 +9,12 @@ namespace DAO.Repositories
 {
     public class StockRepository : IStockRepository
     {
+        /// <summary>
+        /// Obtiene el stock de un producto en un almacén específico
+        /// </summary>
+        /// <param name="productId">Identificador del producto</param>
+        /// <param name="warehouseId">Identificador del almacén</param>
+        /// <returns>El stock del producto en el almacén, o null si no existe</returns>
         public Stock GetByProductAndWarehouse(int productId, int warehouseId)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -33,6 +39,11 @@ namespace DAO.Repositories
             return null;
         }
 
+        /// <summary>
+        /// Obtiene el stock de un producto en todos los almacenes
+        /// </summary>
+        /// <param name="productId">Identificador del producto</param>
+        /// <returns>Lista de stock del producto en todos los almacenes</returns>
         public List<Stock> GetByProduct(int productId)
         {
             var stocks = new List<Stock>();
@@ -57,6 +68,11 @@ namespace DAO.Repositories
             return stocks;
         }
 
+        /// <summary>
+        /// Obtiene el stock de todos los productos en un almacén específico
+        /// </summary>
+        /// <param name="warehouseId">Identificador del almacén</param>
+        /// <returns>Lista de stock de todos los productos en el almacén</returns>
         public List<Stock> GetByWarehouse(int warehouseId)
         {
             var stocks = new List<Stock>();
@@ -81,6 +97,10 @@ namespace DAO.Repositories
             return stocks;
         }
 
+        /// <summary>
+        /// Obtiene la lista completa de stock de todos los productos en todos los almacenes
+        /// </summary>
+        /// <returns>Lista completa de todo el stock</returns>
         public List<Stock> GetAll()
         {
             var stocks = new List<Stock>();
@@ -104,6 +124,10 @@ namespace DAO.Repositories
             return stocks;
         }
 
+        /// <summary>
+        /// Obtiene la lista de productos con stock bajo o menor al nivel mínimo
+        /// </summary>
+        /// <returns>Lista de productos con stock bajo</returns>
         public List<Stock> GetLowStock()
         {
             var stocks = new List<Stock>();
@@ -128,6 +152,13 @@ namespace DAO.Repositories
             return stocks;
         }
 
+        /// <summary>
+        /// Actualiza o inserta el stock de un producto en un almacén
+        /// </summary>
+        /// <param name="productId">Identificador del producto</param>
+        /// <param name="warehouseId">Identificador del almacén</param>
+        /// <param name="quantity">Cantidad de stock</param>
+        /// <param name="updatedBy">Identificador del usuario que realiza la actualización</param>
         public void UpdateStock(int productId, int warehouseId, int quantity, int updatedBy)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -151,6 +182,12 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Obtiene la cantidad actual de stock de un producto en un almacén
+        /// </summary>
+        /// <param name="productId">Identificador del producto</param>
+        /// <param name="warehouseId">Identificador del almacén</param>
+        /// <returns>Cantidad actual de stock, o 0 si no existe</returns>
         public int GetCurrentStock(int productId, int warehouseId)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -167,6 +204,11 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Mapea los datos del lector SQL a una entidad de stock
+        /// </summary>
+        /// <param name="reader">Lector de datos SQL</param>
+        /// <returns>Entidad de stock con los datos mapeados</returns>
         private Stock MapStock(SqlDataReader reader)
         {
             return new Stock

@@ -14,6 +14,12 @@ namespace BLL.Services
         private readonly IAuditLogRepository _auditRepo;
         private readonly ILogService _logService;
 
+        /// <summary>
+        /// Inicializa el servicio de productos con sus dependencias
+        /// </summary>
+        /// <param name="productRepo">Repositorio de productos</param>
+        /// <param name="auditRepo">Repositorio de auditoría</param>
+        /// <param name="logService">Servicio de registro de eventos</param>
         public ProductService(IProductRepository productRepo, IAuditLogRepository auditRepo, ILogService logService)
         {
             _productRepo = productRepo ?? throw new ArgumentNullException(nameof(productRepo));
@@ -21,6 +27,10 @@ namespace BLL.Services
             _logService = logService ?? throw new ArgumentNullException(nameof(logService));
         }
 
+        /// <summary>
+        /// Obtiene todos los productos del sistema
+        /// </summary>
+        /// <returns>Lista de todos los productos</returns>
         public List<Product> GetAllProducts()
         {
             try
@@ -34,6 +44,10 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Obtiene todos los productos activos del sistema
+        /// </summary>
+        /// <returns>Lista de productos activos</returns>
         public List<Product> GetActiveProducts()
         {
             try
@@ -47,6 +61,11 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Obtiene un producto por su identificador
+        /// </summary>
+        /// <param name="productId">Identificador del producto</param>
+        /// <returns>Producto encontrado o null si no existe</returns>
         public Product GetProductById(int productId)
         {
             try
@@ -60,6 +79,11 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Busca productos por término de búsqueda
+        /// </summary>
+        /// <param name="searchTerm">Término a buscar en nombre, SKU o descripción</param>
+        /// <returns>Lista de productos que coinciden con la búsqueda</returns>
         public List<Product> SearchProducts(string searchTerm)
         {
             try
@@ -76,6 +100,11 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Obtiene los productos de una categoría específica
+        /// </summary>
+        /// <param name="category">Nombre de la categoría</param>
+        /// <returns>Lista de productos de la categoría</returns>
         public List<Product> GetProductsByCategory(string category)
         {
             try
@@ -89,6 +118,11 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Crea un nuevo producto en el sistema
+        /// </summary>
+        /// <param name="product">Datos del producto a crear</param>
+        /// <returns>Identificador del producto creado</returns>
         public int CreateProduct(Product product)
         {
             try
@@ -125,6 +159,10 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Actualiza los datos de un producto existente
+        /// </summary>
+        /// <param name="product">Datos actualizados del producto</param>
         public void UpdateProduct(Product product)
         {
             try
@@ -168,6 +206,10 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Elimina un producto del sistema (borrado lógico)
+        /// </summary>
+        /// <param name="productId">Identificador del producto a eliminar</param>
         public void DeleteProduct(int productId)
         {
             try
@@ -193,6 +235,10 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Valida que los datos del producto cumplan con las reglas de negocio
+        /// </summary>
+        /// <param name="product">Producto a validar</param>
         private void ValidateProduct(Product product)
         {
             if (product == null)
@@ -220,6 +266,14 @@ namespace BLL.Services
                 throw new ArgumentException("Minimum stock level cannot be negative.", nameof(product.MinStockLevel));
         }
 
+        /// <summary>
+        /// Registra un cambio de campo en la auditoría si el valor ha cambiado
+        /// </summary>
+        /// <param name="tableName">Nombre de la tabla</param>
+        /// <param name="recordId">Identificador del registro</param>
+        /// <param name="fieldName">Nombre del campo</param>
+        /// <param name="oldValue">Valor anterior</param>
+        /// <param name="newValue">Valor nuevo</param>
         private void LogFieldChange(string tableName, int recordId, string fieldName, string oldValue, string newValue)
         {
             if (oldValue != newValue)

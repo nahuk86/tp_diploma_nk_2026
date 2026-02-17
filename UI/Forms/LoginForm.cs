@@ -5,12 +5,21 @@ using SERVICES.Interfaces;
 
 namespace UI.Forms
 {
+    /// <summary>
+    /// Formulario de inicio de sesión para autenticación de usuarios
+    /// </summary>
     public partial class LoginForm : Form
     {
         private readonly IAuthenticationService _authService;
         private readonly ILogService _logService;
         private readonly ILocalizationService _localizationService;
 
+        /// <summary>
+        /// Inicializa una nueva instancia del formulario de inicio de sesión
+        /// </summary>
+        /// <param name="authService">Servicio de autenticación</param>
+        /// <param name="logService">Servicio de registro de logs</param>
+        /// <param name="localizationService">Servicio de localización</param>
         public LoginForm(IAuthenticationService authService, ILogService logService, ILocalizationService localizationService)
         {
             InitializeComponent();
@@ -22,6 +31,9 @@ namespace UI.Forms
             ApplyLocalization();
         }
 
+        /// <summary>
+        /// Aplica los textos localizados a los controles del formulario
+        /// </summary>
         private void ApplyLocalization()
         {
             this.Text = _localizationService.GetString("Common.Login");
@@ -31,6 +43,9 @@ namespace UI.Forms
             btnCancel.Text = _localizationService.GetString("Common.Cancel");
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Iniciar Sesión, valida credenciales y autentica al usuario
+        /// </summary>
         private void btnLogin_Click(object sender, EventArgs e)
         {
             try
@@ -103,6 +118,10 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Habilita o deshabilita los controles del formulario durante la autenticación
+        /// </summary>
+        /// <param name="enabled">True para habilitar, false para deshabilitar</param>
         private void SetControlsEnabled(bool enabled)
         {
             txtUsername.Enabled = enabled;

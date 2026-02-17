@@ -17,6 +17,12 @@ namespace SERVICES.Implementations
             _logService = logService ?? throw new ArgumentNullException(nameof(logService));
         }
 
+        /// <summary>
+        /// Verifica si un usuario tiene un permiso específico
+        /// </summary>
+        /// <param name="userId">ID del usuario</param>
+        /// <param name="permissionCode">Código del permiso a verificar</param>
+        /// <returns>True si el usuario tiene el permiso, false en caso contrario</returns>
         public bool HasPermission(int userId, string permissionCode)
         {
             try
@@ -31,6 +37,12 @@ namespace SERVICES.Implementations
             }
         }
 
+        /// <summary>
+        /// Verifica si un usuario tiene al menos uno de los permisos especificados
+        /// </summary>
+        /// <param name="userId">ID del usuario</param>
+        /// <param name="permissionCodes">Códigos de permisos a verificar</param>
+        /// <returns>True si el usuario tiene al menos uno de los permisos, false en caso contrario</returns>
         public bool HasAnyPermission(int userId, params string[] permissionCodes)
         {
             try
@@ -45,6 +57,12 @@ namespace SERVICES.Implementations
             }
         }
 
+        /// <summary>
+        /// Verifica si un usuario tiene todos los permisos especificados
+        /// </summary>
+        /// <param name="userId">ID del usuario</param>
+        /// <param name="permissionCodes">Códigos de permisos a verificar</param>
+        /// <returns>True si el usuario tiene todos los permisos, false en caso contrario</returns>
         public bool HasAllPermissions(int userId, params string[] permissionCodes)
         {
             try
@@ -59,6 +77,11 @@ namespace SERVICES.Implementations
             }
         }
 
+        /// <summary>
+        /// Obtiene la lista de todos los permisos asignados a un usuario
+        /// </summary>
+        /// <param name="userId">ID del usuario</param>
+        /// <returns>Lista de códigos de permisos del usuario</returns>
         public List<string> GetUserPermissions(int userId)
         {
             try

@@ -20,6 +20,9 @@ namespace UI.Forms
         private User _currentUser;
         private bool _isEditing = false;
 
+        /// <summary>
+        /// Inicializa una nueva instancia del formulario de gestión de usuarios
+        /// </summary>
         public UsersForm()
         {
             InitializeComponent();
@@ -44,6 +47,9 @@ namespace UI.Forms
             LoadUsers();
         }
 
+        /// <summary>
+        /// Aplica las traducciones localizadas a todos los controles del formulario
+        /// </summary>
         private void ApplyLocalization()
         {
             this.Text = _localizationService.GetString("Users.Title") ?? "Gestión de Usuarios";
@@ -69,6 +75,9 @@ namespace UI.Forms
             colEmail.HeaderText = _localizationService.GetString("Users.Email") ?? "Email";
         }
 
+        /// <summary>
+        /// Configura los permisos de los botones del formulario basándose en los permisos del usuario actual
+        /// </summary>
         private void ConfigurePermissions()
         {
             if (!SessionContext.CurrentUserId.HasValue)
@@ -82,6 +91,9 @@ namespace UI.Forms
             btnAssignRoles.Enabled = _authorizationService.HasPermission(userId, "Users.Edit");
         }
 
+        /// <summary>
+        /// Carga la lista de usuarios activos en el DataGridView
+        /// </summary>
         private void LoadUsers()
         {
             try
@@ -117,6 +129,11 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Nuevo para crear un nuevo usuario
+        /// </summary>
+        /// <param name="sender">El objeto que generó el evento</param>
+        /// <param name="e">Los datos del evento</param>
         private void btnNew_Click(object sender, EventArgs e)
         {
             _currentUser = new User();
@@ -128,6 +145,11 @@ namespace UI.Forms
             txtUsername.Focus();
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Editar para modificar un usuario existente
+        /// </summary>
+        /// <param name="sender">El objeto que generó el evento</param>
+        /// <param name="e">Los datos del evento</param>
         private void btnEdit_Click(object sender, EventArgs e)
         {
             if (dgvUsers.CurrentRow == null)
@@ -149,6 +171,11 @@ namespace UI.Forms
             txtFullName.Focus();
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Eliminar para dar de baja un usuario
+        /// </summary>
+        /// <param name="sender">El objeto que generó el evento</param>
+        /// <param name="e">Los datos del evento</param>
         private void btnDelete_Click(object sender, EventArgs e)
         {
             if (dgvUsers.CurrentRow == null)
@@ -188,6 +215,11 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Guardar para crear o actualizar un usuario
+        /// </summary>
+        /// <param name="sender">El objeto que generó el evento</param>
+        /// <param name="e">Los datos del evento</param>
         private void btnSave_Click(object sender, EventArgs e)
         {
             if (!ValidateForm())
@@ -225,12 +257,22 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Cancelar para descartar los cambios y cerrar el formulario de edición
+        /// </summary>
+        /// <param name="sender">El objeto que generó el evento</param>
+        /// <param name="e">Los datos del evento</param>
         private void btnCancel_Click(object sender, EventArgs e)
         {
             EnableForm(false);
             ClearForm();
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Cambiar Contraseña para modificar la contraseña de un usuario
+        /// </summary>
+        /// <param name="sender">El objeto que generó el evento</param>
+        /// <param name="e">Los datos del evento</param>
         private void btnChangePassword_Click(object sender, EventArgs e)
         {
             if (dgvUsers.CurrentRow == null)
@@ -271,6 +313,11 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Asignar Roles para gestionar los roles del usuario seleccionado
+        /// </summary>
+        /// <param name="sender">El objeto que generó el evento</param>
+        /// <param name="e">Los datos del evento</param>
         private void btnAssignRoles_Click(object sender, EventArgs e)
         {
             if (dgvUsers.CurrentRow == null)
@@ -289,6 +336,10 @@ namespace UI.Forms
             userRolesForm.ShowDialog();
         }
 
+        /// <summary>
+        /// Valida que los campos requeridos del formulario estén completos
+        /// </summary>
+        /// <returns>True si la validación es exitosa, false en caso contrario</returns>
         private bool ValidateForm()
         {
             if (string.IsNullOrWhiteSpace(txtUsername.Text))
@@ -316,6 +367,10 @@ namespace UI.Forms
             return true;
         }
 
+        /// <summary>
+        /// Carga los datos de un usuario en los controles del formulario
+        /// </summary>
+        /// <param name="user">El usuario cuyos datos se cargarán en el formulario</param>
         private void LoadUserToForm(User user)
         {
             txtUsername.Text = user.Username;
@@ -323,6 +378,9 @@ namespace UI.Forms
             txtEmail.Text = user.Email;
         }
 
+        /// <summary>
+        /// Obtiene los datos del formulario y los asigna al objeto usuario actual
+        /// </summary>
         private void GetUserFromForm()
         {
             _currentUser.Username = txtUsername.Text.Trim();
@@ -330,6 +388,9 @@ namespace UI.Forms
             _currentUser.Email = txtEmail.Text.Trim();
         }
 
+        /// <summary>
+        /// Limpia todos los campos del formulario
+        /// </summary>
         private void ClearForm()
         {
             txtUsername.Clear();
@@ -338,6 +399,10 @@ namespace UI.Forms
             txtPassword.Clear();
         }
 
+        /// <summary>
+        /// Habilita o deshabilita los controles del formulario según el modo de edición
+        /// </summary>
+        /// <param name="enabled">True para habilitar el modo de edición, false para deshabilitarlo</param>
         private void EnableForm(bool enabled)
         {
             grpDetails.Enabled = enabled;

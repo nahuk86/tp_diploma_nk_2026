@@ -16,6 +16,13 @@ namespace UI.Forms
         private List<Role> _allRoles;
         private List<Role> _userRoles;
 
+        /// <summary>
+        /// Inicializa una nueva instancia del formulario de asignación de roles a usuarios
+        /// </summary>
+        /// <param name="userId">El ID del usuario al que se asignarán roles</param>
+        /// <param name="username">El nombre del usuario</param>
+        /// <param name="userService">El servicio de usuario para gestionar las operaciones</param>
+        /// <param name="roleService">El servicio de rol para obtener los roles disponibles</param>
         public UserRolesForm(int userId, string username, UserService userService, RoleService roleService)
         {
             InitializeComponent();
@@ -30,6 +37,9 @@ namespace UI.Forms
             LoadRoles();
         }
 
+        /// <summary>
+        /// Carga todos los roles disponibles y marca los asignados al usuario actual
+        /// </summary>
         private void LoadRoles()
         {
             try
@@ -76,6 +86,11 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Guardar para actualizar los roles del usuario
+        /// </summary>
+        /// <param name="sender">El objeto que generó el evento</param>
+        /// <param name="e">Los argumentos del evento</param>
         private void btnSave_Click(object sender, EventArgs e)
         {
             try
@@ -111,6 +126,11 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Cancelar para cerrar el formulario sin guardar cambios
+        /// </summary>
+        /// <param name="sender">El objeto que generó el evento</param>
+        /// <param name="e">Los argumentos del evento</param>
         private void btnCancel_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.Cancel;
@@ -123,6 +143,10 @@ namespace UI.Forms
             public Role Role { get; set; }
             public string DisplayText { get; set; }
 
+            /// <summary>
+            /// Devuelve una representación en cadena del elemento de rol
+            /// </summary>
+            /// <returns>El texto de visualización del rol</returns>
             public override string ToString()
             {
                 return DisplayText;

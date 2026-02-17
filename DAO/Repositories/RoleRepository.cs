@@ -9,6 +9,11 @@ namespace DAO.Repositories
 {
     public class RoleRepository : IRoleRepository
     {
+        /// <summary>
+        /// Obtiene un rol por su identificador
+        /// </summary>
+        /// <param name="id">Identificador del rol</param>
+        /// <returns>El rol encontrado o null si no existe</returns>
         public Role GetById(int id)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -27,6 +32,11 @@ namespace DAO.Repositories
             return null;
         }
 
+        /// <summary>
+        /// Obtiene un rol por su nombre
+        /// </summary>
+        /// <param name="roleName">Nombre del rol</param>
+        /// <returns>El rol encontrado o null si no existe</returns>
         public Role GetByName(string roleName)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -45,6 +55,10 @@ namespace DAO.Repositories
             return null;
         }
 
+        /// <summary>
+        /// Obtiene la lista completa de roles ordenados por nombre
+        /// </summary>
+        /// <returns>Lista de todos los roles</returns>
         public List<Role> GetAll()
         {
             var roles = new List<Role>();
@@ -63,6 +77,10 @@ namespace DAO.Repositories
             return roles;
         }
 
+        /// <summary>
+        /// Obtiene la lista de roles activos ordenados por nombre
+        /// </summary>
+        /// <returns>Lista de roles activos</returns>
         public List<Role> GetAllActive()
         {
             var roles = new List<Role>();
@@ -81,6 +99,11 @@ namespace DAO.Repositories
             return roles;
         }
 
+        /// <summary>
+        /// Obtiene los permisos asignados a un rol
+        /// </summary>
+        /// <param name="roleId">Identificador del rol</param>
+        /// <returns>Lista de permisos asignados al rol</returns>
         public List<Permission> GetRolePermissions(int roleId)
         {
             var permissions = new List<Permission>();
@@ -102,6 +125,12 @@ namespace DAO.Repositories
             return permissions;
         }
 
+        /// <summary>
+        /// Asigna un permiso a un rol
+        /// </summary>
+        /// <param name="roleId">Identificador del rol</param>
+        /// <param name="permissionId">Identificador del permiso</param>
+        /// <param name="assignedBy">Identificador del usuario que realiza la asignación</param>
         public void AssignPermission(int roleId, int permissionId, int assignedBy)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -121,6 +150,11 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Remueve un permiso de un rol
+        /// </summary>
+        /// <param name="roleId">Identificador del rol</param>
+        /// <param name="permissionId">Identificador del permiso</param>
         public void RemovePermission(int roleId, int permissionId)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -136,6 +170,10 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Elimina todos los permisos asignados a un rol
+        /// </summary>
+        /// <param name="roleId">Identificador del rol</param>
         public void ClearPermissions(int roleId)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -150,6 +188,11 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Inserta un nuevo rol en la base de datos
+        /// </summary>
+        /// <param name="entity">Entidad de rol a insertar</param>
+        /// <returns>El identificador del rol insertado</returns>
         public int Insert(Role entity)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -170,6 +213,10 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Actualiza los datos de un rol existente
+        /// </summary>
+        /// <param name="entity">Entidad de rol con los datos actualizados</param>
         public void Update(Role entity)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -190,6 +237,10 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Elimina físicamente un rol de la base de datos
+        /// </summary>
+        /// <param name="id">Identificador del rol</param>
         public void Delete(int id)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -204,6 +255,11 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Realiza una eliminación lógica marcando el rol como inactivo
+        /// </summary>
+        /// <param name="id">Identificador del rol</param>
+        /// <param name="deletedBy">Identificador del usuario que realiza la eliminación</param>
         public void SoftDelete(int id, int deletedBy)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -220,6 +276,11 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Mapea los datos del lector SQL a una entidad de rol
+        /// </summary>
+        /// <param name="reader">Lector de datos SQL</param>
+        /// <returns>Entidad de rol mapeada</returns>
         private Role MapRole(SqlDataReader reader)
         {
             return new Role
@@ -235,6 +296,11 @@ namespace DAO.Repositories
             };
         }
 
+        /// <summary>
+        /// Mapea los datos del lector SQL a una entidad de permiso
+        /// </summary>
+        /// <param name="reader">Lector de datos SQL</param>
+        /// <returns>Entidad de permiso mapeada</returns>
         private Permission MapPermission(SqlDataReader reader)
         {
             return new Permission

@@ -26,6 +26,9 @@ namespace UI.Forms
         private List<Product> _activeProducts;
         private List<Warehouse> _activeWarehouses;
 
+        /// <summary>
+        /// Inicializa una nueva instancia del formulario de movimientos de stock
+        /// </summary>
         public StockMovementForm()
         {
             InitializeComponent();
@@ -50,6 +53,9 @@ namespace UI.Forms
             InitializeForm();
         }
 
+        /// <summary>
+        /// Inicializa el formulario cargando los datos y aplicando la configuración inicial
+        /// </summary>
         private void InitializeForm()
         {
             ApplyLocalization();
@@ -62,6 +68,9 @@ namespace UI.Forms
             EnableForm(false);
         }
 
+        /// <summary>
+        /// Aplica la localización a todos los controles del formulario según el idioma actual
+        /// </summary>
         private void ApplyLocalization()
         {
             this.Text = _localizationService.GetString("StockMovement.Title") ?? "Movimientos de Stock";
@@ -101,6 +110,9 @@ namespace UI.Forms
             colUnitPrice.HeaderText = _localizationService.GetString("StockMovement.UnitPrice") ?? "Precio Unitario";
         }
 
+        /// <summary>
+        /// Configura los permisos del usuario actual para las operaciones del formulario
+        /// </summary>
         private void ConfigurePermissions()
         {
             if (!SessionContext.CurrentUserId.HasValue)
@@ -116,6 +128,9 @@ namespace UI.Forms
                            _authorizationService.HasPermission(userId, "Stock.Adjust");
         }
 
+        /// <summary>
+        /// Carga la lista de almacenes activos en los combo boxes de origen y destino
+        /// </summary>
         private void LoadWarehouses()
         {
             try
@@ -158,6 +173,9 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Carga la lista de productos activos en la columna de productos del grid de líneas
+        /// </summary>
         private void LoadProducts()
         {
             try
@@ -183,6 +201,9 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Llena el combo box de filtro con los tipos de movimiento disponibles
+        /// </summary>
         private void PopulateMovementTypeFilter()
         {
             cmbMovementTypeFilter.Items.Clear();
@@ -194,6 +215,9 @@ namespace UI.Forms
             cmbMovementTypeFilter.SelectedIndex = 0;
         }
 
+        /// <summary>
+        /// Llena el combo box con los tipos de movimiento disponibles
+        /// </summary>
         private void PopulateMovementTypeCombo()
         {
             cmbMovementType.Items.Clear();
@@ -204,6 +228,9 @@ namespace UI.Forms
             cmbMovementType.SelectedIndex = 0;
         }
 
+        /// <summary>
+        /// Carga los movimientos de stock en el grid según el filtro seleccionado
+        /// </summary>
         private void LoadMovements()
         {
             try
@@ -246,6 +273,11 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Maneja el evento de clic del botón Nuevo para crear un nuevo movimiento
+        /// </summary>
+        /// <param name="sender">El objeto que genera el evento</param>
+        /// <param name="e">Los datos del evento</param>
         private void btnNew_Click(object sender, EventArgs e)
         {
             _isCreating = true;
@@ -254,6 +286,11 @@ namespace UI.Forms
             cmbMovementType.Focus();
         }
 
+        /// <summary>
+        /// Maneja el evento de clic del botón Ver Detalles para mostrar un movimiento seleccionado
+        /// </summary>
+        /// <param name="sender">El objeto que genera el evento</param>
+        /// <param name="e">Los datos del evento</param>
         private void btnViewDetails_Click(object sender, EventArgs e)
         {
             if (dgvMovements.CurrentRow == null)
@@ -271,6 +308,11 @@ namespace UI.Forms
             EnableForm(false); // View only mode
         }
 
+        /// <summary>
+        /// Maneja el evento de clic del botón Guardar para crear un movimiento de stock
+        /// </summary>
+        /// <param name="sender">El objeto que genera el evento</param>
+        /// <param name="e">Los datos del evento</param>
         private void btnSave_Click(object sender, EventArgs e)
         {
             try
@@ -382,6 +424,11 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Maneja el evento de clic del botón Cancelar para descartar los cambios actuales
+        /// </summary>
+        /// <param name="sender">El objeto que genera el evento</param>
+        /// <param name="e">Los datos del evento</param>
         private void btnCancel_Click(object sender, EventArgs e)
         {
             ClearForm();
@@ -389,12 +436,22 @@ namespace UI.Forms
             _isCreating = false;
         }
 
+        /// <summary>
+        /// Maneja el evento de clic del botón Agregar Línea para agregar un producto al movimiento
+        /// </summary>
+        /// <param name="sender">El objeto que genera el evento</param>
+        /// <param name="e">Los datos del evento</param>
         private void btnAddLine_Click(object sender, EventArgs e)
         {
             // DataGridView allows adding new rows automatically
             dgvLines.Focus();
         }
 
+        /// <summary>
+        /// Maneja el evento de clic del botón Quitar Línea para eliminar un producto del movimiento
+        /// </summary>
+        /// <param name="sender">El objeto que genera el evento</param>
+        /// <param name="e">Los datos del evento</param>
         private void btnRemoveLine_Click(object sender, EventArgs e)
         {
             if (dgvLines.CurrentRow != null && !dgvLines.CurrentRow.IsNewRow)
@@ -403,16 +460,29 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Maneja el evento de cambio de selección del filtro de tipo de movimiento
+        /// </summary>
+        /// <param name="sender">El objeto que genera el evento</param>
+        /// <param name="e">Los datos del evento</param>
         private void cmbMovementTypeFilter_SelectedIndexChanged(object sender, EventArgs e)
         {
             LoadMovements();
         }
 
+        /// <summary>
+        /// Maneja el evento de cambio de selección del tipo de movimiento
+        /// </summary>
+        /// <param name="sender">El objeto que genera el evento</param>
+        /// <param name="e">Los datos del evento</param>
         private void cmbMovementType_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateWarehouseVisibility();
         }
 
+        /// <summary>
+        /// Actualiza la visibilidad de los campos de almacén según el tipo de movimiento seleccionado
+        /// </summary>
         private void UpdateWarehouseVisibility()
         {
             if (cmbMovementType.SelectedItem == null)
@@ -455,6 +525,10 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Habilita o deshabilita los controles del formulario
+        /// </summary>
+        /// <param name="enable">True para habilitar los controles, false para deshabilitarlos</param>
         private void EnableForm(bool enable)
         {
             grpDetails.Enabled = enable;
@@ -468,6 +542,9 @@ namespace UI.Forms
             cmbMovementTypeFilter.Enabled = !enable;
         }
 
+        /// <summary>
+        /// Limpia todos los campos del formulario y restablece los valores por defecto
+        /// </summary>
         private void ClearForm()
         {
             cmbMovementType.SelectedIndex = 0;
@@ -480,6 +557,10 @@ namespace UI.Forms
             UpdateWarehouseVisibility();
         }
 
+        /// <summary>
+        /// Carga los datos de un movimiento existente en el formulario
+        /// </summary>
+        /// <param name="movement">El movimiento de stock a cargar</param>
         private void LoadMovementToForm(StockMovement movement)
         {
             cmbMovementType.SelectedItem = movement.MovementType;
@@ -556,6 +637,10 @@ namespace UI.Forms
             UpdateWarehouseVisibility();
         }
 
+        /// <summary>
+        /// Valida los datos ingresados en el formulario antes de guardar
+        /// </summary>
+        /// <returns>True si la validación es exitosa, false en caso contrario</returns>
         private bool ValidateForm()
         {
             if (cmbMovementType.SelectedItem == null)
@@ -636,6 +721,11 @@ namespace UI.Forms
             return true;
         }
 
+        /// <summary>
+        /// Obtiene el ID del almacén seleccionado en el combo box especificado
+        /// </summary>
+        /// <param name="comboBox">El combo box del cual obtener el ID del almacén</param>
+        /// <returns>El ID del almacén seleccionado o null si no hay selección</returns>
         private int? GetSelectedWarehouseId(ComboBox comboBox)
         {
             if (comboBox.SelectedItem == null)
@@ -646,15 +736,35 @@ namespace UI.Forms
         }
 
         // Helper classes
+        /// <summary>
+        /// Clase auxiliar para representar elementos en los combo boxes
+        /// </summary>
         private class ComboBoxItem
         {
+            /// <summary>
+            /// Obtiene o establece el texto a mostrar en el combo box
+            /// </summary>
             public string Text { get; set; }
+            
+            /// <summary>
+            /// Obtiene o establece el valor del elemento
+            /// </summary>
             public int? Value { get; set; }
         }
 
+        /// <summary>
+        /// Clase auxiliar para representar elementos de producto en el grid
+        /// </summary>
         private class ProductItem
         {
+            /// <summary>
+            /// Obtiene o establece el ID del producto
+            /// </summary>
             public int ProductId { get; set; }
+            
+            /// <summary>
+            /// Obtiene o establece el texto a mostrar para el producto
+            /// </summary>
             public string DisplayText { get; set; }
         }
     }
