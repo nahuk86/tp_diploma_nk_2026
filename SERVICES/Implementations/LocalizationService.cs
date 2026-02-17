@@ -39,7 +39,8 @@ namespace SERVICES.Implementations
             }
         }
 
-        public LocalizationService()
+        // Private constructor to enforce singleton pattern
+        private LocalizationService()
         {
             _connectionString = ConfigurationManager.ConnectionStrings["StockManagerDB"]?.ConnectionString;
             _currentLanguage = ConfigurationManager.AppSettings["DefaultLanguage"] ?? "es";
