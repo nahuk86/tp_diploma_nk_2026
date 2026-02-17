@@ -27,7 +27,7 @@ namespace UI.Forms
             _stockRepo = new StockRepository();
             _productRepo = new ProductRepository();
             _warehouseRepo = new WarehouseRepository();
-            _localizationService = new LocalizationService();
+            _localizationService = LocalizationService.Instance;
             _errorHandler = new ErrorHandlerService(_logService, _localizationService);
 
             ApplyLocalization();

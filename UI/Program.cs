@@ -26,7 +26,7 @@ namespace UI
                 var logService = new FileLogService();
                 var userRepository = new UserRepository();
                 var authService = new AuthenticationService(userRepository, logService);
-                var localizationService = new LocalizationService();
+                var localizationService = LocalizationService.Instance;
                 
                 // Check if admin password needs initialization
                 var adminUser = userRepository.GetByUsername("admin");
