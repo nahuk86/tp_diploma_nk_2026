@@ -26,9 +26,18 @@ This method creates a folder with all necessary files that can be zipped and dis
 6. Click `Publish`
 
 **Using MSBuild (Command Line):**
+
+First, create a publish profile from the template:
+```cmd
+copy UI\Properties\PublishProfiles\FolderProfile.pubxml.template UI\Properties\PublishProfiles\FolderProfile.pubxml
+```
+
+Then publish:
 ```cmd
 msbuild UI\UI.csproj /t:Publish /p:Configuration=Release /p:PublishProfile=FolderProfile
 ```
+
+**Note:** A publish profile template is provided at `UI/Properties/PublishProfiles/FolderProfile.pubxml.template`. See the README in that directory for more details.
 
 **Verify Translation Files:**
 After publishing, verify that the `Translations` folder is present in the publish directory:
