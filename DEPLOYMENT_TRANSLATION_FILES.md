@@ -231,7 +231,7 @@ Ensure your build pipeline includes the Translations folder in the artifact:
 - name: Package application
   run: |
     cd UI/bin/Release
-    zip -r ../../../StockManager.zip . -i "*" "Translations/*"
+    zip -r ../../../StockManager.zip . -x "*.pdb"
 ```
 
 ## Adding New Languages
