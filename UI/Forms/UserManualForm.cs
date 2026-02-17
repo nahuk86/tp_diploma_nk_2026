@@ -6,12 +6,18 @@ namespace UI.Forms
 {
     public partial class UserManualForm : Form
     {
+        /// <summary>
+        /// Inicializa una nueva instancia del formulario de manual de usuario
+        /// </summary>
         public UserManualForm()
         {
             InitializeComponent();
             LoadManualContent();
         }
 
+        /// <summary>
+        /// Carga el contenido completo del manual de usuario en el RichTextBox
+        /// </summary>
         private void LoadManualContent()
         {
             txtManualContent.Clear();
@@ -494,6 +500,12 @@ namespace UI.Forms
             txtManualContent.ScrollToCaret();
         }
 
+        /// <summary>
+        /// Agrega un título formateado al contenido del manual
+        /// </summary>
+        /// <param name="text">Texto del título</param>
+        /// <param name="fontSize">Tamaño de fuente en puntos</param>
+        /// <param name="bold">Indica si el texto debe ser negrita</param>
         private void AppendTitle(string text, int fontSize, bool bold)
         {
             int start = txtManualContent.TextLength;
@@ -504,6 +516,11 @@ namespace UI.Forms
             txtManualContent.Select(txtManualContent.TextLength, 0);
         }
 
+        /// <summary>
+        /// Agrega un encabezado de sección formateado al contenido del manual
+        /// </summary>
+        /// <param name="text">Texto del encabezado</param>
+        /// <param name="fontSize">Tamaño de fuente en puntos</param>
         private void AppendHeading(string text, int fontSize)
         {
             int start = txtManualContent.TextLength;
@@ -515,6 +532,10 @@ namespace UI.Forms
             AppendLine();
         }
 
+        /// <summary>
+        /// Agrega un subencabezado formateado al contenido del manual
+        /// </summary>
+        /// <param name="text">Texto del subencabezado</param>
         private void AppendSubHeading(string text)
         {
             int start = txtManualContent.TextLength;
@@ -526,6 +547,10 @@ namespace UI.Forms
             AppendLine();
         }
 
+        /// <summary>
+        /// Agrega texto en negrita al contenido del manual
+        /// </summary>
+        /// <param name="text">Texto a agregar en negrita</param>
         private void AppendBold(string text)
         {
             int start = txtManualContent.TextLength;
@@ -536,6 +561,10 @@ namespace UI.Forms
             txtManualContent.Select(txtManualContent.TextLength, 0);
         }
 
+        /// <summary>
+        /// Agrega texto normal al contenido del manual
+        /// </summary>
+        /// <param name="text">Texto a agregar</param>
         private void AppendText(string text)
         {
             int start = txtManualContent.TextLength;
@@ -546,11 +575,19 @@ namespace UI.Forms
             txtManualContent.Select(txtManualContent.TextLength, 0);
         }
 
+        /// <summary>
+        /// Agrega un salto de línea al contenido del manual
+        /// </summary>
         private void AppendLine()
         {
             txtManualContent.AppendText(Environment.NewLine);
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Cerrar para cerrar el formulario
+        /// </summary>
+        /// <param name="sender">Objeto que genera el evento</param>
+        /// <param name="e">Argumentos del evento</param>
         private void btnClose_Click(object sender, EventArgs e)
         {
             this.Close();

@@ -9,6 +9,9 @@ using SERVICES.Interfaces;
 
 namespace UI.Forms
 {
+    /// <summary>
+    /// Formulario para la gestión de clientes del sistema
+    /// </summary>
     public partial class ClientsForm : Form
     {
         private readonly ClientService _clientService;
@@ -19,6 +22,9 @@ namespace UI.Forms
         private Client _currentClient;
         private bool _isEditing = false;
 
+        /// <summary>
+        /// Inicializa una nueva instancia del formulario de gestión de clientes
+        /// </summary>
         public ClientsForm()
         {
             InitializeComponent();
@@ -39,6 +45,9 @@ namespace UI.Forms
             LoadClients();
         }
 
+        /// <summary>
+        /// Aplica los textos localizados a todos los controles del formulario
+        /// </summary>
         private void ApplyLocalization()
         {
             this.Text = _localizationService.GetString("Clients.Title") ?? "Gestión de Clientes";
@@ -65,6 +74,9 @@ namespace UI.Forms
             colTelefono.HeaderText = _localizationService.GetString("Clients.Telefono") ?? "Teléfono";
         }
 
+        /// <summary>
+        /// Configura la habilitación de botones según los permisos del usuario actual
+        /// </summary>
         private void ConfigurePermissions()
         {
             if (!SessionContext.CurrentUserId.HasValue)
@@ -77,6 +89,9 @@ namespace UI.Forms
             btnDelete.Enabled = _authorizationService.HasPermission(userId, "Clients.Delete");
         }
 
+        /// <summary>
+        /// Carga la lista de clientes activos en el DataGridView
+        /// </summary>
         private void LoadClients()
         {
             try
@@ -110,6 +125,9 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Nuevo para crear un nuevo cliente
+        /// </summary>
         private void btnNew_Click(object sender, EventArgs e)
         {
             _currentClient = new Client();
@@ -119,6 +137,9 @@ namespace UI.Forms
             txtNombre.Focus();
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Editar para modificar el cliente seleccionado
+        /// </summary>
         private void btnEdit_Click(object sender, EventArgs e)
         {
             if (dgvClients.CurrentRow == null)
@@ -138,6 +159,9 @@ namespace UI.Forms
             txtNombre.Focus();
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Eliminar para eliminar el cliente seleccionado
+        /// </summary>
         private void btnDelete_Click(object sender, EventArgs e)
         {
             if (dgvClients.CurrentRow == null)
@@ -177,6 +201,9 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Guardar para crear o actualizar el cliente
+        /// </summary>
         private void btnSave_Click(object sender, EventArgs e)
         {
             if (!ValidateForm())
@@ -213,12 +240,19 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Cancelar para cancelar la operación actual
+        /// </summary>
         private void btnCancel_Click(object sender, EventArgs e)
         {
             EnableForm(false);
             ClearForm();
         }
 
+        /// <summary>
+        /// Valida que los campos requeridos del formulario estén completos
+        /// </summary>
+        /// <returns>True si la validación es exitosa, false en caso contrario</returns>
         private bool ValidateForm()
         {
             if (string.IsNullOrWhiteSpace(txtNombre.Text))
@@ -257,6 +291,10 @@ namespace UI.Forms
             return true;
         }
 
+        /// <summary>
+        /// Carga los datos del cliente seleccionado en los controles del formulario
+        /// </summary>
+        /// <param name="client">Cliente a cargar</param>
         private void LoadClientToForm(Client client)
         {
             txtNombre.Text = client.Nombre;
@@ -267,6 +305,9 @@ namespace UI.Forms
             txtDireccion.Text = client.Direccion;
         }
 
+        /// <summary>
+        /// Obtiene los datos del formulario y los asigna al cliente actual
+        /// </summary>
         private void GetClientFromForm()
         {
             _currentClient.Nombre = txtNombre.Text.Trim();
@@ -277,6 +318,9 @@ namespace UI.Forms
             _currentClient.Direccion = txtDireccion.Text.Trim();
         }
 
+        /// <summary>
+        /// Limpia todos los campos del formulario
+        /// </summary>
         private void ClearForm()
         {
             txtNombre.Clear();
@@ -287,6 +331,10 @@ namespace UI.Forms
             txtDireccion.Clear();
         }
 
+        /// <summary>
+        /// Habilita o deshabilita los controles del formulario para edición
+        /// </summary>
+        /// <param name="enabled">True para habilitar, false para deshabilitar</param>
         private void EnableForm(bool enabled)
         {
             grpDetails.Enabled = enabled;
