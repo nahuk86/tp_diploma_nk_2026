@@ -725,31 +725,6 @@ El sistema está completo y funcional. Las siguientes mejoras son opcionales:
    - Búsqueda incremental con autocompletado
    - Índices adicionales en base de datos
 
-## Solución de Problemas / Troubleshooting
-
-### Error de Compilación: DLL Bloqueados
-Si experimenta errores durante la compilación donde los archivos DLL no pueden ser copiados:
-```
-error MSB3027: No se pudo copiar "...\BLL.dll" en "bin\Debug\BLL.dll"
-error MSB3021: El proceso no puede obtener acceso al archivo
-```
-
-**Solución**: La aplicación UI.exe está en ejecución y debe cerrarse antes de recompilar.
-
-📖 **Ver guía completa**: [BUILD_TROUBLESHOOTING.md](BUILD_TROUBLESHOOTING.md)
-
-**Solución rápida**:
-1. Presione `Shift + F5` en Visual Studio para detener la depuración
-2. O cierre manualmente todas las ventanas de la aplicación
-3. Si persiste, finalice el proceso UI.exe desde el Administrador de Tareas
-
-### Otros Problemas Comunes
-
-Para más información sobre problemas específicos, consulte:
-- [ERROR_HANDLING_QUICK_GUIDE.md](ERROR_HANDLING_QUICK_GUIDE.md) - Manejo de errores
-- [MULTILANG_USER_GUIDE.md](MULTILANG_USER_GUIDE.md) - Configuración multiidioma
-- [QUICK_START_ES.md](QUICK_START_ES.md) - Guía de inicio rápido
-
 ## Contacto y Soporte
 
 Para preguntas o issues, consultar con el equipo de desarrollo.
