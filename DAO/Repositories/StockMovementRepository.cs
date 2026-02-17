@@ -10,6 +10,11 @@ namespace DAO.Repositories
 {
     public class StockMovementRepository : IStockMovementRepository
     {
+        /// <summary>
+        /// Obtiene un movimiento de stock por su identificador
+        /// </summary>
+        /// <param name="movementId">Identificador del movimiento de stock</param>
+        /// <returns>Movimiento de stock encontrado o null si no existe</returns>
         public StockMovement GetById(int movementId)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -36,6 +41,10 @@ namespace DAO.Repositories
             return null;
         }
 
+        /// <summary>
+        /// Obtiene la lista completa de movimientos de stock ordenados por fecha
+        /// </summary>
+        /// <returns>Lista de todos los movimientos de stock</returns>
         public List<StockMovement> GetAll()
         {
             var movements = new List<StockMovement>();
@@ -62,6 +71,11 @@ namespace DAO.Repositories
             return movements;
         }
 
+        /// <summary>
+        /// Obtiene los movimientos de stock filtrados por tipo de movimiento
+        /// </summary>
+        /// <param name="movementType">Tipo de movimiento a filtrar</param>
+        /// <returns>Lista de movimientos de stock del tipo especificado</returns>
         public List<StockMovement> GetByType(MovementType movementType)
         {
             var movements = new List<StockMovement>();
@@ -90,6 +104,11 @@ namespace DAO.Repositories
             return movements;
         }
 
+        /// <summary>
+        /// Obtiene los movimientos de stock de un almacén específico (origen o destino)
+        /// </summary>
+        /// <param name="warehouseId">Identificador del almacén</param>
+        /// <returns>Lista de movimientos de stock asociados al almacén</returns>
         public List<StockMovement> GetByWarehouse(int warehouseId)
         {
             var movements = new List<StockMovement>();
@@ -118,6 +137,12 @@ namespace DAO.Repositories
             return movements;
         }
 
+        /// <summary>
+        /// Obtiene los movimientos de stock en un rango de fechas específico
+        /// </summary>
+        /// <param name="startDate">Fecha de inicio del rango</param>
+        /// <param name="endDate">Fecha de fin del rango</param>
+        /// <returns>Lista de movimientos de stock en el rango de fechas</returns>
         public List<StockMovement> GetByDateRange(DateTime startDate, DateTime endDate)
         {
             var movements = new List<StockMovement>();
@@ -147,6 +172,11 @@ namespace DAO.Repositories
             return movements;
         }
 
+        /// <summary>
+        /// Inserta un nuevo movimiento de stock en la base de datos
+        /// </summary>
+        /// <param name="movement">Movimiento de stock a insertar</param>
+        /// <returns>Identificador del movimiento insertado</returns>
         public int Insert(StockMovement movement)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -171,6 +201,11 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Genera un número de movimiento único basado en el tipo y fecha
+        /// </summary>
+        /// <param name="movementType">Tipo de movimiento</param>
+        /// <returns>Número de movimiento generado</returns>
         public string GenerateMovementNumber(MovementType movementType)
         {
             var prefix = movementType.ToString().Substring(0, Math.Min(3, movementType.ToString().Length)).ToUpper();
@@ -179,6 +214,12 @@ namespace DAO.Repositories
             return $"{prefix}{date}{sequence:D4}";
         }
 
+        /// <summary>
+        /// Obtiene el siguiente número de secuencia para un tipo de movimiento en una fecha
+        /// </summary>
+        /// <param name="movementType">Tipo de movimiento</param>
+        /// <param name="date">Fecha en formato yyyyMMdd</param>
+        /// <returns>Siguiente número de secuencia</returns>
         private int GetNextSequence(MovementType movementType, string date)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -196,6 +237,11 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Obtiene las líneas de detalle de un movimiento de stock
+        /// </summary>
+        /// <param name="movementId">Identificador del movimiento de stock</param>
+        /// <returns>Lista de líneas de detalle del movimiento</returns>
         public List<StockMovementLine> GetMovementLines(int movementId)
         {
             var lines = new List<StockMovementLine>();
@@ -220,6 +266,10 @@ namespace DAO.Repositories
             return lines;
         }
 
+        /// <summary>
+        /// Inserta una línea de detalle en un movimiento de stock
+        /// </summary>
+        /// <param name="line">Línea de detalle a insertar</param>
         public void InsertLine(StockMovementLine line)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -238,6 +288,11 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Mapea los datos del lector SQL a una entidad de movimiento de stock
+        /// </summary>
+        /// <param name="reader">Lector de datos SQL</param>
+        /// <returns>Entidad de movimiento de stock</returns>
         private StockMovement MapStockMovement(SqlDataReader reader)
         {
             return new StockMovement
@@ -258,6 +313,11 @@ namespace DAO.Repositories
             };
         }
 
+        /// <summary>
+        /// Mapea los datos del lector SQL a una entidad de línea de movimiento de stock
+        /// </summary>
+        /// <param name="reader">Lector de datos SQL</param>
+        /// <returns>Entidad de línea de movimiento de stock</returns>
         private StockMovementLine MapStockMovementLine(SqlDataReader reader)
         {
             return new StockMovementLine
