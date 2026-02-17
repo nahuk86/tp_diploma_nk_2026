@@ -7,8 +7,16 @@ using DOMAIN.Entities;
 
 namespace DAO.Repositories
 {
+    /// <summary>
+    /// Repositorio para operaciones de acceso a datos de clientes
+    /// </summary>
     public class ClientRepository : IClientRepository
     {
+        /// <summary>
+        /// Obtiene un cliente por su identificador
+        /// </summary>
+        /// <param name="id">Identificador del cliente</param>
+        /// <returns>Cliente encontrado o null si no existe</returns>
         public Client GetById(int id)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -27,6 +35,11 @@ namespace DAO.Repositories
             return null;
         }
 
+        /// <summary>
+        /// Obtiene un cliente por su número de DNI
+        /// </summary>
+        /// <param name="dni">Número de DNI del cliente</param>
+        /// <returns>Cliente encontrado o null si no existe</returns>
         public Client GetByDNI(string dni)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -45,6 +58,10 @@ namespace DAO.Repositories
             return null;
         }
 
+        /// <summary>
+        /// Obtiene la lista completa de clientes ordenados por apellido y nombre
+        /// </summary>
+        /// <returns>Lista de todos los clientes</returns>
         public List<Client> GetAll()
         {
             var clients = new List<Client>();
@@ -63,6 +80,10 @@ namespace DAO.Repositories
             return clients;
         }
 
+        /// <summary>
+        /// Obtiene la lista de clientes activos ordenados por apellido y nombre
+        /// </summary>
+        /// <returns>Lista de clientes activos</returns>
         public List<Client> GetAllActive()
         {
             var clients = new List<Client>();
@@ -81,6 +102,12 @@ namespace DAO.Repositories
             return clients;
         }
 
+        /// <summary>
+        /// Verifica si un DNI ya existe en la base de datos
+        /// </summary>
+        /// <param name="dni">Número de DNI a verificar</param>
+        /// <param name="excludeClientId">ID de cliente a excluir de la verificación (para actualizaciones)</param>
+        /// <returns>True si el DNI existe, False en caso contrario</returns>
         public bool DNIExists(string dni, int? excludeClientId = null)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -99,6 +126,11 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Inserta un nuevo cliente en la base de datos
+        /// </summary>
+        /// <param name="entity">Entidad de cliente a insertar</param>
+        /// <returns>ID del cliente insertado</returns>
         public int Insert(Client entity)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -123,6 +155,10 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Actualiza los datos de un cliente existente
+        /// </summary>
+        /// <param name="entity">Entidad de cliente con los datos actualizados</param>
         public void Update(Client entity)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -149,6 +185,10 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Elimina físicamente un cliente de la base de datos
+        /// </summary>
+        /// <param name="id">ID del cliente a eliminar</param>
         public void Delete(int id)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -163,6 +203,11 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Realiza una eliminación lógica marcando el cliente como inactivo
+        /// </summary>
+        /// <param name="id">ID del cliente a desactivar</param>
+        /// <param name="deletedBy">ID del usuario que realiza la eliminación</param>
         public void SoftDelete(int id, int deletedBy)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -179,6 +224,11 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Mapea los datos del lector SQL a una entidad de cliente
+        /// </summary>
+        /// <param name="reader">Lector de datos SQL</param>
+        /// <returns>Entidad de cliente mapeada</returns>
         private Client MapClient(SqlDataReader reader)
         {
             return new Client
