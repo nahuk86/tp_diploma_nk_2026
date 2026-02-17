@@ -9,6 +9,11 @@ namespace DAO.Repositories
 {
     public class WarehouseRepository : IWarehouseRepository
     {
+        /// <summary>
+        /// Obtiene un almacén por su identificador
+        /// </summary>
+        /// <param name="id">El identificador del almacén</param>
+        /// <returns>El almacén encontrado o null si no existe</returns>
         public Warehouse GetById(int id)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -27,6 +32,11 @@ namespace DAO.Repositories
             return null;
         }
 
+        /// <summary>
+        /// Obtiene un almacén por su código
+        /// </summary>
+        /// <param name="code">El código del almacén</param>
+        /// <returns>El almacén encontrado o null si no existe</returns>
         public Warehouse GetByCode(string code)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -45,6 +55,10 @@ namespace DAO.Repositories
             return null;
         }
 
+        /// <summary>
+        /// Obtiene la lista completa de almacenes ordenados por código
+        /// </summary>
+        /// <returns>Lista de todos los almacenes</returns>
         public List<Warehouse> GetAll()
         {
             var warehouses = new List<Warehouse>();
@@ -63,6 +77,10 @@ namespace DAO.Repositories
             return warehouses;
         }
 
+        /// <summary>
+        /// Obtiene la lista de almacenes activos ordenados por código
+        /// </summary>
+        /// <returns>Lista de almacenes activos</returns>
         public List<Warehouse> GetAllActive()
         {
             var warehouses = new List<Warehouse>();
@@ -81,6 +99,12 @@ namespace DAO.Repositories
             return warehouses;
         }
 
+        /// <summary>
+        /// Verifica si un código de almacén ya existe en la base de datos
+        /// </summary>
+        /// <param name="code">El código a verificar</param>
+        /// <param name="excludeWarehouseId">ID del almacén a excluir de la verificación (opcional)</param>
+        /// <returns>True si el código existe, False en caso contrario</returns>
         public bool CodeExists(string code, int? excludeWarehouseId = null)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -99,6 +123,11 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Inserta un nuevo almacén en la base de datos
+        /// </summary>
+        /// <param name="entity">La entidad almacén a insertar</param>
+        /// <returns>El ID del almacén insertado</returns>
         public int Insert(Warehouse entity)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -120,6 +149,10 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Actualiza los datos de un almacén existente
+        /// </summary>
+        /// <param name="entity">La entidad almacén con los datos actualizados</param>
         public void Update(Warehouse entity)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -142,6 +175,10 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Elimina físicamente un almacén de la base de datos
+        /// </summary>
+        /// <param name="id">El identificador del almacén a eliminar</param>
         public void Delete(int id)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -156,6 +193,11 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Realiza una eliminación lógica marcando el almacén como inactivo
+        /// </summary>
+        /// <param name="id">El identificador del almacén a desactivar</param>
+        /// <param name="deletedBy">El identificador del usuario que realiza la eliminación</param>
         public void SoftDelete(int id, int deletedBy)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -172,6 +214,11 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Mapea los datos del lector SQL a una entidad de almacén
+        /// </summary>
+        /// <param name="reader">El lector de datos SQL</param>
+        /// <returns>Una instancia de Warehouse con los datos mapeados</returns>
         private Warehouse MapWarehouse(SqlDataReader reader)
         {
             return new Warehouse
