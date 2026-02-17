@@ -10,6 +10,16 @@ namespace DAO.Repositories
 {
     public class AuditLogRepository : IAuditLogRepository
     {
+        /// <summary>
+        /// Registra un cambio en el log de auditoría
+        /// </summary>
+        /// <param name="tableName">Nombre de la tabla donde se realizó el cambio</param>
+        /// <param name="recordId">ID del registro que fue modificado</param>
+        /// <param name="action">Acción realizada (INSERT, UPDATE, DELETE)</param>
+        /// <param name="fieldName">Nombre del campo modificado</param>
+        /// <param name="oldValue">Valor anterior del campo</param>
+        /// <param name="newValue">Valor nuevo del campo</param>
+        /// <param name="changedBy">ID del usuario que realizó el cambio</param>
         public void LogChange(string tableName, int recordId, AuditAction action, string fieldName, string oldValue, string newValue, int? changedBy)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -32,6 +42,12 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Obtiene los registros de auditoría de una tabla y registro específico
+        /// </summary>
+        /// <param name="tableName">Nombre de la tabla a consultar</param>
+        /// <param name="recordId">ID del registro a consultar</param>
+        /// <returns>Lista de registros de auditoría ordenados por fecha descendente</returns>
         public List<AuditLog> GetByTable(string tableName, int recordId)
         {
             var logs = new List<AuditLog>();
@@ -56,6 +72,12 @@ namespace DAO.Repositories
             return logs;
         }
 
+        /// <summary>
+        /// Obtiene los registros de auditoría en un rango de fechas específico
+        /// </summary>
+        /// <param name="startDate">Fecha inicial del rango de búsqueda</param>
+        /// <param name="endDate">Fecha final del rango de búsqueda</param>
+        /// <returns>Lista de registros de auditoría dentro del rango de fechas ordenados por fecha descendente</returns>
         public List<AuditLog> GetByDateRange(DateTime startDate, DateTime endDate)
         {
             var logs = new List<AuditLog>();
@@ -80,6 +102,11 @@ namespace DAO.Repositories
             return logs;
         }
 
+        /// <summary>
+        /// Obtiene los registros de auditoría realizados por un usuario específico
+        /// </summary>
+        /// <param name="userId">ID del usuario que realizó los cambios</param>
+        /// <returns>Lista de registros de auditoría del usuario ordenados por fecha descendente</returns>
         public List<AuditLog> GetByUser(int userId)
         {
             var logs = new List<AuditLog>();
@@ -103,6 +130,11 @@ namespace DAO.Repositories
             return logs;
         }
 
+        /// <summary>
+        /// Mapea los datos del lector SQL a una entidad de log de auditoría
+        /// </summary>
+        /// <param name="reader">Lector de datos SQL con la información del registro</param>
+        /// <returns>Objeto AuditLog con los datos mapeados</returns>
         private AuditLog MapAuditLog(SqlDataReader reader)
         {
             return new AuditLog
