@@ -10,12 +10,34 @@ namespace SERVICES.Implementations
 {
     public class LocalizationService : ILocalizationService
     {
+        private static LocalizationService _instance;
+        private static readonly object _lock = new object();
+
         private readonly string _connectionString;
         private Dictionary<string, Dictionary<string, string>> _languageTranslations;
         private string _currentLanguage;
         private string _translationsPath;
 
         public event EventHandler LanguageChanged;
+
+        // Singleton instance property
+        public static LocalizationService Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    lock (_lock)
+                    {
+                        if (_instance == null)
+                        {
+                            _instance = new LocalizationService();
+                        }
+                    }
+                }
+                return _instance;
+            }
+        }
 
         public LocalizationService()
         {
