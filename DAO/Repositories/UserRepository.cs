@@ -11,6 +11,11 @@ namespace DAO.Repositories
 {
     public class UserRepository : IUserRepository
     {
+        /// <summary>
+        /// Obtiene un usuario por su identificador
+        /// </summary>
+        /// <param name="id">Identificador único del usuario</param>
+        /// <returns>Usuario encontrado o null si no existe</returns>
         public User GetById(int id)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -36,6 +41,11 @@ namespace DAO.Repositories
             return null;
         }
 
+        /// <summary>
+        /// Obtiene un usuario por su nombre de usuario
+        /// </summary>
+        /// <param name="username">Nombre de usuario</param>
+        /// <returns>Usuario encontrado o null si no existe</returns>
         public User GetByUsername(string username)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -61,6 +71,11 @@ namespace DAO.Repositories
             return null;
         }
 
+        /// <summary>
+        /// Obtiene un usuario por su correo electrónico
+        /// </summary>
+        /// <param name="email">Correo electrónico del usuario</param>
+        /// <returns>Usuario encontrado o null si no existe</returns>
         public User GetByEmail(string email)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -86,6 +101,10 @@ namespace DAO.Repositories
             return null;
         }
 
+        /// <summary>
+        /// Obtiene la lista completa de usuarios ordenados por nombre de usuario
+        /// </summary>
+        /// <returns>Lista de todos los usuarios</returns>
         public List<User> GetAll()
         {
             var users = new List<User>();
@@ -113,6 +132,10 @@ namespace DAO.Repositories
             return users;
         }
 
+        /// <summary>
+        /// Obtiene la lista de usuarios activos ordenados por nombre de usuario
+        /// </summary>
+        /// <returns>Lista de usuarios activos</returns>
         public List<User> GetAllActive()
         {
             var users = new List<User>();
@@ -140,6 +163,11 @@ namespace DAO.Repositories
             return users;
         }
 
+        /// <summary>
+        /// Busca usuarios por término de búsqueda en nombre de usuario, nombre completo o correo
+        /// </summary>
+        /// <param name="searchTerm">Término de búsqueda</param>
+        /// <returns>Lista de usuarios que coinciden con la búsqueda</returns>
         public List<User> Search(string searchTerm)
         {
             var users = new List<User>();
@@ -170,6 +198,11 @@ namespace DAO.Repositories
             return users;
         }
 
+        /// <summary>
+        /// Inserta un nuevo usuario en la base de datos
+        /// </summary>
+        /// <param name="entity">Entidad de usuario a insertar</param>
+        /// <returns>Identificador del usuario insertado</returns>
         public int Insert(User entity)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -195,6 +228,10 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Actualiza los datos de un usuario existente
+        /// </summary>
+        /// <param name="entity">Entidad de usuario con los datos actualizados</param>
         public void Update(User entity)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -228,6 +265,10 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Elimina físicamente un usuario de la base de datos
+        /// </summary>
+        /// <param name="id">Identificador del usuario a eliminar</param>
         public void Delete(int id)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -243,6 +284,11 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Realiza una eliminación lógica marcando el usuario como inactivo
+        /// </summary>
+        /// <param name="id">Identificador del usuario a eliminar</param>
+        /// <param name="deletedBy">Identificador del usuario que realiza la eliminación</param>
         public void SoftDelete(int id, int deletedBy)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -262,6 +308,11 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Obtiene los roles asignados a un usuario
+        /// </summary>
+        /// <param name="userId">Identificador del usuario</param>
+        /// <returns>Lista de roles asignados al usuario</returns>
         public List<Role> GetUserRoles(int userId)
         {
             var roles = new List<Role>();
@@ -291,6 +342,12 @@ namespace DAO.Repositories
             return roles;
         }
 
+        /// <summary>
+        /// Asigna un rol a un usuario
+        /// </summary>
+        /// <param name="userId">Identificador del usuario</param>
+        /// <param name="roleId">Identificador del rol</param>
+        /// <param name="assignedBy">Identificador del usuario que realiza la asignación</param>
         public void AssignRole(int userId, int roleId, int assignedBy)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -312,6 +369,11 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Remueve un rol de un usuario
+        /// </summary>
+        /// <param name="userId">Identificador del usuario</param>
+        /// <param name="roleId">Identificador del rol</param>
         public void RemoveRole(int userId, int roleId)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -329,6 +391,11 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Asigna múltiples roles a un usuario reemplazando los existentes
+        /// </summary>
+        /// <param name="userId">Identificador del usuario</param>
+        /// <param name="roleIds">Lista de identificadores de roles a asignar</param>
         public void AssignRoles(int userId, List<int> roleIds)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -385,6 +452,10 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Actualiza la fecha y hora del último inicio de sesión del usuario
+        /// </summary>
+        /// <param name="userId">Identificador del usuario</param>
         public void UpdateLastLogin(int userId)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -402,6 +473,11 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Mapea los datos del lector SQL a una entidad de usuario
+        /// </summary>
+        /// <param name="reader">Lector de datos SQL</param>
+        /// <returns>Entidad de usuario mapeada</returns>
         private User MapUser(SqlDataReader reader)
         {
             return new User
@@ -421,6 +497,11 @@ namespace DAO.Repositories
             };
         }
 
+        /// <summary>
+        /// Mapea los datos del lector SQL a una entidad de rol
+        /// </summary>
+        /// <param name="reader">Lector de datos SQL</param>
+        /// <returns>Entidad de rol mapeada</returns>
         private Role MapRole(SqlDataReader reader)
         {
             return new Role
