@@ -18,6 +18,15 @@ namespace BLL.Services
         private readonly IAuditLogRepository _auditRepo;
         private readonly ILogService _logService;
 
+        /// <summary>
+        /// Inicializa el servicio de movimientos de inventario con sus dependencias
+        /// </summary>
+        /// <param name="movementRepo">Repositorio de movimientos</param>
+        /// <param name="stockRepo">Repositorio de inventario</param>
+        /// <param name="productRepo">Repositorio de productos</param>
+        /// <param name="warehouseRepo">Repositorio de almacenes</param>
+        /// <param name="auditRepo">Repositorio de auditoría</param>
+        /// <param name="logService">Servicio de registro de eventos</param>
         public StockMovementService(
             IStockMovementRepository movementRepo,
             IStockRepository stockRepo,
@@ -34,6 +43,10 @@ namespace BLL.Services
             _logService = logService ?? throw new ArgumentNullException(nameof(logService));
         }
 
+        /// <summary>
+        /// Obtiene todos los movimientos de inventario del sistema
+        /// </summary>
+        /// <returns>Lista de todos los movimientos</returns>
         public List<StockMovement> GetAllMovements()
         {
             try
@@ -47,6 +60,11 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Obtiene un movimiento de inventario por su identificador
+        /// </summary>
+        /// <param name="movementId">Identificador del movimiento</param>
+        /// <returns>Movimiento encontrado o null si no existe</returns>
         public StockMovement GetMovementById(int movementId)
         {
             try
@@ -60,6 +78,11 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Obtiene los movimientos filtrados por tipo
+        /// </summary>
+        /// <param name="movementType">Tipo de movimiento (In, Out, Transfer, Adjustment)</param>
+        /// <returns>Lista de movimientos del tipo especificado</returns>
         public List<StockMovement> GetMovementsByType(MovementType movementType)
         {
             try
@@ -73,6 +96,12 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Obtiene los movimientos realizados en un rango de fechas
+        /// </summary>
+        /// <param name="startDate">Fecha de inicio</param>
+        /// <param name="endDate">Fecha de fin</param>
+        /// <returns>Lista de movimientos en el rango de fechas</returns>
         public List<StockMovement> GetMovementsByDateRange(DateTime startDate, DateTime endDate)
         {
             try
@@ -86,6 +115,11 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Obtiene las líneas de detalle de un movimiento
+        /// </summary>
+        /// <param name="movementId">Identificador del movimiento</param>
+        /// <returns>Lista de líneas del movimiento</returns>
         public List<StockMovementLine> GetMovementLines(int movementId)
         {
             try
@@ -144,6 +178,11 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Valida que el movimiento y sus líneas cumplan con las reglas de negocio
+        /// </summary>
+        /// <param name="movement">Movimiento a validar</param>
+        /// <param name="lines">Líneas del movimiento</param>
         private void ValidateMovement(StockMovement movement, List<StockMovementLine> lines)
         {
             if (movement == null)
@@ -242,6 +281,14 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Actualiza el inventario según el tipo de movimiento realizado
+        /// </summary>
+        /// <param name="movementType">Tipo de movimiento</param>
+        /// <param name="sourceWarehouseId">Almacén origen (para Out y Transfer)</param>
+        /// <param name="destinationWarehouseId">Almacén destino (para In, Transfer y Adjustment)</param>
+        /// <param name="productId">Identificador del producto</param>
+        /// <param name="quantity">Cantidad a mover</param>
         private void UpdateStockForMovement(MovementType movementType, int? sourceWarehouseId, 
             int? destinationWarehouseId, int productId, int quantity)
         {

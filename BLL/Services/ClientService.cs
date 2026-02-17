@@ -14,6 +14,12 @@ namespace BLL.Services
         private readonly IAuditLogRepository _auditRepo;
         private readonly ILogService _logService;
 
+        /// <summary>
+        /// Inicializa el servicio de clientes con sus dependencias
+        /// </summary>
+        /// <param name="clientRepo">Repositorio de clientes</param>
+        /// <param name="auditRepo">Repositorio de auditoría</param>
+        /// <param name="logService">Servicio de registro de eventos</param>
         public ClientService(IClientRepository clientRepo, IAuditLogRepository auditRepo, ILogService logService)
         {
             _clientRepo = clientRepo ?? throw new ArgumentNullException(nameof(clientRepo));
@@ -21,6 +27,10 @@ namespace BLL.Services
             _logService = logService ?? throw new ArgumentNullException(nameof(logService));
         }
 
+        /// <summary>
+        /// Obtiene todos los clientes del sistema
+        /// </summary>
+        /// <returns>Lista de todos los clientes</returns>
         public List<Client> GetAllClients()
         {
             try
@@ -34,6 +44,10 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Obtiene todos los clientes activos del sistema
+        /// </summary>
+        /// <returns>Lista de clientes activos</returns>
         public List<Client> GetActiveClients()
         {
             try
@@ -47,6 +61,11 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Obtiene un cliente por su identificador
+        /// </summary>
+        /// <param name="clientId">Identificador del cliente</param>
+        /// <returns>Cliente encontrado o null si no existe</returns>
         public Client GetClientById(int clientId)
         {
             try
@@ -60,6 +79,11 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Crea un nuevo cliente en el sistema
+        /// </summary>
+        /// <param name="client">Datos del cliente a crear</param>
+        /// <returns>Identificador del cliente creado</returns>
         public int CreateClient(Client client)
         {
             try
@@ -96,6 +120,10 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Actualiza los datos de un cliente existente
+        /// </summary>
+        /// <param name="client">Datos actualizados del cliente</param>
         public void UpdateClient(Client client)
         {
             try
@@ -139,6 +167,10 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Elimina un cliente del sistema (borrado lógico)
+        /// </summary>
+        /// <param name="clientId">Identificador del cliente a eliminar</param>
         public void DeleteClient(int clientId)
         {
             try
@@ -164,6 +196,10 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Valida que los datos del cliente cumplan con las reglas de negocio
+        /// </summary>
+        /// <param name="client">Cliente a validar</param>
         private void ValidateClient(Client client)
         {
             if (client == null)
@@ -197,6 +233,14 @@ namespace BLL.Services
                 throw new ArgumentException("Direccion must be 200 characters or less.", nameof(client.Direccion));
         }
 
+        /// <summary>
+        /// Registra un cambio de campo en la auditoría si el valor ha cambiado
+        /// </summary>
+        /// <param name="tableName">Nombre de la tabla</param>
+        /// <param name="recordId">Identificador del registro</param>
+        /// <param name="fieldName">Nombre del campo</param>
+        /// <param name="oldValue">Valor anterior</param>
+        /// <param name="newValue">Valor nuevo</param>
         private void LogFieldChange(string tableName, int recordId, string fieldName, string oldValue, string newValue)
         {
             if (oldValue != newValue)

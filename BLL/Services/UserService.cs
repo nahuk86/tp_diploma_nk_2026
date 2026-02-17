@@ -16,6 +16,13 @@ namespace BLL.Services
         private readonly ILogService _logService;
         private readonly IAuthenticationService _authService;
 
+        /// <summary>
+        /// Inicializa el servicio de usuarios con sus dependencias
+        /// </summary>
+        /// <param name="userRepo">Repositorio de usuarios</param>
+        /// <param name="auditRepo">Repositorio de auditoría</param>
+        /// <param name="logService">Servicio de registro de eventos</param>
+        /// <param name="authService">Servicio de autenticación</param>
         public UserService(IUserRepository userRepo, IAuditLogRepository auditRepo, ILogService logService, IAuthenticationService authService)
         {
             _userRepo = userRepo ?? throw new ArgumentNullException(nameof(userRepo));
@@ -24,6 +31,10 @@ namespace BLL.Services
             _authService = authService ?? throw new ArgumentNullException(nameof(authService));
         }
 
+        /// <summary>
+        /// Obtiene todos los usuarios del sistema
+        /// </summary>
+        /// <returns>Lista de todos los usuarios</returns>
         public List<User> GetAllUsers()
         {
             try
@@ -37,6 +48,10 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Obtiene todos los usuarios activos del sistema
+        /// </summary>
+        /// <returns>Lista de usuarios activos</returns>
         public List<User> GetActiveUsers()
         {
             try
@@ -50,6 +65,11 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Obtiene un usuario por su identificador
+        /// </summary>
+        /// <param name="userId">Identificador del usuario</param>
+        /// <returns>Usuario encontrado o null si no existe</returns>
         public User GetUserById(int userId)
         {
             try
@@ -63,6 +83,12 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Crea un nuevo usuario en el sistema con su contraseña
+        /// </summary>
+        /// <param name="user">Datos del usuario a crear</param>
+        /// <param name="password">Contraseña del usuario</param>
+        /// <returns>Identificador del usuario creado</returns>
         public int CreateUser(User user, string password)
         {
             try
@@ -112,6 +138,10 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Actualiza los datos de un usuario existente
+        /// </summary>
+        /// <param name="user">Datos actualizados del usuario</param>
         public void UpdateUser(User user)
         {
             try
@@ -168,6 +198,10 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Elimina un usuario del sistema (borrado lógico)
+        /// </summary>
+        /// <param name="userId">Identificador del usuario a eliminar</param>
         public void DeleteUser(int userId)
         {
             try
@@ -199,6 +233,11 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Cambia la contraseña de un usuario
+        /// </summary>
+        /// <param name="userId">Identificador del usuario</param>
+        /// <param name="newPassword">Nueva contraseña</param>
         public void ChangePassword(int userId, string newPassword)
         {
             try
@@ -233,6 +272,11 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Asigna roles a un usuario
+        /// </summary>
+        /// <param name="userId">Identificador del usuario</param>
+        /// <param name="roleIds">Lista de identificadores de roles a asignar</param>
         public void AssignRolesToUser(int userId, List<int> roleIds)
         {
             try
@@ -252,6 +296,11 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Obtiene los roles asignados a un usuario
+        /// </summary>
+        /// <param name="userId">Identificador del usuario</param>
+        /// <returns>Lista de roles del usuario</returns>
         public List<Role> GetUserRoles(int userId)
         {
             try
@@ -265,6 +314,10 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Valida que los datos del usuario cumplan con las reglas de negocio
+        /// </summary>
+        /// <param name="user">Usuario a validar</param>
         private void ValidateUser(User user)
         {
             if (user == null)
@@ -283,6 +336,10 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Valida que la contraseña cumpla con los requisitos de seguridad
+        /// </summary>
+        /// <param name="password">Contraseña a validar</param>
         private void ValidatePassword(string password)
         {
             if (string.IsNullOrWhiteSpace(password))
@@ -298,6 +355,11 @@ namespace BLL.Services
                 throw new ArgumentException("Password must contain at least one number.");
         }
 
+        /// <summary>
+        /// Valida el formato de una dirección de correo electrónico
+        /// </summary>
+        /// <param name="email">Correo electrónico a validar</param>
+        /// <returns>True si el formato es válido, False en caso contrario</returns>
         private bool IsValidEmail(string email)
         {
             try
@@ -311,6 +373,14 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Registra un cambio de campo en la auditoría si el valor ha cambiado
+        /// </summary>
+        /// <param name="tableName">Nombre de la tabla</param>
+        /// <param name="recordId">Identificador del registro</param>
+        /// <param name="fieldName">Nombre del campo</param>
+        /// <param name="oldValue">Valor anterior</param>
+        /// <param name="newValue">Valor nuevo</param>
         private void LogFieldChange(string tableName, int recordId, string fieldName, string oldValue, string newValue)
         {
             if (oldValue != newValue)

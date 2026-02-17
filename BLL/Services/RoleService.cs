@@ -19,6 +19,13 @@ namespace BLL.Services
         // System role names that cannot be deleted
         private static readonly string[] SystemRoleNames = { "Admin", "User" };
 
+        /// <summary>
+        /// Inicializa el servicio de roles con sus dependencias
+        /// </summary>
+        /// <param name="roleRepo">Repositorio de roles</param>
+        /// <param name="permissionRepo">Repositorio de permisos</param>
+        /// <param name="auditRepo">Repositorio de auditoría</param>
+        /// <param name="logService">Servicio de registro de eventos</param>
         public RoleService(IRoleRepository roleRepo, IPermissionRepository permissionRepo, IAuditLogRepository auditRepo, ILogService logService)
         {
             _roleRepo = roleRepo ?? throw new ArgumentNullException(nameof(roleRepo));
@@ -27,6 +34,10 @@ namespace BLL.Services
             _logService = logService ?? throw new ArgumentNullException(nameof(logService));
         }
 
+        /// <summary>
+        /// Obtiene todos los roles del sistema
+        /// </summary>
+        /// <returns>Lista de todos los roles</returns>
         public List<Role> GetAllRoles()
         {
             try
@@ -40,6 +51,10 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Obtiene todos los roles activos del sistema
+        /// </summary>
+        /// <returns>Lista de roles activos</returns>
         public List<Role> GetActiveRoles()
         {
             try
@@ -53,6 +68,11 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Obtiene un rol por su identificador
+        /// </summary>
+        /// <param name="roleId">Identificador del rol</param>
+        /// <returns>Rol encontrado o null si no existe</returns>
         public Role GetRoleById(int roleId)
         {
             try
@@ -66,6 +86,11 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Obtiene los permisos asignados a un rol
+        /// </summary>
+        /// <param name="roleId">Identificador del rol</param>
+        /// <returns>Lista de permisos del rol</returns>
         public List<Permission> GetRolePermissions(int roleId)
         {
             try
@@ -79,6 +104,10 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Obtiene todos los permisos disponibles en el sistema
+        /// </summary>
+        /// <returns>Lista de todos los permisos activos</returns>
         public List<Permission> GetAllPermissions()
         {
             try
@@ -92,6 +121,11 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Crea un nuevo rol en el sistema
+        /// </summary>
+        /// <param name="role">Datos del rol a crear</param>
+        /// <returns>Identificador del rol creado</returns>
         public int CreateRole(Role role)
         {
             try
@@ -128,6 +162,10 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Actualiza los datos de un rol existente
+        /// </summary>
+        /// <param name="role">Datos actualizados del rol</param>
         public void UpdateRole(Role role)
         {
             try
@@ -169,6 +207,10 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Elimina un rol del sistema (borrado lógico)
+        /// </summary>
+        /// <param name="roleId">Identificador del rol a eliminar</param>
         public void DeleteRole(int roleId)
         {
             try
@@ -200,6 +242,11 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Asigna permisos a un rol
+        /// </summary>
+        /// <param name="roleId">Identificador del rol</param>
+        /// <param name="permissionIds">Lista de identificadores de permisos a asignar</param>
         public void AssignPermissions(int roleId, List<int> permissionIds)
         {
             try
@@ -232,6 +279,10 @@ namespace BLL.Services
             }
         }
 
+        /// <summary>
+        /// Valida que los datos del rol cumplan con las reglas de negocio
+        /// </summary>
+        /// <param name="role">Rol a validar</param>
         private void ValidateRole(Role role)
         {
             if (role == null)
@@ -247,6 +298,14 @@ namespace BLL.Services
                 throw new ArgumentException("Description cannot exceed 200 characters.", nameof(role.Description));
         }
 
+        /// <summary>
+        /// Registra un cambio de campo en la auditoría si el valor ha cambiado
+        /// </summary>
+        /// <param name="tableName">Nombre de la tabla</param>
+        /// <param name="recordId">Identificador del registro</param>
+        /// <param name="fieldName">Nombre del campo</param>
+        /// <param name="oldValue">Valor anterior</param>
+        /// <param name="newValue">Valor nuevo</param>
         private void LogFieldChange(string tableName, int recordId, string fieldName, string oldValue, string newValue)
         {
             if (oldValue != newValue)
