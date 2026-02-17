@@ -9,6 +9,11 @@ namespace DAO.Repositories
 {
     public class SaleRepository : ISaleRepository
     {
+        /// <summary>
+        /// Obtiene una venta por su identificador
+        /// </summary>
+        /// <param name="saleId">Identificador de la venta</param>
+        /// <returns>La venta encontrada o null si no existe</returns>
         public Sale GetById(int saleId)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -33,6 +38,11 @@ namespace DAO.Repositories
             return null;
         }
 
+        /// <summary>
+        /// Obtiene una venta por su identificador incluyendo las líneas de detalle
+        /// </summary>
+        /// <param name="saleId">Identificador de la venta</param>
+        /// <returns>La venta encontrada con sus líneas de detalle o null si no existe</returns>
         public Sale GetByIdWithLines(int saleId)
         {
             var sale = GetById(saleId);
@@ -43,6 +53,10 @@ namespace DAO.Repositories
             return sale;
         }
 
+        /// <summary>
+        /// Obtiene la lista completa de ventas activas ordenadas por fecha y número
+        /// </summary>
+        /// <returns>Lista de ventas activas</returns>
         public List<Sale> GetAll()
         {
             var sales = new List<Sale>();
@@ -68,12 +82,20 @@ namespace DAO.Repositories
             return sales;
         }
 
+        /// <summary>
+        /// Obtiene la lista de ventas activas ordenadas por fecha y número
+        /// </summary>
+        /// <returns>Lista de ventas activas</returns>
         public List<Sale> GetAllActive()
         {
             // Same as GetAll() for Sales since GetAll() already filters by IsActive = 1
             return GetAll();
         }
 
+        /// <summary>
+        /// Obtiene la lista completa de ventas con sus líneas de detalle
+        /// </summary>
+        /// <returns>Lista de ventas con líneas de detalle cargadas</returns>
         public List<Sale> GetAllWithDetails()
         {
             var sales = GetAll();
@@ -84,6 +106,11 @@ namespace DAO.Repositories
             return sales;
         }
 
+        /// <summary>
+        /// Obtiene las ventas filtradas por nombre del vendedor
+        /// </summary>
+        /// <param name="sellerName">Nombre del vendedor a buscar</param>
+        /// <returns>Lista de ventas del vendedor especificado</returns>
         public List<Sale> GetBySeller(string sellerName)
         {
             var sales = new List<Sale>();
@@ -110,6 +137,11 @@ namespace DAO.Repositories
             return sales;
         }
 
+        /// <summary>
+        /// Obtiene las ventas de un cliente específico
+        /// </summary>
+        /// <param name="clientId">Identificador del cliente</param>
+        /// <returns>Lista de ventas del cliente especificado</returns>
         public List<Sale> GetByClient(int clientId)
         {
             var sales = new List<Sale>();
@@ -136,6 +168,12 @@ namespace DAO.Repositories
             return sales;
         }
 
+        /// <summary>
+        /// Obtiene las ventas en un rango de fechas específico
+        /// </summary>
+        /// <param name="startDate">Fecha de inicio del rango</param>
+        /// <param name="endDate">Fecha de fin del rango</param>
+        /// <returns>Lista de ventas en el rango de fechas especificado</returns>
         public List<Sale> GetByDateRange(DateTime startDate, DateTime endDate)
         {
             var sales = new List<Sale>();
@@ -163,6 +201,11 @@ namespace DAO.Repositories
             return sales;
         }
 
+        /// <summary>
+        /// Crea una nueva venta en la base de datos
+        /// </summary>
+        /// <param name="sale">Entidad de venta a crear</param>
+        /// <returns>Identificador de la venta creada</returns>
         public int Create(Sale sale)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -186,12 +229,23 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Inserta una nueva venta en la base de datos (alias de Create)
+        /// </summary>
+        /// <param name="entity">Entidad de venta a insertar</param>
+        /// <returns>Identificador de la venta insertada</returns>
         public int Insert(Sale entity)
         {
             // Alias for Create() to satisfy IRepository interface
             return Create(entity);
         }
 
+        /// <summary>
+        /// Crea una nueva venta con sus líneas de detalle en una transacción
+        /// </summary>
+        /// <param name="sale">Entidad de venta a crear</param>
+        /// <param name="saleLines">Lista de líneas de detalle de la venta</param>
+        /// <returns>Identificador de la venta creada</returns>
         public int CreateWithLines(Sale sale, List<SaleLine> saleLines)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -247,6 +301,10 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Actualiza los datos de una venta existente
+        /// </summary>
+        /// <param name="sale">Entidad de venta con los datos actualizados</param>
         public void Update(Sale sale)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -276,6 +334,10 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Realiza una eliminación lógica de una venta
+        /// </summary>
+        /// <param name="saleId">Identificador de la venta a eliminar</param>
         public void Delete(int saleId)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -290,6 +352,11 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Realiza una eliminación lógica marcando la venta como inactiva
+        /// </summary>
+        /// <param name="id">Identificador de la venta a eliminar</param>
+        /// <param name="deletedBy">Identificador del usuario que realiza la eliminación</param>
         public void SoftDelete(int id, int deletedBy)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -306,6 +373,10 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Elimina todas las líneas de detalle de una venta
+        /// </summary>
+        /// <param name="saleId">Identificador de la venta</param>
         public void DeleteSaleLines(int saleId)
         {
             using (var connection = DatabaseHelper.GetConnection())
@@ -320,6 +391,11 @@ namespace DAO.Repositories
             }
         }
 
+        /// <summary>
+        /// Obtiene las líneas de detalle de una venta específica
+        /// </summary>
+        /// <param name="saleId">Identificador de la venta</param>
+        /// <returns>Lista de líneas de detalle de la venta</returns>
         private List<SaleLine> GetSaleLines(int saleId)
         {
             var lines = new List<SaleLine>();
@@ -343,6 +419,11 @@ namespace DAO.Repositories
             return lines;
         }
 
+        /// <summary>
+        /// Mapea los datos del lector SQL a una entidad de venta
+        /// </summary>
+        /// <param name="reader">Lector de datos SQL</param>
+        /// <returns>Entidad de venta mapeada</returns>
         private Sale MapSale(SqlDataReader reader)
         {
             return new Sale
@@ -362,6 +443,11 @@ namespace DAO.Repositories
             };
         }
 
+        /// <summary>
+        /// Mapea los datos del lector SQL a una entidad de línea de venta
+        /// </summary>
+        /// <param name="reader">Lector de datos SQL</param>
+        /// <returns>Entidad de línea de venta mapeada</returns>
         private SaleLine MapSaleLine(SqlDataReader reader)
         {
             return new SaleLine
