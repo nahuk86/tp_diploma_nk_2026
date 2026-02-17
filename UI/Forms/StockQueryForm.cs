@@ -9,6 +9,9 @@ using SERVICES.Interfaces;
 
 namespace UI.Forms
 {
+    /// <summary>
+    /// Formulario para consultar el stock disponible por almacén
+    /// </summary>
     public partial class StockQueryForm : Form
     {
         private readonly StockRepository _stockRepo;
@@ -18,6 +21,9 @@ namespace UI.Forms
         private readonly ILogService _logService;
         private readonly IErrorHandlerService _errorHandler;
 
+        /// <summary>
+        /// Inicializa una nueva instancia del formulario de consulta de stock
+        /// </summary>
         public StockQueryForm()
         {
             InitializeComponent();
@@ -35,6 +41,9 @@ namespace UI.Forms
             LoadAllStock();
         }
 
+        /// <summary>
+        /// Aplica la localización de textos a los controles del formulario
+        /// </summary>
         private void ApplyLocalization()
         {
             this.Text = _localizationService.GetString("Stock.QueryTitle") ?? "Consulta de Stock";
@@ -53,6 +62,9 @@ namespace UI.Forms
             colLastUpdated.HeaderText = _localizationService.GetString("Stock.LastUpdated") ?? "Última Actualización";
         }
 
+        /// <summary>
+        /// Carga la lista de almacenes en el combo box de filtros
+        /// </summary>
         private void LoadWarehouses()
         {
             try
@@ -80,6 +92,9 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Carga todo el stock disponible en el sistema
+        /// </summary>
         private void LoadAllStock()
         {
             try
@@ -95,6 +110,9 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Buscar para filtrar el stock por almacén
+        /// </summary>
         private void btnSearch_Click(object sender, EventArgs e)
         {
             try
@@ -125,12 +143,18 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Mostrar Todo para restablecer los filtros
+        /// </summary>
         private void btnShowAll_Click(object sender, EventArgs e)
         {
             cmbWarehouse.SelectedIndex = 0;
             LoadAllStock();
         }
 
+        /// <summary>
+        /// Configura el formato y la visualización de las columnas del DataGridView
+        /// </summary>
         private void ConfigureGrid()
         {
             // Hide unnecessary columns
@@ -173,6 +197,10 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Actualiza la barra de estado con el número de registros encontrados
+        /// </summary>
+        /// <param name="recordCount">Cantidad de registros encontrados</param>
         private void UpdateStatusBar(int recordCount)
         {
             statusLabel.Text = string.Format(
@@ -180,9 +208,18 @@ namespace UI.Forms
                 recordCount);
         }
 
+        /// <summary>
+        /// Clase auxiliar para representar elementos en el combo box
+        /// </summary>
         private class ComboBoxItem
         {
+            /// <summary>
+            /// Obtiene o establece el texto que se muestra en el combo box
+            /// </summary>
             public string Text { get; set; }
+            /// <summary>
+            /// Obtiene o establece el valor asociado al elemento
+            /// </summary>
             public int Value { get; set; }
         }
     }
