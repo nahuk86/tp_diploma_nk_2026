@@ -10,8 +10,8 @@ namespace SERVICES.Implementations
 {
     public class LocalizationService : ILocalizationService
     {
-        private static LocalizationService _instance;
-        private static readonly object _lock = new object();
+        private static readonly Lazy<LocalizationService> _instance = 
+            new Lazy<LocalizationService>(() => new LocalizationService());
 
         private readonly string _connectionString;
         private Dictionary<string, Dictionary<string, string>> _languageTranslations;
@@ -21,23 +21,7 @@ namespace SERVICES.Implementations
         public event EventHandler LanguageChanged;
 
         // Singleton instance property
-        public static LocalizationService Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    lock (_lock)
-                    {
-                        if (_instance == null)
-                        {
-                            _instance = new LocalizationService();
-                        }
-                    }
-                }
-                return _instance;
-            }
-        }
+        public static LocalizationService Instance => _instance.Value;
 
         // Private constructor to enforce singleton pattern
         private LocalizationService()
