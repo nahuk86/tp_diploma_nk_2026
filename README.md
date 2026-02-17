@@ -200,7 +200,9 @@ Los scripts están en la carpeta `Database/`:
 
 1. **01_CreateSchema.sql**: Crea todas las tablas, índices y relaciones
 2. **02_SeedData.sql**: Inserta datos semilla (roles, permisos, productos, almacenes)
-3. **03_UpdatePermissions.sql**: (Opcional) Actualiza permisos en bases de datos existentes
+3. **03_UpdatePermissions.sql**: (Opcional) Actualiza permisos de stock en bases de datos existentes
+4. **04_AddReportsPermission.sql**: (Opcional) Asigna permisos de reportes a roles
+5. **05_ActivateReportsPermission.sql**: (Opcional) Activa el permiso Reports.View si está inactivo
 
 **Ejecutar en este orden**:
 ```sql
@@ -210,9 +212,11 @@ Los scripts están en la carpeta `Database/`:
 
 -- Para actualizar una base de datos existente:
 03_UpdatePermissions.sql
+04_AddReportsPermission.sql
+05_ActivateReportsPermission.sql  -- Solo si no puede gestionar permisos de reportes
 ```
 
-> **Nota**: Si ya tiene una base de datos creada con versiones anteriores del seed data, ejecute `03_UpdatePermissions.sql` para habilitar todas las funcionalidades de movimientos de stock para el rol WarehouseOperator.
+> **Nota Importante sobre Reportes**: Si no puede ver el permiso `Reports.View` en el formulario de gestión de permisos, ejecute el script `05_ActivateReportsPermission.sql` para activarlo. Vea `SOLUCION_PERMISOS_REPORTES.md` para más detalles.
 
 ### Tablas Principales
 
@@ -643,6 +647,7 @@ El sistema incluye 5 roles predefinidos con permisos específicos para diferente
    - Conectar a `(localdb)\MSSQLLocalDB` o su instancia SQL
    - Ejecutar `Database/01_CreateSchema.sql`
    - Ejecutar `Database/02_SeedData.sql`
+   - Si tiene problemas con permisos de reportes, ejecutar `Database/05_ActivateReportsPermission.sql`
 
 2. **Configurar Connection String**:
    - Editar `UI/App.config`
