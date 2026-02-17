@@ -48,7 +48,7 @@ namespace UI.Forms
             
             var permissionRepo = new PermissionRepository();
             _authorizationService = new AuthorizationService(permissionRepo, _logService);
-            _localizationService = new LocalizationService();
+            _localizationService = LocalizationService.Instance;
             _errorHandler = new ErrorHandlerService(_logService, _localizationService);
 
             _productStockCache = new Dictionary<int, Dictionary<int, int>>();

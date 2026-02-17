@@ -46,7 +46,7 @@ namespace UI.Forms
             _productService = new ProductService(productRepo, auditRepo, _logService);
             _clientService = new ClientService(clientRepo, auditRepo, _logService);
             _warehouseService = new WarehouseService(warehouseRepo, auditRepo, _logService);
-            _localizationService = new LocalizationService();
+            _localizationService = LocalizationService.Instance;
             _errorHandler = new ErrorHandlerService(_logService, _localizationService);
 
             InitializeForm();

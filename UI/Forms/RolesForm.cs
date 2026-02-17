@@ -31,7 +31,7 @@ namespace UI.Forms
             _roleService = new RoleService(roleRepo, permissionRepo, auditRepo, _logService);
             
             _authorizationService = new AuthorizationService(permissionRepo, _logService);
-            _localizationService = new LocalizationService();
+            _localizationService = LocalizationService.Instance;
             _errorHandler = new ErrorHandlerService(_logService, _localizationService);
 
             ApplyLocalization();

@@ -10,6 +10,9 @@ namespace SERVICES.Implementations
 {
     public class LocalizationService : ILocalizationService
     {
+        private static readonly Lazy<LocalizationService> _instance = 
+            new Lazy<LocalizationService>(() => new LocalizationService());
+
         private readonly string _connectionString;
         private Dictionary<string, Dictionary<string, string>> _languageTranslations;
         private string _currentLanguage;
@@ -17,7 +20,11 @@ namespace SERVICES.Implementations
 
         public event EventHandler LanguageChanged;
 
-        public LocalizationService()
+        // Singleton instance property
+        public static LocalizationService Instance => _instance.Value;
+
+        // Private constructor to enforce singleton pattern
+        private LocalizationService()
         {
             _connectionString = ConfigurationManager.ConnectionStrings["StockManagerDB"]?.ConnectionString;
             _currentLanguage = ConfigurationManager.AppSettings["DefaultLanguage"] ?? "es";
