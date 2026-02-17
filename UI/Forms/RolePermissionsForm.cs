@@ -15,6 +15,12 @@ namespace UI.Forms
         private List<Permission> _allPermissions;
         private List<Permission> _rolePermissions;
 
+        /// <summary>
+        /// Inicializa una nueva instancia del formulario de asignación de permisos a roles
+        /// </summary>
+        /// <param name="roleId">Identificador único del rol</param>
+        /// <param name="roleName">Nombre del rol</param>
+        /// <param name="roleService">Servicio para gestionar roles y permisos</param>
         public RolePermissionsForm(int roleId, string roleName, RoleService roleService)
         {
             InitializeComponent();
@@ -28,6 +34,9 @@ namespace UI.Forms
             LoadPermissions();
         }
 
+        /// <summary>
+        /// Carga todos los permisos disponibles y marca los asignados al rol actual
+        /// </summary>
         private void LoadPermissions()
         {
             try
@@ -73,6 +82,11 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Guardar para actualizar los permisos del rol
+        /// </summary>
+        /// <param name="sender">Objeto que generó el evento</param>
+        /// <param name="e">Argumentos del evento</param>
         private void btnSave_Click(object sender, EventArgs e)
         {
             try
@@ -108,6 +122,11 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Maneja el evento Click del botón Cancelar para cerrar el formulario sin guardar cambios
+        /// </summary>
+        /// <param name="sender">Objeto que generó el evento</param>
+        /// <param name="e">Argumentos del evento</param>
         private void btnCancel_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.Cancel;
@@ -120,6 +139,10 @@ namespace UI.Forms
             public Permission Permission { get; set; }
             public string DisplayText { get; set; }
 
+            /// <summary>
+            /// Devuelve la representación en cadena del permiso
+            /// </summary>
+            /// <returns>Texto para mostrar en el control</returns>
             public override string ToString()
             {
                 return DisplayText;
