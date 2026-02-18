@@ -398,9 +398,12 @@ namespace UI.Forms
             btnCancel.Enabled = enabled;
             
             grpList.Enabled = !enabled;
-            btnNew.Enabled = !enabled;
-            btnEdit.Enabled = !enabled;
-            btnDelete.Enabled = !enabled;
+            
+            // Re-apply permissions when disabling form
+            if (!enabled)
+            {
+                ConfigurePermissions();
+            }
             
             txtSKU.ReadOnly = _isEditing;
         }
