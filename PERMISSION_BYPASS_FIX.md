@@ -42,6 +42,15 @@ Este error se replicó en múltiples formularios:
    - `Roles.Delete`
    - `Roles.ManagePermissions`
 
+5. **SalesForm.cs** - Permisos bypasseados:
+   - `Sales.Create`
+
+6. **StockMovementForm.cs** - Permisos bypasseados:
+   - `Stock.Receive`
+   - `Stock.Issue`
+   - `Stock.Transfer`
+   - `Stock.Adjust`
+
 ## Solución Implementada
 
 Se aplicó el mismo patrón de corrección usado en `ClientsForm.cs` (que ya tenía la solución correcta):
@@ -139,6 +148,8 @@ Realizar la misma prueba en:
 2. `UI/Forms/UsersForm.cs` - Líneas 406-421
 3. `UI/Forms/WarehousesForm.cs` - Líneas 317-332
 4. `UI/Forms/RolesForm.cs` - Líneas 326-341
+5. `UI/Forms/SalesForm.cs` - Líneas 551-563
+6. `UI/Forms/StockMovementForm.cs` - Líneas 532-548
 
 ### Patrón de Corrección:
 - Eliminadas las líneas que habilitaban botones incondicionalmente
