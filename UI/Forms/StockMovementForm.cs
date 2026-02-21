@@ -536,10 +536,16 @@ namespace UI.Forms
             btnSave.Enabled = enable;
             btnCancel.Enabled = enable;
             
-            btnNew.Enabled = !enable;
-            btnViewDetails.Enabled = !enable;
             dgvMovements.Enabled = !enable;
             cmbMovementTypeFilter.Enabled = !enable;
+            
+            // Re-apply permissions when disabling form
+            if (!enable)
+            {
+                ConfigurePermissions();
+            }
+            
+            btnViewDetails.Enabled = !enable;
         }
 
         /// <summary>
