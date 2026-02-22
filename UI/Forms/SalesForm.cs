@@ -122,10 +122,10 @@ namespace UI.Forms
         /// </summary>
         private void ConfigurePermissions()
         {
-            if (!SessionContext.CurrentUserId.HasValue)
+            if (!SessionContext.Instance.CurrentUserId.HasValue)
                 return;
 
-            var userId = SessionContext.CurrentUserId.Value;
+            var userId = SessionContext.Instance.CurrentUserId.Value;
             
             btnNew.Enabled = _authorizationService.HasPermission(userId, "Sales.Create");
         }
@@ -367,7 +367,7 @@ namespace UI.Forms
                 }
 
                 // Create sale
-                var currentUserId = SessionContext.CurrentUserId ?? 0;
+                var currentUserId = SessionContext.Instance.CurrentUserId ?? 0;
                 var saleId = _saleService.CreateSale(sale, lines, currentUserId);
 
                 MessageBox.Show(
@@ -575,9 +575,9 @@ namespace UI.Forms
             dtpSaleDate.Value = DateTime.Now;
             
             // Set seller name from current user
-            if (SessionContext.CurrentUser != null)
+            if (SessionContext.Instance.CurrentUser != null)
             {
-                txtSellerName.Text = SessionContext.CurrentUser.FullName ?? SessionContext.CurrentUsername;
+                txtSellerName.Text = SessionContext.Instance.CurrentUser.FullName ?? SessionContext.Instance.CurrentUsername;
             }
             else
             {

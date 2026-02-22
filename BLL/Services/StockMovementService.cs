@@ -146,7 +146,7 @@ namespace BLL.Services
                 // Generate movement number
                 movement.MovementNumber = _movementRepo.GenerateMovementNumber(movement.MovementType);
                 movement.CreatedAt = DateTime.Now;
-                movement.CreatedBy = SessionContext.CurrentUserId.Value;
+                movement.CreatedBy = SessionContext.Instance.CurrentUserId.Value;
 
                 // Insert movement header
                 var movementId = _movementRepo.Insert(movement);
@@ -165,9 +165,9 @@ namespace BLL.Services
                 // Audit log
                 _auditRepo.LogChange("StockMovements", movementId, AuditAction.Insert, null, null,
                     $"Created {movement.MovementType} movement {movement.MovementNumber} with {lines.Count} lines",
-                    SessionContext.CurrentUserId);
+                    SessionContext.Instance.CurrentUserId);
 
-                _logService.Info($"Stock movement created: {movement.MovementNumber} ({movement.MovementType}) by {SessionContext.CurrentUsername}");
+                _logService.Info($"Stock movement created: {movement.MovementNumber} ({movement.MovementType}) by {SessionContext.Instance.CurrentUsername}");
 
                 return movementId;
             }
@@ -292,7 +292,7 @@ namespace BLL.Services
         private void UpdateStockForMovement(MovementType movementType, int? sourceWarehouseId, 
             int? destinationWarehouseId, int productId, int quantity)
         {
-            var userId = SessionContext.CurrentUserId.Value;
+            var userId = SessionContext.Instance.CurrentUserId.Value;
 
             switch (movementType)
             {
@@ -394,18 +394,18 @@ namespace BLL.Services
                     var oldPrice = product.UnitPrice;
                     product.UnitPrice = newPrice;
                     product.UpdatedAt = DateTime.Now;
-                    product.UpdatedBy = SessionContext.CurrentUserId;
+                    product.UpdatedBy = SessionContext.Instance.CurrentUserId;
 
                     _productRepo.Update(product);
 
                     // Log the price update
                     _auditRepo.LogChange("Products", product.ProductId, AuditAction.Update,
                         "UnitPrice", oldPrice.ToString("F2"), newPrice.ToString("F2"),
-                        SessionContext.CurrentUserId);
+                        SessionContext.Instance.CurrentUserId);
 
                     _logService.Info(
                         $"Product price updated via stock movement: {product.SKU} - {product.Name}, " +
-                        $"Price: {oldPrice:C} → {newPrice:C} by {SessionContext.CurrentUsername}");
+                        $"Price: {oldPrice:C} → {newPrice:C} by {SessionContext.Instance.CurrentUsername}");
                 }
             }
         }

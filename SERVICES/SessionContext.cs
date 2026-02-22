@@ -3,16 +3,30 @@ using DOMAIN.Entities;
 namespace SERVICES
 {
     /// <summary>
-    /// Contexto global de sesión para mantener información del usuario autenticado
+    /// Contexto global de sesión para mantener información del usuario autenticado.
+    /// Implementa el patrón Singleton para garantizar una única instancia durante el ciclo de vida de la aplicación.
     /// </summary>
-    public static class SessionContext
+    public sealed class SessionContext
     {
-        private static User _currentUser;
+        // Patrón Singleton: instancia única inicializada de forma lazy y thread-safe
+        private static readonly SessionContext _instance = new SessionContext();
+
+        /// <summary>
+        /// Obtiene la instancia única del contexto de sesión (patrón Singleton)
+        /// </summary>
+        public static SessionContext Instance => _instance;
+
+        /// <summary>
+        /// Constructor privado para impedir la instanciación externa (patrón Singleton)
+        /// </summary>
+        private SessionContext() { }
+
+        private User _currentUser;
 
         /// <summary>
         /// Obtiene o establece el usuario actualmente autenticado en la sesión
         /// </summary>
-        public static User CurrentUser
+        public User CurrentUser
         {
             get { return _currentUser; }
             set { _currentUser = value; }
@@ -21,8 +35,7 @@ namespace SERVICES
         /// <summary>
         /// Obtiene el ID del usuario actual si existe una sesión activa
         /// </summary>
-        /// <returns>ID del usuario o null si no hay sesión activa</returns>
-        public static int? CurrentUserId
+        public int? CurrentUserId
         {
             get { return _currentUser?.UserId; }
         }
@@ -30,8 +43,7 @@ namespace SERVICES
         /// <summary>
         /// Obtiene el nombre de usuario del usuario actual si existe una sesión activa
         /// </summary>
-        /// <returns>Nombre de usuario o null si no hay sesión activa</returns>
-        public static string CurrentUsername
+        public string CurrentUsername
         {
             get { return _currentUser?.Username; }
         }
@@ -39,7 +51,7 @@ namespace SERVICES
         /// <summary>
         /// Limpia la sesión actual eliminando la información del usuario autenticado
         /// </summary>
-        public static void Clear()
+        public void Clear()
         {
             _currentUser = null;
         }

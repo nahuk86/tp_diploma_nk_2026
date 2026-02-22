@@ -421,7 +421,7 @@ namespace DAO.Repositories
                                                VALUES (@UserId, @RoleId, @AssignedAt, @AssignedBy)";
                             
                             var assignedAt = DateTime.Now;
-                            var assignedBy = SessionContext.CurrentUserId;
+                            var assignedBy = SessionContext.Instance.CurrentUserId;
                             
                             using (var insertCommand = new SqlCommand(insertQuery, connection, transaction))
                             {

@@ -112,7 +112,7 @@ namespace SERVICES.Implementations
         {
             var timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
             var loggerName = logger ?? "Application";
-            var username = SessionContext.CurrentUser?.Username ?? "SYSTEM";
+            var username = SessionContext.Instance.CurrentUser?.Username ?? "SYSTEM";
             var machineName = Environment.MachineName;
 
             var entry = $"[{timestamp}] [{level.ToString().ToUpper()}] [{loggerName}] [{username}@{machineName}] {message}";

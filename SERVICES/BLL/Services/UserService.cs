@@ -117,7 +117,7 @@ namespace BLL.Services
 
                 // Set audit fields
                 user.CreatedAt = DateTime.Now;
-                user.CreatedBy = SessionContext.CurrentUserId;
+                user.CreatedBy = SessionContext.Instance.CurrentUserId;
                 user.IsActive = true;
 
                 // Insert
@@ -125,9 +125,9 @@ namespace BLL.Services
 
                 // Audit log
                 _auditRepo.LogChange("Users", userId, AuditAction.Insert, null, null, 
-                    $"Created user {user.Username}", SessionContext.CurrentUserId);
+                    $"Created user {user.Username}", SessionContext.Instance.CurrentUserId);
 
-                _logService.Info($"User created: {user.Username} by {SessionContext.CurrentUsername}");
+                _logService.Info($"User created: {user.Username} by {SessionContext.Instance.CurrentUsername}");
 
                 return userId;
             }
@@ -179,7 +179,7 @@ namespace BLL.Services
 
                 // Set audit fields
                 user.UpdatedAt = DateTime.Now;
-                user.UpdatedBy = SessionContext.CurrentUserId;
+                user.UpdatedBy = SessionContext.Instance.CurrentUserId;
 
                 // Update
                 _userRepo.Update(user);
@@ -189,7 +189,7 @@ namespace BLL.Services
                 LogFieldChange("Users", user.UserId, "Email", oldUser.Email, user.Email);
                 LogFieldChange("Users", user.UserId, "FullName", oldUser.FullName, user.FullName);
 
-                _logService.Info($"User updated: {user.Username} by {SessionContext.CurrentUsername}");
+                _logService.Info($"User updated: {user.Username} by {SessionContext.Instance.CurrentUsername}");
             }
             catch (Exception ex)
             {
@@ -219,12 +219,12 @@ namespace BLL.Services
                 }
 
                 // Soft delete
-                _userRepo.SoftDelete(userId, SessionContext.CurrentUserId.Value);
+                _userRepo.SoftDelete(userId, SessionContext.Instance.CurrentUserId.Value);
 
                 // Audit log
-                _auditRepo.LogChange("Users", userId, AuditAction.Delete, "IsActive", "1", "0", SessionContext.CurrentUserId);
+                _auditRepo.LogChange("Users", userId, AuditAction.Delete, "IsActive", "1", "0", SessionContext.Instance.CurrentUserId);
 
-                _logService.Info($"User deleted (soft): {user.Username} by {SessionContext.CurrentUsername}");
+                _logService.Info($"User deleted (soft): {user.Username} by {SessionContext.Instance.CurrentUsername}");
             }
             catch (Exception ex)
             {
@@ -256,14 +256,14 @@ namespace BLL.Services
                 user.PasswordHash = hash;
                 user.PasswordSalt = salt;
                 user.UpdatedAt = DateTime.Now;
-                user.UpdatedBy = SessionContext.CurrentUserId;
+                user.UpdatedBy = SessionContext.Instance.CurrentUserId;
 
                 _userRepo.Update(user);
 
                 // Audit log
-                _auditRepo.LogChange("Users", userId, AuditAction.Update, "Password", "***", "***", SessionContext.CurrentUserId);
+                _auditRepo.LogChange("Users", userId, AuditAction.Update, "Password", "***", "***", SessionContext.Instance.CurrentUserId);
 
-                _logService.Info($"Password changed for user: {user.Username} by {SessionContext.CurrentUsername}");
+                _logService.Info($"Password changed for user: {user.Username} by {SessionContext.Instance.CurrentUsername}");
             }
             catch (Exception ex)
             {
@@ -285,9 +285,9 @@ namespace BLL.Services
 
                 var user = _userRepo.GetById(userId);
                 _auditRepo.LogChange("UserRoles", userId, AuditAction.Update, "Roles", null, 
-                    $"Assigned {roleIds.Count} roles", SessionContext.CurrentUserId);
+                    $"Assigned {roleIds.Count} roles", SessionContext.Instance.CurrentUserId);
 
-                _logService.Info($"Roles assigned to user: {user.Username} by {SessionContext.CurrentUsername}");
+                _logService.Info($"Roles assigned to user: {user.Username} by {SessionContext.Instance.CurrentUsername}");
             }
             catch (Exception ex)
             {
@@ -385,7 +385,7 @@ namespace BLL.Services
         {
             if (oldValue != newValue)
             {
-                _auditRepo.LogChange(tableName, recordId, AuditAction.Update, fieldName, oldValue, newValue, SessionContext.CurrentUserId);
+                _auditRepo.LogChange(tableName, recordId, AuditAction.Update, fieldName, oldValue, newValue, SessionContext.Instance.CurrentUserId);
             }
         }
     }

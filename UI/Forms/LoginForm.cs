@@ -84,7 +84,7 @@ namespace UI.Forms
                 if (user != null)
                 {
                     // Set session context
-                    SessionContext.CurrentUser = user;
+                    SessionContext.Instance.CurrentUser = user;
                     
                     _logService.Info($"User {username} logged in successfully");
                     

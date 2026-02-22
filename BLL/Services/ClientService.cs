@@ -99,7 +99,7 @@ namespace BLL.Services
 
                 // Set audit fields
                 client.CreatedAt = DateTime.Now;
-                client.CreatedBy = SessionContext.CurrentUserId;
+                client.CreatedBy = SessionContext.Instance.CurrentUserId;
                 client.IsActive = true;
 
                 // Insert
@@ -107,9 +107,9 @@ namespace BLL.Services
 
                 // Audit log
                 _auditRepo.LogChange("Clients", clientId, AuditAction.Insert, null, null, 
-                    $"Created client {client.Nombre} {client.Apellido} - DNI: {client.DNI}", SessionContext.CurrentUserId);
+                    $"Created client {client.Nombre} {client.Apellido} - DNI: {client.DNI}", SessionContext.Instance.CurrentUserId);
 
-                _logService.Info($"Client created: {client.Nombre} {client.Apellido} - DNI: {client.DNI} by {SessionContext.CurrentUsername}");
+                _logService.Info($"Client created: {client.Nombre} {client.Apellido} - DNI: {client.DNI} by {SessionContext.Instance.CurrentUsername}");
 
                 return clientId;
             }
@@ -146,7 +146,7 @@ namespace BLL.Services
 
                 // Set audit fields
                 client.UpdatedAt = DateTime.Now;
-                client.UpdatedBy = SessionContext.CurrentUserId;
+                client.UpdatedBy = SessionContext.Instance.CurrentUserId;
 
                 // Update
                 _clientRepo.Update(client);
@@ -158,7 +158,7 @@ namespace BLL.Services
                 LogFieldChange("Clients", client.ClientId, "Telefono", oldClient.Telefono, client.Telefono);
                 LogFieldChange("Clients", client.ClientId, "Direccion", oldClient.Direccion, client.Direccion);
 
-                _logService.Info($"Client updated: {client.Nombre} {client.Apellido} - DNI: {client.DNI} by {SessionContext.CurrentUsername}");
+                _logService.Info($"Client updated: {client.Nombre} {client.Apellido} - DNI: {client.DNI} by {SessionContext.Instance.CurrentUsername}");
             }
             catch (Exception ex)
             {
@@ -182,12 +182,12 @@ namespace BLL.Services
                 }
 
                 // Soft delete
-                _clientRepo.SoftDelete(clientId, SessionContext.CurrentUserId.Value);
+                _clientRepo.SoftDelete(clientId, SessionContext.Instance.CurrentUserId.Value);
 
                 // Audit log
-                _auditRepo.LogChange("Clients", clientId, AuditAction.Delete, "IsActive", "1", "0", SessionContext.CurrentUserId);
+                _auditRepo.LogChange("Clients", clientId, AuditAction.Delete, "IsActive", "1", "0", SessionContext.Instance.CurrentUserId);
 
-                _logService.Info($"Client deleted (soft): {client.Nombre} {client.Apellido} - DNI: {client.DNI} by {SessionContext.CurrentUsername}");
+                _logService.Info($"Client deleted (soft): {client.Nombre} {client.Apellido} - DNI: {client.DNI} by {SessionContext.Instance.CurrentUsername}");
             }
             catch (Exception ex)
             {
@@ -245,7 +245,7 @@ namespace BLL.Services
         {
             if (oldValue != newValue)
             {
-                _auditRepo.LogChange(tableName, recordId, AuditAction.Update, fieldName, oldValue, newValue, SessionContext.CurrentUserId);
+                _auditRepo.LogChange(tableName, recordId, AuditAction.Update, fieldName, oldValue, newValue, SessionContext.Instance.CurrentUserId);
             }
         }
     }

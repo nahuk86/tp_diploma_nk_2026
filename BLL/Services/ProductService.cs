@@ -138,7 +138,7 @@ namespace BLL.Services
 
                 // Set audit fields
                 product.CreatedAt = DateTime.Now;
-                product.CreatedBy = SessionContext.CurrentUserId;
+                product.CreatedBy = SessionContext.Instance.CurrentUserId;
                 product.IsActive = true;
 
                 // Insert
@@ -146,9 +146,9 @@ namespace BLL.Services
 
                 // Audit log
                 _auditRepo.LogChange("Products", productId, AuditAction.Insert, null, null, 
-                    $"Created product {product.SKU} - {product.Name}", SessionContext.CurrentUserId);
+                    $"Created product {product.SKU} - {product.Name}", SessionContext.Instance.CurrentUserId);
 
-                _logService.Info($"Product created: {product.SKU} - {product.Name} by {SessionContext.CurrentUsername}");
+                _logService.Info($"Product created: {product.SKU} - {product.Name} by {SessionContext.Instance.CurrentUsername}");
 
                 return productId;
             }
@@ -185,7 +185,7 @@ namespace BLL.Services
 
                 // Set audit fields
                 product.UpdatedAt = DateTime.Now;
-                product.UpdatedBy = SessionContext.CurrentUserId;
+                product.UpdatedBy = SessionContext.Instance.CurrentUserId;
 
                 // Update
                 _productRepo.Update(product);
@@ -197,7 +197,7 @@ namespace BLL.Services
                 LogFieldChange("Products", product.ProductId, "UnitPrice", oldProduct.UnitPrice.ToString(), product.UnitPrice.ToString());
                 LogFieldChange("Products", product.ProductId, "MinStockLevel", oldProduct.MinStockLevel.ToString(), product.MinStockLevel.ToString());
 
-                _logService.Info($"Product updated: {product.SKU} - {product.Name} by {SessionContext.CurrentUsername}");
+                _logService.Info($"Product updated: {product.SKU} - {product.Name} by {SessionContext.Instance.CurrentUsername}");
             }
             catch (Exception ex)
             {
@@ -221,12 +221,12 @@ namespace BLL.Services
                 }
 
                 // Soft delete
-                _productRepo.SoftDelete(productId, SessionContext.CurrentUserId.Value);
+                _productRepo.SoftDelete(productId, SessionContext.Instance.CurrentUserId.Value);
 
                 // Audit log
-                _auditRepo.LogChange("Products", productId, AuditAction.Delete, "IsActive", "1", "0", SessionContext.CurrentUserId);
+                _auditRepo.LogChange("Products", productId, AuditAction.Delete, "IsActive", "1", "0", SessionContext.Instance.CurrentUserId);
 
-                _logService.Info($"Product deleted (soft): {product.SKU} - {product.Name} by {SessionContext.CurrentUsername}");
+                _logService.Info($"Product deleted (soft): {product.SKU} - {product.Name} by {SessionContext.Instance.CurrentUsername}");
             }
             catch (Exception ex)
             {
@@ -278,7 +278,7 @@ namespace BLL.Services
         {
             if (oldValue != newValue)
             {
-                _auditRepo.LogChange(tableName, recordId, AuditAction.Update, fieldName, oldValue, newValue, SessionContext.CurrentUserId);
+                _auditRepo.LogChange(tableName, recordId, AuditAction.Update, fieldName, oldValue, newValue, SessionContext.Instance.CurrentUserId);
             }
         }
     }

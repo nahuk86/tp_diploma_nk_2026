@@ -139,6 +139,9 @@
       <DependentUpon>UserManualForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
+    <!-- Factories (AbstractFactory + FactoryMethod pattern) -->
+    <Compile Include="Factories\IModuleFactory.cs" />
+    <Compile Include="Factories\DefaultModuleFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Forms\LoginForm.resx">
       <DependentUpon>LoginForm.cs</DependentUpon>
