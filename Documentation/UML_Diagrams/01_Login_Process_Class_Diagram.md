@@ -1,10 +1,13 @@
-# Login Process - Class Diagram
+# Login Process - Class Diagrams (Per Use Case)
 
-## UML Class Diagram (Mermaid Format)
+This document contains UML Class Diagrams organized per use case for all Login-related operations.
+
+---
+
+## UC-01: Authenticate
 
 ```mermaid
 classDiagram
-    %% UI Layer
     class LoginForm {
         -IAuthenticationService _authService
         -ILogService _logService
@@ -13,24 +16,10 @@ classDiagram
         -TextBox txtPassword
         -Button btnLogin
         -Button btnCancel
-        -Label lblUsername
-        -Label lblPassword
         +LoginForm(authService, logService, localizationService)
         +btnLogin_Click(sender, e) void
         -ApplyLocalization() void
         -SetControlsEnabled(enabled) void
-    }
-
-    %% Services Layer
-    class AuthenticationService {
-        -IUserRepository _userRepository
-        -ILogService _logService
-        +AuthenticationService(userRepository, logService)
-        +Authenticate(username, password) User
-        +HashPassword(password, out salt) string
-        +VerifyPassword(password, hash, salt) bool
-        +InitializeAdminPassword(username, newPassword) void
-        -HashPasswordWithSalt(password, salt) byte[]
     }
 
     class IAuthenticationService {
@@ -41,11 +30,37 @@ classDiagram
         +InitializeAdminPassword(username, newPassword) void
     }
 
+    class AuthenticationService {
+        -IUserRepository _userRepository
+        -ILogService _logService
+        +Authenticate(username, password) User
+        +VerifyPassword(password, hash, salt) bool
+        -HashPasswordWithSalt(password, salt) byte[]
+    }
+
+    class IUserRepository {
+        <<interface>>
+        +GetByUsername(username) User
+        +UpdateLastLogin(userId) void
+    }
+
+    class UserRepository {
+        +GetByUsername(username) User
+        +UpdateLastLogin(userId) void
+        -MapUser(reader) User
+    }
+
+    class DatabaseHelper {
+        <<static>>
+        +GetConnection() SqlConnection
+    }
+
     class SessionContext {
         <<static>>
         +CurrentUser User
         +CurrentUserId int
         +CurrentUsername string
+        +Clear() void
     }
 
     class ILogService {
@@ -61,46 +76,6 @@ classDiagram
         +SetLanguage(languageCode) void
     }
 
-    %% DAO Layer
-    class UserRepository {
-        +GetById(id) User
-        +GetByUsername(username) User
-        +GetByEmail(email) User
-        +GetAll() List~User~
-        +GetAllActive() List~User~
-        +Insert(entity) int
-        +Update(entity) void
-        +Delete(id) void
-        +SoftDelete(id, deletedBy) void
-        +UpdateLastLogin(userId) void
-        +GetUserRoles(userId) List~Role~
-        +AssignRole(userId, roleId, assignedBy) void
-        +RemoveRole(userId, roleId) void
-        +AssignRoles(userId, roleIds) void
-        -MapUser(reader) User
-        -MapRole(reader) Role
-    }
-
-    class IUserRepository {
-        <<interface>>
-        +GetById(id) User
-        +GetByUsername(username) User
-        +GetByEmail(email) User
-        +GetAll() List~User~
-        +Insert(entity) int
-        +Update(entity) void
-        +Delete(id) void
-        +UpdateLastLogin(userId) void
-        +GetUserRoles(userId) List~Role~
-    }
-
-    class DatabaseHelper {
-        <<static>>
-        +GetConnection() SqlConnection
-        +CreateParameter(name, value) SqlParameter
-    }
-
-    %% Domain Layer
     class User {
         +int UserId
         +string Username
@@ -109,84 +84,116 @@ classDiagram
         +string FullName
         +string Email
         +bool IsActive
-        +DateTime CreatedAt
-        +int? CreatedBy
-        +DateTime? UpdatedAt
-        +int? UpdatedBy
         +DateTime? LastLogin
     }
 
-    class Role {
-        +int RoleId
-        +string RoleName
-        +string Description
-        +bool IsActive
-        +DateTime CreatedAt
-        +int? CreatedBy
-        +DateTime? UpdatedAt
-        +int? UpdatedBy
-    }
-
-    %% Relationships
     LoginForm --> IAuthenticationService : uses
     LoginForm --> ILogService : uses
     LoginForm --> ILocalizationService : uses
     LoginForm --> SessionContext : sets CurrentUser
-    
     AuthenticationService ..|> IAuthenticationService : implements
     AuthenticationService --> IUserRepository : uses
     AuthenticationService --> ILogService : uses
-    AuthenticationService --> User : returns
-    
     UserRepository ..|> IUserRepository : implements
     UserRepository --> DatabaseHelper : uses
     UserRepository --> User : returns
-    UserRepository --> Role : returns
-    
     SessionContext --> User : holds
 ```
+
+---
+
+## UC-02: InitializeAdminPassword
+
+```mermaid
+classDiagram
+    class AdminPasswordInitForm {
+        -IAuthenticationService _authService
+        -ILogService _logService
+        -TextBox txtNewPassword
+        -TextBox txtConfirmPassword
+        -Button btnSave
+        +AdminPasswordInitForm(authService, logService)
+        +btnSave_Click(sender, e) void
+        -ValidatePasswords() bool
+    }
+
+    class IAuthenticationService {
+        <<interface>>
+        +InitializeAdminPassword(username, newPassword) void
+        +HashPassword(password, out salt) string
+    }
+
+    class AuthenticationService {
+        -IUserRepository _userRepository
+        -ILogService _logService
+        +InitializeAdminPassword(username, newPassword) void
+        +HashPassword(password, out salt) string
+        -HashPasswordWithSalt(password, salt) byte[]
+    }
+
+    class IUserRepository {
+        <<interface>>
+        +GetByUsername(username) User
+        +Update(user) void
+    }
+
+    class UserRepository {
+        +GetByUsername(username) User
+        +Update(user) void
+    }
+
+    class DatabaseHelper {
+        <<static>>
+        +GetConnection() SqlConnection
+    }
+
+    class User {
+        +int UserId
+        +string Username
+        +string PasswordHash
+        +string PasswordSalt
+        +bool IsActive
+    }
+
+    AdminPasswordInitForm --> IAuthenticationService : uses
+    AdminPasswordInitForm --> ILogService : uses
+    AuthenticationService ..|> IAuthenticationService : implements
+    AuthenticationService --> IUserRepository : uses
+    UserRepository ..|> IUserRepository : implements
+    UserRepository --> DatabaseHelper : uses
+    UserRepository --> User : maps
+```
+
+---
 
 ## Layer Communication Flow
 
 ```
 ┌─────────────┐
-│  UI LAYER   │  LoginForm
+│  UI LAYER   │  LoginForm / AdminPasswordInitForm
 └─────┬───────┘
       │ uses
       ▼
 ┌─────────────┐
 │  SERVICES   │  IAuthenticationService
-│   LAYER     │  ILogService
-└─────┬───────┘  ILocalizationService
-      │ calls
-      ▼
-┌─────────────┐
-│ SERVICES    │  AuthenticationService
-│    IMPL     │  
+│   LAYER     │  AuthenticationService (PBKDF2)
 └─────┬───────┘
       │ uses
       ▼
 ┌─────────────┐
-│  DAO LAYER  │  IUserRepository
-└─────┬───────┘
-      │ implements
-      ▼
-┌─────────────┐
-│     DAO     │  UserRepository
-│    IMPL     │  DatabaseHelper
+│  DAO LAYER  │  IUserRepository / UserRepository
 └─────┬───────┘
       │ returns
       ▼
 ┌─────────────┐
 │   DOMAIN    │  User Entity
-│   LAYER     │  
 └─────────────┘
 ```
 
 ## Key Design Patterns
 
-1. **Dependency Injection**: All dependencies are injected through constructors
-2. **Repository Pattern**: Data access is abstracted through IUserRepository
-3. **Service Layer**: Business logic is encapsulated in AuthenticationService
+1. **Dependency Injection**: All dependencies injected through constructors
+2. **Repository Pattern**: Data access abstracted through IUserRepository
+3. **Service Layer**: Business logic in AuthenticationService
 4. **Singleton Pattern**: SessionContext maintains application state
 5. **Interface Segregation**: Each service has a dedicated interface
