@@ -300,42 +300,35 @@ sequenceDiagram
 sequenceDiagram
     participant Admin as Administrator
     participant UI as UsersForm
-    participant AUTH as AuthenticationService
     participant BLL as UserService
     participant UserRepo as UserRepository
     participant DB as Database
 
     Admin->>UI: Open change password dialog
-    Admin->>UI: Enter current + new + confirm password
+    Admin->>UI: Enter new + confirm password
     Admin->>UI: Click Save
     activate UI
     UI->>UI: ValidatePasswordInputs()
     alt New passwords don't match
         UI-->>Admin: Show mismatch error
     else Valid inputs
-        UI->>AUTH: VerifyPassword(currentPassword, user.Hash, user.Salt)
-        Note over AUTH: PBKDF2 verification
-        alt Current password invalid
-            AUTH-->>UI: false
-            UI-->>Admin: Show invalid current password error
-        else Current password valid
-            AUTH-->>UI: true
-            UI->>AUTH: HashPassword(newPassword, out salt)
-            Note over AUTH: Generate random salt + PBKDF2 hash
-            AUTH-->>UI: newHash, newSalt
-            UI->>BLL: UpdateUser(user with new hash/salt)
-            activate BLL
-            BLL->>UserRepo: Update(user)
-            activate UserRepo
-            UserRepo->>DB: GetConnection()
-            DB-->>UserRepo: SqlConnection
-            Note over UserRepo: UPDATE Users SET PasswordHash=@Hash, PasswordSalt=@Salt WHERE UserId=@Id
-            UserRepo-->>BLL: void
-            deactivate UserRepo
-            BLL-->>UI: void
-            deactivate BLL
-            UI-->>Admin: Show "Password changed successfully"
-        end
+        UI->>BLL: ChangePassword(userId, newPassword)
+        activate BLL
+        Note over BLL: ValidatePassword(newPassword)
+        BLL->>UserRepo: GetById(userId)
+        UserRepo-->>BLL: User entity
+        Note over BLL: HashPassword(newPassword, out salt)
+        Note over BLL: Set user.PasswordHash, user.PasswordSalt
+        BLL->>UserRepo: Update(user)
+        activate UserRepo
+        UserRepo->>DB: GetConnection()
+        DB-->>UserRepo: SqlConnection
+        Note over UserRepo: UPDATE Users SET PasswordHash=@Hash, PasswordSalt=@Salt WHERE UserId=@Id
+        UserRepo-->>BLL: void
+        deactivate UserRepo
+        BLL-->>UI: void
+        deactivate BLL
+        UI-->>Admin: Show "Password changed successfully"
     end
     deactivate UI
 ```
@@ -478,7 +471,7 @@ sequenceDiagram
                 
                 BLL->>AuditRepo: LogChange("Users", userId, Insert, null, null, "Created user {username}", currentUserId)
                 activate AuditRepo
-                Note over AuditRepo: INSERT INTO AuditLog<br/>(TableName, RecordId, Action,<br/>Description, ChangeDate, ChangedBy)<br/>VALUES (...)
+                Note over AuditRepo: INSERT INTO AuditLog<br/>(TableName, RecordId, Action,<br/>FieldName, OldValue, NewValue,<br/>ChangedAt, ChangedBy)<br/>VALUES (...)
                 AuditRepo->>DB: ExecuteNonQuery()
                 activate DB
                 DB-->>AuditRepo: Success

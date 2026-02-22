@@ -17,17 +17,17 @@ sequenceDiagram
     User->>UI: Select "Category Sales Report", set filters, click Generate
     activate UI
     UI->>UI: ValidateFilters()
-    UI->>SVC: GetCategorySalesReport(startDate, endDate, orderBy)
+    UI->>SVC: GetCategorySalesReport(startDate, endDate, category)
     activate SVC
-    SVC->>REPO: GetCategorySalesReport(startDate, endDate, orderBy)
+    SVC->>REPO: GetCategorySalesReport(startDate, endDate, category)
     activate REPO
     REPO->>DB: GetConnection()
     DB-->>REPO: SqlConnection
-    Note over REPO: SELECT p.Category, SUM(sl.Quantity) AS TotalUnits, SUM(sl.LineTotal) AS TotalRevenue, COUNT(DISTINCT s.SaleId) AS TransactionCount, AVG(sl.UnitPrice) AS AveragePrice FROM Products p JOIN SaleLines sl ON p.ProductId=sl.ProductId JOIN Sales s ON sl.SaleId=s.SaleId WHERE s.SaleDate BETWEEN @Start AND @End GROUP BY p.Category ORDER BY @OrderBy DESC
+    Note over REPO: SELECT p.Category, SUM(sl.Quantity) AS UnitsSold, SUM(sl.LineTotal) AS TotalRevenue FROM Products p JOIN SaleLines sl ON p.ProductId=sl.ProductId JOIN Sales s ON sl.SaleId=s.SaleId WHERE s.SaleDate BETWEEN @Start AND @End GROUP BY p.Category ORDER BY TotalRevenue DESC
     loop For each row
         REPO->>REPO: MapCategorySalesReport(reader)
     end
-    REPO->>REPO: Calculate RevenuePercentage per category
+    REPO->>REPO: Calculate PercentageOfTotal per category
     REPO-->>SVC: List~CategorySalesReportDTO~
     deactivate REPO
     SVC-->>UI: List~CategorySalesReportDTO~
@@ -51,13 +51,13 @@ sequenceDiagram
 
     User->>UI: Select client and click Generate
     activate UI
-    UI->>SVC: GetClientProductRankingReport(clientId)
+    UI->>SVC: GetClientProductRankingReport(startDate, endDate, productId, category, topN)
     activate SVC
-    SVC->>REPO: GetClientProductRankingReport(clientId)
+    SVC->>REPO: GetClientProductRankingReport(startDate, endDate, productId, category, topN)
     activate REPO
     REPO->>DB: GetConnection()
     DB-->>REPO: SqlConnection
-    Note over REPO: SELECT p.Name, p.SKU, SUM(sl.Quantity) AS TotalQty, SUM(sl.LineTotal) AS TotalSpent, COUNT(DISTINCT s.SaleId) AS PurchaseCount, RANK() OVER (ORDER BY SUM(sl.Quantity) DESC) AS Rank FROM SaleLines sl JOIN Sales s ON sl.SaleId=s.SaleId JOIN Products p ON sl.ProductId=p.ProductId WHERE s.ClientId=@ClientId GROUP BY p.ProductId, p.Name, p.SKU
+    Note over REPO: SELECT TOP(@TopN) c.ClientId, c.Nombre+' '+c.Apellido AS ClientFullName, c.DNI, p.Name AS ProductName, p.SKU, p.Category, SUM(sl.Quantity) AS UnitsPurchased, SUM(sl.LineTotal) AS TotalSpent FROM SaleLines sl JOIN Sales s ON sl.SaleId=s.SaleId JOIN Clients c ON s.ClientId=c.ClientId JOIN Products p ON sl.ProductId=p.ProductId WHERE s.SaleDate BETWEEN @Start AND @End GROUP BY c.ClientId, ...
     REPO-->>SVC: List~ClientProductRankingReportDTO~
     deactivate REPO
     SVC-->>UI: List~ClientProductRankingReportDTO~
@@ -136,15 +136,15 @@ sequenceDiagram
     participant REPO as ReportRepository
     participant DB as Database
 
-    User->>UI: Set date range and groupBy (Day/Week/Month), click Generate
+    User->>UI: Set date range, optional movementType/warehouseId, click Generate
     activate UI
-    UI->>SVC: GetRevenueByDateReport(startDate, endDate, groupBy)
+    UI->>SVC: GetRevenueByDateReport(startDate, endDate, movementType, warehouseId)
     activate SVC
-    SVC->>REPO: GetRevenueByDateReport(startDate, endDate, groupBy)
+    SVC->>REPO: GetRevenueByDateReport(startDate, endDate, movementType, warehouseId)
     activate REPO
     REPO->>DB: GetConnection()
     DB-->>REPO: SqlConnection
-    Note over REPO: SELECT DATETRUNC(@GroupBy, s.SaleDate) AS Period, SUM(s.TotalAmount) AS TotalRevenue, COUNT(DISTINCT s.SaleId) AS TotalSales, SUM(sl.Quantity) AS TotalItemsSold FROM Sales s JOIN SaleLines sl ON s.SaleId=sl.SaleId WHERE s.SaleDate BETWEEN @Start AND @End GROUP BY DATETRUNC(@GroupBy, s.SaleDate) ORDER BY Period
+    Note over REPO: SELECT s.SaleDate AS ReportDate, SUM(s.TotalAmount) AS SalesRevenue, COUNT(sm.MovementId) FILTER(In) AS StockInMovements, SUM(sml.Quantity) FILTER(In) AS StockInUnits, COUNT(sm.MovementId) FILTER(Out) AS StockOutMovements, SUM(sml.Quantity) FILTER(Out) AS StockOutUnits FROM Sales s ...
     REPO-->>SVC: List~RevenueByDateReportDTO~
     deactivate REPO
     SVC-->>UI: List~RevenueByDateReportDTO~
@@ -333,7 +333,7 @@ sequenceDiagram
         DB-->>Repo: SqlConnection
         deactivate DB
         
-        Note over Repo: Build complex SQL query:<br/>SELECT TOP(@TopN)<br/>  p.Name AS ProductName,<br/>  p.SKU,<br/>  p.Category,<br/>  SUM(sl.Quantity) AS UnitsSold,<br/>  SUM(sl.LineTotal) AS Revenue,<br/>  COUNT(DISTINCT s.SaleId) AS TransactionCount<br/>FROM Products p<br/>INNER JOIN SaleLines sl ON p.ProductId = sl.ProductId<br/>INNER JOIN Sales s ON sl.SaleId = s.SaleId<br/>WHERE (@StartDate IS NULL OR s.SaleDate >= @StartDate)<br/>  AND (@EndDate IS NULL OR s.SaleDate <= @EndDate)<br/>  AND (@Category IS NULL OR p.Category = @Category)<br/>GROUP BY p.ProductId, p.Name, p.SKU, p.Category<br/>ORDER BY Revenue DESC
+        Note over Repo: Build complex SQL query:<br/>SELECT TOP(@TopN)<br/>  p.SKU,<br/>  p.Name AS ProductName,<br/>  p.Category,<br/>  SUM(sl.Quantity) AS UnitsSold,<br/>  SUM(sl.LineTotal) AS Revenue,<br/>  p.UnitPrice AS ListPrice,<br/>  AVG(sl.UnitPrice) AS AverageSalePrice<br/>FROM Products p<br/>INNER JOIN SaleLines sl ON p.ProductId = sl.ProductId<br/>INNER JOIN Sales s ON sl.SaleId = s.SaleId<br/>WHERE (@StartDate IS NULL OR s.SaleDate >= @StartDate)<br/>  AND (@EndDate IS NULL OR s.SaleDate <= @EndDate)<br/>  AND (@Category IS NULL OR p.Category = @Category)<br/>GROUP BY p.ProductId, p.SKU, p.Name, p.Category, p.UnitPrice<br/>ORDER BY @OrderBy DESC
         
         Repo->>DB: ExecuteReader(query, parameters)
         activate DB
@@ -342,7 +342,7 @@ sequenceDiagram
         
         loop For each row in ResultSet
             Repo->>Repo: MapTopProductsReport(reader)
-            Note over Repo: Create TopProductsReportDTO:<br/>- ProductName<br/>- SKU<br/>- Category<br/>- UnitsSold<br/>- Revenue<br/>- TransactionCount
+            Note over Repo: Create TopProductsReportDTO:<br/>- SKU<br/>- ProductName<br/>- Category<br/>- UnitsSold<br/>- Revenue<br/>- ListPrice<br/>- AverageSalePrice<br/>- Ranking
         end
         
         Repo-->>BLL: List<TopProductsReportDTO>

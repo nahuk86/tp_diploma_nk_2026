@@ -36,7 +36,6 @@ sequenceDiagram
     else Valid input
         UI->>Auth: Authenticate(username, password)
         activate Auth
-        Auth->>Log: Warning("Authentication attempt for: username")
         Auth->>UserRepo: GetByUsername(username)
         activate UserRepo
         UserRepo->>DB: GetConnection()

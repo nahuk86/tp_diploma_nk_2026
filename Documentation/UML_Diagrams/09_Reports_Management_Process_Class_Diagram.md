@@ -18,17 +18,17 @@ classDiagram
     class ReportService {
         -IReportRepository _reportRepo
         -ILogService _logService
-        +GetCategorySalesReport(startDate, endDate, orderBy) List~CategorySalesReportDTO~
+        +GetCategorySalesReport(startDate, endDate, category) List~CategorySalesReportDTO~
     }
 
     class IReportRepository {
         <<interface>>
-        +GetCategorySalesReport(startDate, endDate, orderBy) List~CategorySalesReportDTO~
+        +GetCategorySalesReport(startDate, endDate, category) List~CategorySalesReportDTO~
     }
 
     class ReportRepository {
         -DatabaseHelper _db
-        +GetCategorySalesReport(startDate, endDate, orderBy) List~CategorySalesReportDTO~
+        +GetCategorySalesReport(startDate, endDate, category) List~CategorySalesReportDTO~
         -MapCategorySalesReport(reader) CategorySalesReportDTO
     }
 
@@ -39,11 +39,9 @@ classDiagram
 
     class CategorySalesReportDTO {
         +string Category
-        +int TotalUnits
+        +int UnitsSold
         +decimal TotalRevenue
-        +int TransactionCount
-        +decimal AveragePrice
-        +decimal RevenuePercentage
+        +decimal PercentageOfTotal
     }
 
     ReportsForm --> ReportService : uses
@@ -66,28 +64,29 @@ classDiagram
 
     class ReportService {
         -IReportRepository _reportRepo
-        +GetClientProductRankingReport(clientId) List~ClientProductRankingReportDTO~
+        +GetClientProductRankingReport(startDate, endDate, productId, category, topN) List~ClientProductRankingReportDTO~
     }
 
     class IReportRepository {
         <<interface>>
-        +GetClientProductRankingReport(clientId) List~ClientProductRankingReportDTO~
+        +GetClientProductRankingReport(startDate, endDate, productId, category, topN) List~ClientProductRankingReportDTO~
     }
 
     class ReportRepository {
-        +GetClientProductRankingReport(clientId) List~ClientProductRankingReportDTO~
+        +GetClientProductRankingReport(startDate, endDate, productId, category, topN) List~ClientProductRankingReportDTO~
         -MapClientProductRankingReport(reader) ClientProductRankingReportDTO
     }
 
     class ClientProductRankingReportDTO {
         +int ClientId
-        +string ClientName
+        +string ClientFullName
+        +string DNI
         +string ProductName
         +string SKU
-        +int TotalQuantity
+        +string Category
+        +int UnitsPurchased
         +decimal TotalSpent
-        +int PurchaseCount
-        +int Rank
+        +decimal PercentageOfProductSales
     }
 
     ReportsForm --> ReportService : uses
@@ -123,12 +122,16 @@ classDiagram
     }
 
     class ClientPurchasesReportDTO {
-        +string ClientName
-        +string ClientDNI
-        +int TotalPurchases
+        +int ClientId
+        +string ClientFullName
+        +string DNI
+        +string Email
+        +int PurchaseCount
         +decimal TotalSpent
-        +DateTime LastPurchaseDate
+        +int TotalUnits
+        +int DistinctProducts
         +decimal AverageTicket
+        +List~ClientProductDetail~ ProductDetails
     }
 
     ReportsForm --> ReportService : uses
@@ -167,10 +170,12 @@ classDiagram
         +string ProductName
         +string SKU
         +string Category
-        +DateTime SaleDate
-        +decimal UnitPrice
-        +decimal PriceVariation
-        +decimal PercentageChange
+        +decimal ListPrice
+        +decimal MinSalePrice
+        +decimal MaxSalePrice
+        +decimal AverageSalePrice
+        +decimal AbsoluteVariation
+        +decimal PercentageVariation
     }
 
     ReportsForm --> ReportService : uses
@@ -247,12 +252,12 @@ classDiagram
 
     class SellerPerformanceReportDTO {
         +string SellerName
-        +int SalesCount
+        +int TotalSales
         +int TotalUnits
         +decimal TotalRevenue
         +decimal AverageTicket
-        +decimal MinSale
-        +decimal MaxSale
+        +string TopProduct
+        +int TopProductQuantity
     }
 
     ReportsForm --> ReportService : uses
@@ -311,7 +316,9 @@ classDiagram
         +string Category
         +int UnitsSold
         +decimal Revenue
-        +int TransactionCount
+        +decimal ListPrice
+        +decimal AverageSalePrice
+        +int Ranking
     }
 
     ReportsForm --> ReportService : uses
@@ -353,13 +360,13 @@ classDiagram
 
 | Use Case | Filters | Key Metrics |
 |----------|---------|-------------|
-| GetCategorySalesReport | Date range, orderBy | Units, revenue, avg price, % of total |
-| GetClientProductRankingReport | ClientId | Products ranked by qty/spend |
-| GetClientPurchasesReport | ClientId, date range, topN | Total purchases, spend, avg ticket |
-| GetPriceVariationReport | ProductId, category, date range | Price at sale, variation, % change |
-| GetRevenueByDateReport | Date range, groupBy (Day/Week/Month) | Revenue, sales count, items sold |
-| GetSellerPerformanceReport | Date range, seller, category | Sales count, revenue, avg/min/max |
-| GetTopProductsReport | Date range, category, topN, orderBy | Units sold, revenue, transaction count |
+| GetCategorySalesReport | Date range, category | UnitsSold, TotalRevenue, PercentageOfTotal |
+| GetClientProductRankingReport | Date range, productId, category, topN | UnitsPurchased, TotalSpent, PercentageOfProductSales |
+| GetClientPurchasesReport | Date range, clientId, topN | PurchaseCount, TotalSpent, TotalUnits, AverageTicket |
+| GetPriceVariationReport | Date range, productId, category | ListPrice, MinSalePrice, MaxSalePrice, AverageSalePrice, variation |
+| GetRevenueByDateReport | Date range, movementType, warehouseId | SalesRevenue, StockInMovements/Units, StockOutMovements/Units |
+| GetSellerPerformanceReport | Date range, sellerName, category | TotalSales, TotalRevenue, AverageTicket, TopProduct |
+| GetTopProductsReport | Date range, category, topN, orderBy | UnitsSold, Revenue, ListPrice, AverageSalePrice, Ranking |
         -ReportService _reportService
         -IAuthorizationService _authService
         -ILocalizationService _localizationService
@@ -456,50 +463,56 @@ classDiagram
 
     %% Domain Layer - Report DTOs
     class TopProductsReportDTO {
-        +string ProductName
         +string SKU
+        +string ProductName
         +string Category
         +int UnitsSold
         +decimal Revenue
-        +int TransactionCount
+        +decimal ListPrice
+        +decimal AverageSalePrice
+        +int Ranking
     }
 
     class ClientPurchasesReportDTO {
-        +string ClientName
-        +string ClientDNI
-        +int TotalPurchases
+        +int ClientId
+        +string ClientFullName
+        +string DNI
+        +string Email
+        +int PurchaseCount
         +decimal TotalSpent
-        +DateTime? LastPurchaseDate
+        +int TotalUnits
+        +int DistinctProducts
         +decimal AverageTicket
+        +List~ClientProductDetail~ ProductDetails
     }
 
     class PriceVariationReportDTO {
-        +string ProductName
         +string SKU
+        +string ProductName
         +string Category
-        +DateTime SaleDate
-        +decimal UnitPrice
-        +decimal PriceVariation
-        +decimal PercentageChange
+        +decimal ListPrice
+        +decimal MinSalePrice
+        +decimal MaxSalePrice
+        +decimal AverageSalePrice
+        +decimal AbsoluteVariation
+        +decimal PercentageVariation
     }
 
     class SellerPerformanceReportDTO {
         +string SellerName
-        +int SalesCount
+        +int TotalSales
         +int TotalUnits
         +decimal TotalRevenue
         +decimal AverageTicket
-        +decimal MinSale
-        +decimal MaxSale
+        +string TopProduct
+        +int TopProductQuantity
     }
 
     class CategorySalesReportDTO {
         +string Category
-        +int TotalUnits
+        +int UnitsSold
         +decimal TotalRevenue
-        +int TransactionCount
-        +decimal AveragePrice
-        +decimal RevenuePercentage
+        +decimal PercentageOfTotal
     }
 
     class RevenueByDateReportDTO {

@@ -44,14 +44,23 @@ classDiagram
     class IStockRepository {
         <<interface>>
         +GetByProductAndWarehouse(productId, warehouseId) Stock
-        +DeductStock(productId, warehouseId, quantity) void
-        +AddStock(productId, warehouseId, quantity) void
+        +GetByProduct(productId) List~Stock~
+        +GetByWarehouse(warehouseId) List~Stock~
+        +GetAll() List~Stock~
+        +GetLowStock() List~Stock~
+        +UpdateStock(productId, warehouseId, quantity, updatedBy) void
+        +GetCurrentStock(productId, warehouseId) int
     }
 
     class StockRepository {
         +GetByProductAndWarehouse(productId, warehouseId) Stock
-        +DeductStock(productId, warehouseId, quantity) void
-        +AddStock(productId, warehouseId, quantity) void
+        +GetByProduct(productId) List~Stock~
+        +GetByWarehouse(warehouseId) List~Stock~
+        +GetAll() List~Stock~
+        +GetLowStock() List~Stock~
+        +UpdateStock(productId, warehouseId, quantity, updatedBy) void
+        +GetCurrentStock(productId, warehouseId) int
+        -MapStock(reader) Stock
     }
 
     class DatabaseHelper {
@@ -64,12 +73,15 @@ classDiagram
         +string MovementNumber
         +DateTime MovementDate
         +MovementType MovementType
-        +int SourceWarehouseId
-        +int DestinationWarehouseId
-        +string Remarks
+        +int? SourceWarehouseId
+        +int? DestinationWarehouseId
+        +string Reason
+        +string Notes
         +DateTime CreatedAt
         +int CreatedBy
-        +List~StockMovementLine~ Lines
+        +string CreatedByUsername
+        +string SourceWarehouseName
+        +string DestinationWarehouseName
     }
 
     class StockMovementLine {
@@ -77,13 +89,15 @@ classDiagram
         +int MovementId
         +int ProductId
         +string ProductName
+        +string ProductSKU
         +int Quantity
+        +decimal? UnitPrice
     }
 
     class MovementType {
         <<enumeration>>
-        Entry
-        Exit
+        In
+        Out
         Transfer
         Adjustment
     }
@@ -94,7 +108,6 @@ classDiagram
     StockMovementRepository ..|> IStockMovementRepository : implements
     StockRepository ..|> IStockRepository : implements
     StockMovementRepository --> DatabaseHelper : uses
-    StockMovement "1" --> "many" StockMovementLine : contains
     StockMovement --> MovementType : has
 ```
 
@@ -128,7 +141,8 @@ classDiagram
         +string MovementNumber
         +DateTime MovementDate
         +MovementType MovementType
-        +string Remarks
+        +string Reason
+        +string Notes
     }
 
     StockMovementForm --> StockMovementService : uses
@@ -167,8 +181,13 @@ classDiagram
         +string MovementNumber
         +MovementType MovementType
         +DateTime MovementDate
-        +int SourceWarehouseId
-        +int DestinationWarehouseId
+        +int? SourceWarehouseId
+        +int? DestinationWarehouseId
+        +string Reason
+        +string Notes
+        +string CreatedByUsername
+        +string SourceWarehouseName
+        +string DestinationWarehouseName
     }
 
     StockMovementForm --> StockMovementService : uses
@@ -208,8 +227,9 @@ classDiagram
         +int MovementId
         +int ProductId
         +string ProductName
-        +string SKU
+        +string ProductSKU
         +int Quantity
+        +decimal? UnitPrice
     }
 
     StockMovementForm --> StockMovementService : uses
@@ -290,8 +310,8 @@ classDiagram
 
     class MovementType {
         <<enumeration>>
-        Entry
-        Exit
+        In
+        Out
         Transfer
         Adjustment
     }
@@ -312,13 +332,17 @@ classDiagram
         -IStockMovementRepository _movementRepo
         -IProductRepository _productRepo
         -ILogService _logService
-        +UpdateProductPrices(movementId) void
-        +CheckPriceUpdates(movementId) bool
+        +CheckPriceUpdates(movementType, lines) List~PriceUpdateInfo~
+        +UpdateProductPrices(lines, confirmLowerPrices) void
     }
 
-    class IStockMovementRepository {
-        <<interface>>
-        +GetMovementLines(movementId) List~StockMovementLine~
+    class PriceUpdateInfo {
+        +int ProductId
+        +string ProductName
+        +string ProductSKU
+        +decimal CurrentPrice
+        +decimal NewPrice
+        +bool NeedsConfirmation
     }
 
     class IProductRepository {
@@ -336,17 +360,18 @@ classDiagram
         +int LineId
         +int ProductId
         +int Quantity
-        +decimal UnitPrice
+        +decimal? UnitPrice
     }
 
     class Product {
         +int ProductId
         +string Name
+        +string SKU
         +decimal UnitPrice
     }
 
-    StockMovementService --> IStockMovementRepository : uses
     StockMovementService --> IProductRepository : uses
+    StockMovementService --> PriceUpdateInfo : creates
     ProductRepository ..|> IProductRepository : implements
     StockMovementLine --> Product : references
 ```
@@ -358,42 +383,27 @@ classDiagram
 ```mermaid
 classDiagram
     class StockMovementService {
-        -IStockMovementRepository _movementRepo
         -IStockRepository _stockRepo
         -ILogService _logService
-        +UpdateStockForMovement(movementType, sourceWh, destWh, productId, quantity) void
-    }
-
-    class IStockMovementRepository {
-        <<interface>>
-        +GetById(id) StockMovement
-        +GetMovementLines(movementId) List~StockMovementLine~
+        -UpdateStockForMovement(movementType, sourceWh, destWh, productId, quantity) void
     }
 
     class IStockRepository {
         <<interface>>
-        +GetByProductAndWarehouse(productId, warehouseId) Stock
-        +DeductStock(productId, warehouseId, quantity) void
-        +AddStock(productId, warehouseId, quantity) void
-        +TransferStock(productId, sourceWh, destWh, quantity) void
-    }
-
-    class StockMovementRepository {
-        +GetById(id) StockMovement
-        +GetMovementLines(movementId) List~StockMovementLine~
+        +GetCurrentStock(productId, warehouseId) int
+        +UpdateStock(productId, warehouseId, quantity, updatedBy) void
     }
 
     class StockRepository {
-        +DeductStock(productId, warehouseId, quantity) void
-        +AddStock(productId, warehouseId, quantity) void
-        +TransferStock(productId, sourceWh, destWh, quantity) void
+        +GetCurrentStock(productId, warehouseId) int
+        +UpdateStock(productId, warehouseId, quantity, updatedBy) void
     }
 
     class StockMovement {
         +int MovementId
         +MovementType MovementType
-        +int SourceWarehouseId
-        +int DestinationWarehouseId
+        +int? SourceWarehouseId
+        +int? DestinationWarehouseId
     }
 
     class Stock {
@@ -402,9 +412,9 @@ classDiagram
         +int WarehouseId
         +int Quantity
         +DateTime LastUpdated
+        +int? UpdatedBy
     }
 
-    StockMovementService --> IStockMovementRepository : uses
     StockMovementService --> IStockRepository : uses
     StockMovementRepository ..|> IStockMovementRepository : implements
     StockRepository ..|> IStockRepository : implements
@@ -417,10 +427,10 @@ classDiagram
 
 | MovementType | SourceWarehouse | DestinationWarehouse | Stock Operation |
 |--------------|-----------------|----------------------|-----------------|
-| Entry | Not required | Required | Add to destination |
-| Exit | Required | Not required | Deduct from source |
+| In | Not required | Required | Add to destination |
+| Out | Required | Not required | Deduct from source |
 | Transfer | Required | Required | Deduct source + Add destination |
-| Adjustment | Required | Not required | Set absolute quantity |
+| Adjustment | Not required | Required | Add to destination |
         -StockMovementService _movementService
         -ProductService _productService
         -WarehouseService _warehouseService
@@ -467,10 +477,10 @@ classDiagram
         +GetMovementsByDateRange(startDate, endDate) List~StockMovement~
         +GetMovementLines(movementId) List~StockMovementLine~
         +CreateMovement(movement, lines) int
-        +GetCurrentStock(productId, warehouseId) int
+        +CheckPriceUpdates(movementType, lines) List~PriceUpdateInfo~
+        +UpdateProductPrices(lines, confirmLowerPrices) void
         -ValidateMovement(movement, lines) void
         -UpdateStockForMovement(movementType, sourceWh, destWh, productId, quantity) void
-        -ValidateStockAvailability(movementType, sourceWh, productId, quantity) void
     }
 
     class ProductService {
@@ -516,22 +526,25 @@ classDiagram
     }
 
     class StockRepository {
+        +GetByProductAndWarehouse(productId, warehouseId) Stock
         +GetByProduct(productId) List~Stock~
         +GetByWarehouse(warehouseId) List~Stock~
-        +GetByProductAndWarehouse(productId, warehouseId) Stock
-        +UpdateQuantity(productId, warehouseId, quantity) void
-        +DeductStock(productId, warehouseId, quantity) void
-        +AddStock(productId, warehouseId, quantity) void
-        +TransferStock(productId, sourceWh, destWh, quantity) void
+        +GetAll() List~Stock~
+        +GetLowStock() List~Stock~
+        +UpdateStock(productId, warehouseId, quantity, updatedBy) void
+        +GetCurrentStock(productId, warehouseId) int
         -MapStock(reader) Stock
     }
 
     class IStockRepository {
         <<interface>>
         +GetByProductAndWarehouse(productId, warehouseId) Stock
-        +UpdateQuantity(productId, warehouseId, quantity) void
-        +DeductStock(productId, warehouseId, quantity) void
-        +AddStock(productId, warehouseId, quantity) void
+        +GetByProduct(productId) List~Stock~
+        +GetByWarehouse(warehouseId) List~Stock~
+        +GetAll() List~Stock~
+        +GetLowStock() List~Stock~
+        +UpdateStock(productId, warehouseId, quantity, updatedBy) void
+        +GetCurrentStock(productId, warehouseId) int
     }
 
     class ProductRepository {
@@ -569,10 +582,13 @@ classDiagram
         +MovementType MovementType
         +int? SourceWarehouseId
         +int? DestinationWarehouseId
-        +string Remarks
+        +string Reason
+        +string Notes
         +DateTime CreatedAt
         +int CreatedBy
-        +List~StockMovementLine~ Lines
+        +string CreatedByUsername
+        +string SourceWarehouseName
+        +string DestinationWarehouseName
     }
 
     class StockMovementLine {
@@ -580,13 +596,15 @@ classDiagram
         +int MovementId
         +int ProductId
         +string ProductName
+        +string ProductSKU
         +int Quantity
+        +decimal? UnitPrice
     }
 
     class MovementType {
         <<enumeration>>
-        Entry
-        Exit
+        In
+        Out
         Transfer
         Adjustment
     }
@@ -597,6 +615,10 @@ classDiagram
         +int WarehouseId
         +int Quantity
         +DateTime LastUpdated
+        +int? UpdatedBy
+        +string ProductName
+        +string ProductSKU
+        +string WarehouseName
     }
 
     class Product {
@@ -613,10 +635,21 @@ classDiagram
         +int WarehouseId
         +string Code
         +string Name
-        +string Location
+        +string Address
         +bool IsActive
         +DateTime CreatedAt
         +int? CreatedBy
+        +DateTime? UpdatedAt
+        +int? UpdatedBy
+    }
+
+    class PriceUpdateInfo {
+        +int ProductId
+        +string ProductName
+        +string ProductSKU
+        +decimal CurrentPrice
+        +decimal NewPrice
+        +bool NeedsConfirmation
     }
 
     %% Relationships
@@ -629,6 +662,7 @@ classDiagram
     StockMovementService --> IProductRepository : uses
     StockMovementService --> IWarehouseRepository : uses
     StockMovementService --> IAuditLogRepository : uses
+    StockMovementService --> PriceUpdateInfo : creates
     
     StockMovementRepository ..|> IStockMovementRepository : implements
     StockRepository ..|> IStockRepository : implements
@@ -686,13 +720,13 @@ classDiagram
 
 ## Movement Types & Stock Operations
 
-### Entry (Incoming Stock)
+### In (Incoming Stock)
 - **Source Warehouse**: Not required
 - **Destination Warehouse**: Required
 - **Stock Operation**: Add to destination warehouse
 - **Use Cases**: Purchase orders, returns, initial inventory
 
-### Exit (Outgoing Stock)
+### Out (Outgoing Stock)
 - **Source Warehouse**: Required
 - **Destination Warehouse**: Not required
 - **Stock Operation**: Deduct from source warehouse
@@ -705,17 +739,17 @@ classDiagram
 - **Use Cases**: Rebalancing inventory, relocations
 
 ### Adjustment (Inventory Correction)
-- **Source Warehouse**: Required
-- **Destination Warehouse**: Not required
-- **Stock Operation**: Set quantity (can be positive or negative)
-- **Use Cases**: Physical count corrections, damaged goods
+- **Source Warehouse**: Not required
+- **Destination Warehouse**: Required
+- **Stock Operation**: Add quantity to destination warehouse
+- **Use Cases**: Physical count corrections
 
 ## Key Business Rules
 
 1. **Movement Number**: Auto-generated based on type and date
-2. **Stock Validation**: Check available stock for Exit and Transfer
+2. **Stock Validation**: Check available stock for Out and Transfer
 3. **Atomic Operations**: Movement and stock updates in single transaction
 4. **Audit Trail**: All movements logged with user context
 5. **Warehouse Validation**: Required warehouses based on movement type
-6. **Negative Stock Prevention**: Exit/Transfer cannot reduce stock below zero
+6. **Negative Stock Prevention**: Out/Transfer cannot reduce stock below zero
 7. **Product Validation**: All products must be active
