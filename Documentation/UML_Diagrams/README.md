@@ -137,6 +137,76 @@ Each process includes:
 
 ---
 
+### 7. Products — Individual Use Cases
+- **[13_Products_UseCases.md](./13_Products_UseCases.md)**
+  - Use Cases: CreateProduct, DeleteProduct, GetActiveProducts, GetAllProducts, GetProductById, GetProductsByCategory, SearchProduct, UpdateProduct
+  - Each use case includes a Class Diagram and a Sequence Diagram
+
+---
+
+### 8. Stock Movements — Individual Use Cases
+- **[14_Movements_UseCases.md](./14_Movements_UseCases.md)**
+  - Use Cases: CreateMovement, GetAllMovements, GetAllMovementsById, GetMovementLines, GetMovementsByDateRange, GetMovementsByType, UpdateProductPrices, UpdateStockForMovement
+  - Each use case includes a Class Diagram and a Sequence Diagram
+
+---
+
+### 9. Sales — Individual Use Cases
+- **[15_Sales_UseCases.md](./15_Sales_UseCases.md)**
+  - Use Cases: CreateSale, DeleteSale, GetAllSales, GetAllSalesWithDetails, GetAvailabelStockByWarehouse, GetSaleById, GetSaleByIdWithLines, GetSaleByClient, GetSaleByDateRange, GetSaleBySeller, GetTotalAvailableStock, UpdateSale
+  - Each use case includes a Class Diagram and a Sequence Diagram
+
+---
+
+### 10. Warehouses — Individual Use Cases
+- **[16_Warehouses_UseCases.md](./16_Warehouses_UseCases.md)**
+  - Use Cases: CreateWareHouse, DeleteWarehouse, GetAllActiveWarehouses, GetAllWarehouses, GetWarehousesById, UpdateWarehouse
+  - Each use case includes a Class Diagram and a Sequence Diagram
+
+---
+
+### 11. Clients — Individual Use Cases
+- **[17_Clients_UseCases.md](./17_Clients_UseCases.md)**
+  - Use Cases: CreateClient, DeleteClient, GetActiveClients, GetAllClients, GetClientById, UpdateClient
+  - Each use case includes a Class Diagram and a Sequence Diagram
+
+---
+
+### 12. Reports — Individual Use Cases
+- **[18_Reports_UseCases.md](./18_Reports_UseCases.md)**
+  - Use Cases: GetCategorySalesReport, GetClientProductRankingReport, GetClientPurchasesReport, GetPriceVariationReport, GetRevenueByDateReport, GetSellerPerformanceReport, GetTopProductsReport
+  - Each use case includes a Class Diagram and a Sequence Diagram
+
+---
+
+### 13. Users — Individual Use Cases
+- **[19_Users_UseCases.md](./19_Users_UseCases.md)**
+  - Use Cases: AssignRolesToUser, ChangePassword, CreateUser, DeleteUser, GetActiveUsers, GetAllUsers, GetUserById, GetUserRoles, UpdateUser
+  - Each use case includes a Class Diagram and a Sequence Diagram
+
+---
+
+### 14. Roles — Individual Use Cases
+- **[20_Roles_UseCases.md](./20_Roles_UseCases.md)**
+  - Use Cases: CreateRole, DeleteRole, AssignPermissions, GetActiveRoles, GetAllPermissions, GetAllRoles, GetRoleById, GetRolePermissions, UpdateRole
+  - Each use case includes a Class Diagram and a Sequence Diagram
+
+---
+
+### 15. Permissions & Authorization — Individual Use Cases
+- **[21_Permissions_UseCases.md](./21_Permissions_UseCases.md)**
+  - Use Cases: GetUserPermissions, HasAllPermissions, HasAnyPermission, HasPermission
+  - Each use case includes a Class Diagram and a Sequence Diagram
+
+---
+
+### 16. Localization — Individual Use Cases
+- **[22_Localization_UseCases.md](./22_Localization_UseCases.md)**
+  - Use Cases: LoadAllTranslations, LoadDefaultTranslations, OnLanguageChanged, SetLanguage
+  - Each use case includes a Class Diagram and a Sequence Diagram
+
+---
+
 ## 🎯 How to Use
 
 ### For Developers
