@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Guía de Usuario — Stock Manager</title>
+    <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<!-- ======================================================
+     TOP BAR
+     ====================================================== -->
+<header id="topbar" role="banner">
+    <h2>📦 Stock Manager — Guía de Usuario</h2>
+    <span class="badge">v1.0 · 2026</span>
+</header>
+
+<div id="app-wrapper">
+
+    <!-- ==================================================
+         SIDEBAR
+         ================================================== -->
+    <nav id="sidebar" aria-label="Índice de contenidos">
+        <div id="sidebar-header">
+            <h1>Contenidos</h1>
+            <p class="version-tag">Sistema de Gestión de Inventario</p>
+        </div>
+
+        <div id="search-container" role="search">
+            <input
+                type="search"
+                id="search-input"
+                placeholder="🔍 Buscar en la guía…"
+                aria-label="Buscar en la guía de usuario"
+                autocomplete="off"
+            />
+        </div>
+
+        <ul id="nav-list" role="list">
+            <li><a href="#sec-intro"          data-section="sec-intro"          aria-current="page">📖 Introducción</a></li>
+            <li><a href="#sec-requirements"   data-section="sec-requirements"                      >💻 Requisitos del Sistema</a></li>
+            <li><a href="#sec-getting-started" data-section="sec-getting-started"                  >🚀 Primeros Pasos</a></li>
+            <li><a href="#sec-screens"        data-section="sec-screens"                           >🖥️ Pantallas Principales</a></li>
+            <li><a href="#sec-faq"            data-section="sec-faq"                               >❓ Preguntas Frecuentes</a></li>
+            <li><a href="#sec-troubleshooting" data-section="sec-troubleshooting"                  >🔧 Solución de Problemas</a></li>
+            <li><a href="#sec-shortcuts"      data-section="sec-shortcuts"                         >⌨️ Atajos de Teclado</a></li>
+            <li><a href="#sec-contact"        data-section="sec-contact"                           >📬 Contacto / Soporte</a></li>
+        </ul>
+    </nav>
+
+    <!-- ==================================================
+         SEARCH RESULTS OVERLAY (shown over main content)
+         ================================================== -->
+    <div id="search-results-overlay" role="region" aria-live="polite" aria-label="Resultados de búsqueda">
+        <h2>Resultados de búsqueda</h2>
+        <div id="search-results-list"></div>
+    </div>
+
+    <!-- ==================================================
+         MAIN CONTENT
+         ================================================== -->
+    <main id="main-content" role="main">
+
+        <!-- ============================================
+             SECTION: Introducción
+             ============================================ -->
+        <section id="sec-intro" class="help-section" aria-labelledby="title-intro">
+            <h1 class="section-title" id="title-intro">📖 Introducción</h1>
+
+            <p class="section-intro">
+                Bienvenido a la <strong>Guía de Usuario de Stock Manager</strong>, el sistema de gestión
+                de inventario para accesorios de celulares. Esta guía cubre todas las funcionalidades
+                disponibles y puede consultarse en cualquier momento desde el menú
+                <strong>Ayuda → Guía de usuario</strong> o presionando <span class="kbd">F1</span>.
+            </p>
+
+            <h2 class="sub-section">¿Qué es Stock Manager?</h2>
+            <p class="body-text">
+                <strong>Stock Manager</strong> es una aplicación de escritorio para Windows que permite
+                administrar el inventario de accesorios de celulares (fundas, carcasas, protectores de
+                pantalla, parlantes bluetooth, cables, etc.) a través de múltiples almacenes.
+            </p>
+
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-icon">📦</div>
+                    <h3>Gestión de Inventario</h3>
+                    <p>Controle productos, almacenes y movimientos de stock en tiempo real.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🛒</div>
+                    <h3>Registro de Ventas</h3>
+                    <p>Registre ventas, asocie clientes y controle el impacto en stock automáticamente.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">👥</div>
+                    <h3>Usuarios y Roles</h3>
+                    <p>Gestione el acceso por roles y permisos granulares por módulo.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">📊</div>
+                    <h3>Reportes</h3>
+                    <p>Consulte reportes de ventas, stock, rendimiento por vendedor y más.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🌐</div>
+                    <h3>Multiidioma</h3>
+                    <p>Interfaz disponible en Español e Inglés, cambiable sin reiniciar la app.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🔒</div>
+                    <h3>Seguridad</h3>
+                    <p>Sistema de autenticación con contraseñas seguras y registro de auditoría.</p>
+                </div>
+            </div>
+
+            <div class="callout info">
+                <span class="callout-icon">ℹ️</span>
+                <span>
+                    Esta guía funciona <strong>100% sin conexión a internet</strong>. Todos los recursos
+                    (imágenes, estilos y scripts) están incluidos localmente en la carpeta de la aplicación.
+                </span>
+            </div>
+        </section>
+
+        <!-- ============================================
+             SECTION: Requisitos del Sistema
+             ============================================ -->
+        <section id="sec-requirements" class="help-section" aria-labelledby="title-req">
+            <h1 class="section-title" id="title-req">💻 Requisitos del Sistema</h1>
+
+            <p class="section-intro">
+                Verifique que su entorno cumple los siguientes requisitos antes de instalar o ejecutar
+                Stock Manager.
+            </p>
+
+            <h2 class="sub-section">Software</h2>
+            <ul class="bullet">
+                <li><strong>Sistema operativo:</strong> Windows 10 (versión 1809 o superior) o Windows 11</li>
+                <li><strong>.NET Framework 4.8</strong> (incluido en Windows 10/11; si no está presente, descárguelo desde Microsoft)</li>
+                <li>
+                    <strong>Microsoft Edge WebView2 Runtime</strong> (necesario para la Guía de Usuario interactiva).
+                    Generalmente ya está instalado en Windows 10/11 actualizado. Si no está disponible,
+                    descárguelo desde
+                    <em>microsoft.com/en-us/microsoft-edge/webview2/</em>
+                </li>
+                <li><strong>SQL Server / SQL Server Express</strong> con la base de datos del sistema configurada</li>
+            </ul>
+
+            <h2 class="sub-section">Hardware mínimo recomendado</h2>
+            <ul class="bullet">
+                <li>Procesador: Intel/AMD de 64 bits, 1.5 GHz o superior</li>
+                <li>Memoria RAM: 2 GB (4 GB recomendado)</li>
+                <li>Espacio en disco: 200 MB para la aplicación + espacio para la base de datos</li>
+                <li>Pantalla: resolución mínima 1024 × 768</li>
+            </ul>
+
+            <div class="callout warning">
+                <span class="callout-icon">⚠️</span>
+                <span>
+                    <strong>WebView2 Runtime:</strong> Si el runtime de WebView2 no está instalado,
+                    la Guía de Usuario no podrá mostrarse, pero el resto de la aplicación funcionará
+                    con normalidad. El sistema mostrará un mensaje explicativo en ese caso.
+                </span>
+            </div>
+
+            <h2 class="sub-section">¿Cómo saber si WebView2 está instalado?</h2>
+            <ol class="steps">
+                <li><span class="step-num">1</span><span>Abra el <strong>Panel de Control → Programas → Programas y características</strong></span></li>
+                <li><span class="step-num">2</span><span>Busque <em>"Microsoft Edge WebView2 Runtime"</em></span></li>
+                <li><span class="step-num">3</span><span>Si aparece en la lista, está instalado. Si no, descárguelo e instálelo.</span></li>
+            </ol>
+        </section>
+
+        <!-- ============================================
+             SECTION: Primeros Pasos
+             ============================================ -->
+        <section id="sec-getting-started" class="help-section" aria-labelledby="title-start">
+            <h1 class="section-title" id="title-start">🚀 Primeros Pasos</h1>
+
+            <p class="section-intro">
+                Esta sección describe cómo iniciar sesión por primera vez y cómo configurar el entorno
+                inicial del sistema.
+            </p>
+
+            <h2 class="sub-section">Primer inicio — Configuración del administrador</h2>
+            <p class="body-text">
+                Al ejecutar Stock Manager por primera vez, el sistema detectará que no existe contraseña
+                para el usuario <strong>admin</strong> y mostrará el formulario de configuración inicial.
+            </p>
+            <ol class="steps">
+                <li><span class="step-num">1</span><span>Se abre automáticamente el formulario <strong>Configuración Inicial</strong>.</span></li>
+                <li><span class="step-num">2</span><span>Ingrese una contraseña segura (mín. 8 caracteres, 1 mayúscula, 1 número).</span></li>
+                <li><span class="step-num">3</span><span>Confirme la contraseña.</span></li>
+                <li><span class="step-num">4</span><span>Haga clic en <strong>Configurar</strong>. La contraseña quedará guardada de forma segura.</span></li>
+            </ol>
+
+            <h2 class="sub-section">Inicio de sesión</h2>
+            <ol class="steps">
+                <li><span class="step-num">1</span><span>Abra la aplicación. Aparece el formulario de <strong>Inicio de Sesión</strong>.</span></li>
+                <li><span class="step-num">2</span><span>Ingrese su <strong>Usuario</strong> (por defecto: <code>admin</code>).</span></li>
+                <li><span class="step-num">3</span><span>Ingrese su <strong>Contraseña</strong>.</span></li>
+                <li><span class="step-num">4</span><span>Haga clic en <strong>Iniciar Sesión</strong>.</span></li>
+            </ol>
+
+            <div class="callout success">
+                <span class="callout-icon">✅</span>
+                <span>Al ingresar correctamente, se abre el formulario principal con el menú completo según sus permisos asignados.</span>
+            </div>
+
+            <h2 class="sub-section">Cerrar sesión</h2>
+            <p class="body-text">Para cerrar sesión sin salir de la aplicación, vaya a <strong>Archivo → Cerrar Sesión</strong>. La aplicación volverá al formulario de inicio de sesión.</p>
+        </section>
+
+        <!-- ============================================
+             SECTION: Pantallas Principales
+             ============================================ -->
+        <section id="sec-screens" class="help-section" aria-labelledby="title-screens">
+            <h1 class="section-title" id="title-screens">🖥️ Pantallas Principales</h1>
+
+            <p class="section-intro">
+                A continuación se describe el flujo de trabajo de cada módulo principal del sistema.
+            </p>
+
+            <!-- Accordion: Formulario Principal -->
+            <div class="accordion">
+                <button class="accordion-header" aria-expanded="false" aria-controls="acc-main-body">
+                    🏠 Formulario Principal (MDI)
+                    <span class="accordion-icon">▼</span>
+                </button>
+                <div class="accordion-body" id="acc-main-body" role="region">
+                    <p class="body-text">El formulario principal actúa como contenedor MDI (Multiple Document Interface). Contiene la barra de menú superior y la barra de estado inferior.</p>
+                    <ul class="bullet">
+                        <li><strong>Menú Archivo:</strong> Cerrar Sesión / Salir</li>
+                        <li><strong>Menú Administración:</strong> Usuarios, Roles (solo visible para admin)</li>
+                        <li><strong>Menú Inventario:</strong> Productos, Almacenes, Clientes</li>
+                        <li><strong>Menú Operaciones:</strong> Ventas, Movimientos, Consulta de Stock, Reportes</li>
+                        <li><strong>Menú Configuración:</strong> Idioma (Español / English)</li>
+                        <li><strong>Menú Ayuda:</strong> Guía de Usuario, Acerca de...</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Accordion: Productos -->
+            <div class="accordion">
+                <button class="accordion-header" aria-expanded="false" aria-controls="acc-products-body">
+                    📦 Módulo Productos
+                    <span class="accordion-icon">▼</span>
+                </button>
+                <div class="accordion-body" id="acc-products-body" role="region">
+                    <p class="body-text">Acceso: <strong>Inventario → Productos</strong></p>
+                    <h3 style="font-size:0.92rem;margin:10px 0 6px;color:#0f2d6e;">Crear producto</h3>
+                    <ol class="steps">
+                        <li><span class="step-num">1</span><span>Clic en <strong>Nuevo</strong></span></li>
+                        <li><span class="step-num">2</span><span>Complete: SKU único, Nombre, Descripción, Categoría, Precio, Stock Mínimo</span></li>
+                        <li><span class="step-num">3</span><span>Clic en <strong>Guardar</strong></span></li>
+                    </ol>
+                    <h3 style="font-size:0.92rem;margin:10px 0 6px;color:#0f2d6e;">Editar / Eliminar</h3>
+                    <p class="body-text">Seleccione el producto en la grilla, luego haga clic en <strong>Editar</strong> o <strong>Eliminar</strong>. La eliminación solicita confirmación.</p>
+                    <div class="callout warning">
+                        <span class="callout-icon">⚠️</span>
+                        <span>No se puede eliminar un producto que tenga stock en almacenes o que haya sido vendido.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Accordion: Almacenes -->
+            <div class="accordion">
+                <button class="accordion-header" aria-expanded="false" aria-controls="acc-warehouses-body">
+                    🏭 Módulo Almacenes
+                    <span class="accordion-icon">▼</span>
+                </button>
+                <div class="accordion-body" id="acc-warehouses-body" role="region">
+                    <p class="body-text">Acceso: <strong>Inventario → Almacenes</strong></p>
+                    <p class="body-text">Gestione los depósitos físicos o lógicos donde se almacena mercadería.</p>
+                    <ol class="steps">
+                        <li><span class="step-num">1</span><span>Clic en <strong>Nuevo</strong></span></li>
+                        <li><span class="step-num">2</span><span>Complete: Código único, Nombre, Dirección</span></li>
+                        <li><span class="step-num">3</span><span>Clic en <strong>Guardar</strong></span></li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- Accordion: Movimientos de Stock -->
+            <div class="accordion">
+                <button class="accordion-header" aria-expanded="false" aria-controls="acc-stock-body">
+                    🔄 Módulo Movimientos de Stock
+                    <span class="accordion-icon">▼</span>
+                </button>
+                <div class="accordion-body" id="acc-stock-body" role="region">
+                    <p class="body-text">Acceso: <strong>Operaciones → Movimientos</strong></p>
+                    <p class="body-text">Registra los cuatro tipos de movimientos de inventario:</p>
+                    <ul class="bullet">
+                        <li><strong>Entrada (In):</strong> Recepción de mercadería → requiere almacén destino</li>
+                        <li><strong>Salida (Out):</strong> Retiro de mercadería → requiere almacén origen</li>
+                        <li><strong>Transferencia (Transfer):</strong> Entre dos almacenes distintos</li>
+                        <li><strong>Ajuste (Adjustment):</strong> Corrección de inventario; requiere motivo</li>
+                    </ul>
+                    <div class="callout info">
+                        <span class="callout-icon">ℹ️</span>
+                        <span>El sistema valida automáticamente que haya stock suficiente en el almacén origen para movimientos de tipo Salida y Transferencia.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Accordion: Ventas -->
+            <div class="accordion">
+                <button class="accordion-header" aria-expanded="false" aria-controls="acc-sales-body">
+                    🛒 Módulo Ventas
+                    <span class="accordion-icon">▼</span>
+                </button>
+                <div class="accordion-body" id="acc-sales-body" role="region">
+                    <p class="body-text">Acceso: <strong>Operaciones → Ventas</strong></p>
+                    <ol class="steps">
+                        <li><span class="step-num">1</span><span>Clic en <strong>Nuevo</strong></span></li>
+                        <li><span class="step-num">2</span><span>Ingrese el nombre del <strong>Vendedor</strong></span></li>
+                        <li><span class="step-num">3</span><span>Seleccione el <strong>Cliente</strong> (o cree uno nuevo)</span></li>
+                        <li><span class="step-num">4</span><span>Agregue líneas de productos con cantidad y precio</span></li>
+                        <li><span class="step-num">5</span><span>Verifique stock disponible por línea</span></li>
+                        <li><span class="step-num">6</span><span>Clic en <strong>Guardar</strong></span></li>
+                    </ol>
+                    <p class="body-text">Al guardar, el sistema descuenta automáticamente el stock del almacén correspondiente.</p>
+                </div>
+            </div>
+
+            <!-- Accordion: Reportes -->
+            <div class="accordion">
+                <button class="accordion-header" aria-expanded="false" aria-controls="acc-reports-body">
+                    📊 Módulo Reportes
+                    <span class="accordion-icon">▼</span>
+                </button>
+                <div class="accordion-body" id="acc-reports-body" role="region">
+                    <p class="body-text">Acceso: <strong>Operaciones → Reportes</strong></p>
+                    <p class="body-text">Reportes disponibles:</p>
+                    <ul class="bullet">
+                        <li><strong>Productos más vendidos:</strong> Ranking por unidades y facturación</li>
+                        <li><strong>Compras por cliente:</strong> Historial y totales por cliente</li>
+                        <li><strong>Variación de precios:</strong> Evolución de precios de venta</li>
+                        <li><strong>Ventas por vendedor:</strong> Rendimiento del equipo</li>
+                        <li><strong>Ventas por categoría:</strong> Distribución por tipo de producto</li>
+                        <li><strong>Ranking clientes-productos:</strong> Relación cliente ↔ producto más comprado</li>
+                    </ul>
+                    <p class="body-text">Cada reporte puede exportarse a un archivo CSV.</p>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ============================================
+             SECTION: FAQ
+             ============================================ -->
+        <section id="sec-faq" class="help-section" aria-labelledby="title-faq">
+            <h1 class="section-title" id="title-faq">❓ Preguntas Frecuentes</h1>
+
+            <p class="section-intro">Respuestas a las preguntas más comunes de los usuarios.</p>
+
+            <div class="accordion">
+                <button class="accordion-header" aria-expanded="false">
+                    ¿Por qué no veo algunos menús?
+                    <span class="accordion-icon">▼</span>
+                </button>
+                <div class="accordion-body" role="region">
+                    <p class="body-text">La visibilidad de los menús depende de los <strong>permisos de su rol</strong>. Si necesita acceso a un módulo, contacte al administrador del sistema para que le asigne el rol correspondiente.</p>
+                </div>
+            </div>
+
+            <div class="accordion">
+                <button class="accordion-header" aria-expanded="false">
+                    ¿Cómo cambio el idioma de la aplicación?
+                    <span class="accordion-icon">▼</span>
+                </button>
+                <div class="accordion-body" role="region">
+                    <p class="body-text">Vaya a <strong>Configuración → Idioma</strong> y seleccione <em>Español</em> o <em>English</em>. El cambio es inmediato y no requiere reiniciar la aplicación.</p>
+                </div>
+            </div>
+
+            <div class="accordion">
+                <button class="accordion-header" aria-expanded="false">
+                    El sistema dice "Stock insuficiente" ¿qué hago?
+                    <span class="accordion-icon">▼</span>
+                </button>
+                <div class="accordion-body" role="region">
+                    <p class="body-text">Verifique el stock disponible del producto en el almacén correspondiente desde <strong>Operaciones → Consultar Stock</strong>. Si el stock es bajo, registre una <strong>Entrada de Stock</strong> desde <strong>Operaciones → Movimientos</strong>.</p>
+                </div>
+            </div>
+
+            <div class="accordion">
+                <button class="accordion-header" aria-expanded="false">
+                    ¿Cómo creo un nuevo usuario?
+                    <span class="accordion-icon">▼</span>
+                </button>
+                <div class="accordion-body" role="region">
+                    <p class="body-text">Solo los administradores pueden crear usuarios. Vaya a <strong>Administración → Usuarios → Nuevo</strong>, complete los datos y asigne una contraseña inicial. Luego asigne roles en <strong>Asignar Roles</strong>.</p>
+                </div>
+            </div>
+
+            <div class="accordion">
+                <button class="accordion-header" aria-expanded="false">
+                    ¿Puedo olvidar/resetear la contraseña de un usuario?
+                    <span class="accordion-icon">▼</span>
+                </button>
+                <div class="accordion-body" role="region">
+                    <p class="body-text">Un administrador puede cambiar la contraseña de cualquier usuario desde <strong>Administración → Usuarios → Cambiar Contraseña</strong>.</p>
+                </div>
+            </div>
+
+            <div class="accordion">
+                <button class="accordion-header" aria-expanded="false">
+                    ¿La guía de usuario funciona sin internet?
+                    <span class="accordion-icon">▼</span>
+                </button>
+                <div class="accordion-body" role="region">
+                    <p class="body-text">Sí. Esta guía es completamente offline. Todos los archivos (HTML, CSS, JavaScript) se incluyen en la carpeta <code>Help/</code> junto con el ejecutable de la aplicación. No se requiere conexión a internet en ningún momento.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================
+             SECTION: Solución de Problemas
+             ============================================ -->
+        <section id="sec-troubleshooting" class="help-section" aria-labelledby="title-trouble">
+            <h1 class="section-title" id="title-trouble">🔧 Solución de Problemas</h1>
+
+            <p class="section-intro">
+                Problemas comunes y sus soluciones. Si el problema persiste, contacte al soporte técnico.
+            </p>
+
+            <div class="accordion">
+                <button class="accordion-header" aria-expanded="false">
+                    Error de conexión a la base de datos
+                    <span class="accordion-icon">▼</span>
+                </button>
+                <div class="accordion-body" role="region">
+                    <ul class="bullet">
+                        <li>Verifique que SQL Server está en ejecución (vea el Administrador de servicios de Windows).</li>
+                        <li>Revise la cadena de conexión en <code>App.config</code> del directorio de la aplicación.</li>
+                        <li>Confirme que el usuario de base de datos tiene los permisos necesarios.</li>
+                        <li>Verifique que el nombre del servidor y la instancia son correctos.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="accordion">
+                <button class="accordion-header" aria-expanded="false">
+                    La Guía de Usuario no se abre / "WebView2 Runtime no disponible"
+                    <span class="accordion-icon">▼</span>
+                </button>
+                <div class="accordion-body" role="region">
+                    <p class="body-text">El control WebView2 requiere que el <strong>Microsoft Edge WebView2 Runtime</strong> esté instalado en el equipo.</p>
+                    <ol class="steps">
+                        <li><span class="step-num">1</span><span>Visite <em>microsoft.com/en-us/microsoft-edge/webview2/</em></span></li>
+                        <li><span class="step-num">2</span><span>Descargue e instale el <em>Evergreen Bootstrapper</em> (instalador automático, ~2 MB)</span></li>
+                        <li><span class="step-num">3</span><span>Reinicie la aplicación</span></li>
+                    </ol>
+                    <div class="callout info">
+                        <span class="callout-icon">ℹ️</span>
+                        <span>En equipos con Windows 10/11 actualizados, WebView2 generalmente ya está instalado como parte del navegador Microsoft Edge.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion">
+                <button class="accordion-header" aria-expanded="false">
+                    Archivos de ayuda no encontrados
+                    <span class="accordion-icon">▼</span>
+                </button>
+                <div class="accordion-body" role="region">
+                    <p class="body-text">Si ve el mensaje "No se encontraron los archivos de ayuda", significa que la carpeta <code>Help/</code> no está junto al ejecutable.</p>
+                    <ul class="bullet">
+                        <li>Verifique que la carpeta <code>Help/</code> existe en el mismo directorio que <code>UI.exe</code>.</li>
+                        <li>Si instaló la aplicación, reinstale desde el instalador oficial para restaurar los archivos.</li>
+                        <li>Para desarrolladores: asegúrese de que los archivos de Help tienen configurado <em>CopyToOutputDirectory = PreserveNewest</em> en el proyecto.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="accordion">
+                <button class="accordion-header" aria-expanded="false">
+                    Error al guardar datos / "Datos inválidos"
+                    <span class="accordion-icon">▼</span>
+                </button>
+                <div class="accordion-body" role="region">
+                    <ul class="bullet">
+                        <li>Asegúrese de que todos los campos marcados como obligatorios estén completos.</li>
+                        <li>Verifique que los valores numéricos (precios, cantidades) sean positivos.</li>
+                        <li>Si el error persiste, anote el mensaje de error exacto y contáctenos.</li>
+                    </ul>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ============================================
+             SECTION: Atajos de Teclado
+             ============================================ -->
+        <section id="sec-shortcuts" class="help-section" aria-labelledby="title-shortcuts">
+            <h1 class="section-title" id="title-shortcuts">⌨️ Atajos de Teclado</h1>
+
+            <p class="section-intro">
+                Use estos atajos de teclado para navegar por la aplicación sin usar el ratón.
+            </p>
+
+            <table class="shortcut-table" aria-label="Tabla de atajos de teclado">
+                <thead>
+                    <tr>
+                        <th scope="col">Atajo</th>
+                        <th scope="col">Acción</th>
+                        <th scope="col">Contexto</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="kbd">F1</span></td>
+                        <td>Abrir Guía de Usuario</td>
+                        <td>Formulario principal (en cualquier momento)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="kbd">Alt</span> + <span class="kbd">F4</span></td>
+                        <td>Cerrar ventana activa</td>
+                        <td>Cualquier ventana</td>
+                    </tr>
+                    <tr>
+                        <td><span class="kbd">Esc</span></td>
+                        <td>Cancelar / Cerrar formulario</td>
+                        <td>Formularios de edición</td>
+                    </tr>
+                    <tr>
+                        <td><span class="kbd">Tab</span></td>
+                        <td>Mover al siguiente campo</td>
+                        <td>Formularios de entrada de datos</td>
+                    </tr>
+                    <tr>
+                        <td><span class="kbd">Shift</span> + <span class="kbd">Tab</span></td>
+                        <td>Mover al campo anterior</td>
+                        <td>Formularios de entrada de datos</td>
+                    </tr>
+                    <tr>
+                        <td><span class="kbd">Enter</span></td>
+                        <td>Confirmar acción / botón por defecto</td>
+                        <td>Diálogos de confirmación</td>
+                    </tr>
+                    <tr>
+                        <td><span class="kbd">Alt</span> + letra subrayada</td>
+                        <td>Activar elemento de menú</td>
+                        <td>Barra de menú principal</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="callout info">
+                <span class="callout-icon">ℹ️</span>
+                <span>
+                    En esta Guía de Usuario, use <span class="kbd">↑</span> / <span class="kbd">↓</span> para desplazarse y
+                    <span class="kbd">Tab</span> para navegar entre secciones y acordeones.
+                    Presione <span class="kbd">Esc</span> para cerrar el buscador.
+                </span>
+            </div>
+        </section>
+
+        <!-- ============================================
+             SECTION: Contacto / Soporte
+             ============================================ -->
+        <section id="sec-contact" class="help-section" aria-labelledby="title-contact">
+            <h1 class="section-title" id="title-contact">📬 Contacto / Soporte</h1>
+
+            <p class="section-intro">
+                Para obtener ayuda adicional o reportar un problema, use los canales de soporte
+                habilitados por su organización.
+            </p>
+
+            <h2 class="sub-section">Soporte interno</h2>
+            <ul class="bullet">
+                <li><strong>Administrador del sistema:</strong> Contacte al administrador local para problemas de acceso, permisos o configuración.</li>
+                <li><strong>Equipo de TI:</strong> Para problemas de infraestructura (base de datos, red, equipos).</li>
+            </ul>
+
+            <h2 class="sub-section">Información útil para el soporte</h2>
+            <p class="body-text">Cuando contacte a soporte, tenga a mano la siguiente información:</p>
+            <ul class="bullet">
+                <li>Versión de la aplicación (Ayuda → Acerca de...)</li>
+                <li>Versión de Windows (ejecute <code>winver</code> en el cuadro de diálogo Ejecutar)</li>
+                <li>Descripción detallada del problema y pasos para reproducirlo</li>
+                <li>Mensaje de error exacto (si aplica)</li>
+                <li>Capturas de pantalla del error</li>
+            </ul>
+
+            <div class="callout success">
+                <span class="callout-icon">✅</span>
+                <span>
+                    <strong>Stock Manager v1.0</strong> — Sistema de Gestión de Inventario para Accesorios de Celulares.<br/>
+                    © 2026 — Proyecto Académico. Todos los derechos reservados.
+                </span>
+            </div>
+        </section>
+
+    </main><!-- #main-content -->
+</div><!-- #app-wrapper -->
+
+<footer role="contentinfo">
+    Stock Manager v1.0 — Guía de Usuario · Documentación offline · © 2026 Proyecto Académico
+</footer>
+
+<script src="js/app.js"></script>
+</body>
+</html>

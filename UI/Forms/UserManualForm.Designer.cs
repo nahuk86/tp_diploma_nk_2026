@@ -28,27 +28,26 @@ namespace UI.Forms
         /// </summary>
         private void InitializeComponent()
         {
-            this.txtManualContent = new System.Windows.Forms.RichTextBox();
+            this.webView = new Microsoft.Web.WebView2.WinForms.WebView2();
             this.btnClose = new System.Windows.Forms.Button();
-            this.lblTitle = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)(this.webView)).BeginInit();
             this.SuspendLayout();
             // 
-            // txtManualContent
+            // webView
             // 
-            this.txtManualContent.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.webView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtManualContent.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtManualContent.Location = new System.Drawing.Point(12, 45);
-            this.txtManualContent.Name = "txtManualContent";
-            this.txtManualContent.ReadOnly = true;
-            this.txtManualContent.Size = new System.Drawing.Size(860, 540);
-            this.txtManualContent.TabIndex = 0;
+            this.webView.Location = new System.Drawing.Point(0, 0);
+            this.webView.Name = "webView";
+            this.webView.Size = new System.Drawing.Size(984, 580);
+            this.webView.TabIndex = 0;
+            this.webView.ZoomFactor = 1D;
             // 
             // btnClose
             // 
             this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClose.Location = new System.Drawing.Point(797, 591);
+            this.btnClose.Location = new System.Drawing.Point(897, 591);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(75, 23);
             this.btnClose.TabIndex = 1;
@@ -56,38 +55,24 @@ namespace UI.Forms
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
-            // lblTitle
-            // 
-            this.lblTitle.AutoSize = true;
-            this.lblTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTitle.Location = new System.Drawing.Point(12, 15);
-            this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(323, 20);
-            this.lblTitle.TabIndex = 2;
-            this.lblTitle.Text = "Manual de Usuario - Stock Manager";
-            // 
             // UserManualForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(884, 626);
-            this.Controls.Add(this.lblTitle);
+            this.ClientSize = new System.Drawing.Size(984, 626);
             this.Controls.Add(this.btnClose);
-            this.Controls.Add(this.txtManualContent);
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
+            this.Controls.Add(this.webView);
+            this.MinimumSize = new System.Drawing.Size(800, 600);
             this.Name = "UserManualForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Manual de Usuario";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Guía de Usuario — Stock Manager";
+            ((System.ComponentModel.ISupportInitialize)(this.webView)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
-
         }
 
         #endregion
 
-        private System.Windows.Forms.RichTextBox txtManualContent;
+        private Microsoft.Web.WebView2.WinForms.WebView2 webView;
         private System.Windows.Forms.Button btnClose;
-        private System.Windows.Forms.Label lblTitle;
     }
 }

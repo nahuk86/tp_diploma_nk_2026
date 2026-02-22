@@ -1,0 +1,503 @@
+/* =========================================================
+   Stock Manager — Guía de Usuario
+   Estilos locales (sin CDN externo)
+   ========================================================= */
+
+/* --- Reset & Base ---------------------------------------- */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: #1a1a2e;
+    background: #f4f6fb;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+a {
+    color: #1558b0;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* --- Layout --------------------------------------------- */
+#app-wrapper {
+    display: flex;
+    flex: 1;
+}
+
+/* --- Sidebar -------------------------------------------- */
+#sidebar {
+    width: 260px;
+    min-width: 220px;
+    background: #1a2a4a;
+    color: #d0daf0;
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    flex-shrink: 0;
+}
+
+#sidebar-header {
+    background: #0f1c35;
+    padding: 18px 16px 14px;
+    border-bottom: 1px solid #2a3f6a;
+}
+
+#sidebar-header h1 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 0.02em;
+}
+
+#sidebar-header .version-tag {
+    font-size: 0.72rem;
+    color: #7a9fd4;
+    margin-top: 2px;
+}
+
+/* Search box inside sidebar */
+#search-container {
+    padding: 12px 14px;
+    border-bottom: 1px solid #2a3f6a;
+}
+
+#search-input {
+    width: 100%;
+    padding: 7px 10px;
+    border: 1px solid #3a5888;
+    border-radius: 4px;
+    background: #223360;
+    color: #e0ecff;
+    font-size: 0.85rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+#search-input::placeholder {
+    color: #7090bb;
+}
+
+#search-input:focus {
+    border-color: #5b9bd5;
+}
+
+/* Nav list */
+#nav-list {
+    list-style: none;
+    padding: 8px 0;
+    flex: 1;
+}
+
+#nav-list li a {
+    display: block;
+    padding: 9px 20px 9px 16px;
+    color: #c0d0ee;
+    font-size: 0.88rem;
+    border-left: 3px solid transparent;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    text-decoration: none;
+}
+
+#nav-list li a:hover {
+    background: #223360;
+    border-left-color: #5b9bd5;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+#nav-list li a.active {
+    background: #1e3c72;
+    border-left-color: #5b9bd5;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+/* --- Main content --------------------------------------- */
+#main-content {
+    flex: 1;
+    padding: 32px 40px;
+    overflow-y: auto;
+    max-width: 900px;
+}
+
+/* --- Top bar / header ---------------------------------- */
+#topbar {
+    background: #1558b0;
+    color: #ffffff;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+}
+
+#topbar h2 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+}
+
+#topbar .badge {
+    background: rgba(255,255,255,0.2);
+    border-radius: 12px;
+    padding: 3px 12px;
+    font-size: 0.78rem;
+}
+
+/* --- Sections ------------------------------------------ */
+.help-section {
+    display: none;
+}
+
+.help-section.visible {
+    display: block;
+}
+
+.section-title {
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: #0f2d6e;
+    border-bottom: 3px solid #1558b0;
+    padding-bottom: 8px;
+    margin-bottom: 20px;
+}
+
+.section-intro {
+    background: #e8f0fe;
+    border-left: 4px solid #1558b0;
+    padding: 14px 18px;
+    border-radius: 0 6px 6px 0;
+    margin-bottom: 24px;
+    font-size: 0.96rem;
+    color: #1a2a4a;
+}
+
+/* --- Cards / Tiles ------------------------------------- */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.card {
+    background: #ffffff;
+    border: 1px solid #d0daf0;
+    border-radius: 8px;
+    padding: 18px 16px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+    transition: box-shadow 0.2s;
+}
+
+.card:hover {
+    box-shadow: 0 4px 14px rgba(21,88,176,0.12);
+}
+
+.card-icon {
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+}
+
+.card h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #0f2d6e;
+    margin-bottom: 4px;
+}
+
+.card p {
+    font-size: 0.83rem;
+    color: #5a6a8a;
+}
+
+/* --- Accordion ----------------------------------------- */
+.accordion {
+    margin-bottom: 12px;
+    border: 1px solid #d0daf0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.accordion-header {
+    width: 100%;
+    background: #edf2ff;
+    border: none;
+    cursor: pointer;
+    padding: 13px 18px;
+    text-align: left;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1a2a4a;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.15s;
+    outline: none;
+}
+
+.accordion-header:hover {
+    background: #d8e4ff;
+}
+
+.accordion-header[aria-expanded="true"] {
+    background: #1558b0;
+    color: #ffffff;
+}
+
+.accordion-icon {
+    font-size: 0.85rem;
+    transition: transform 0.25s;
+    color: #5a7ab5;
+}
+
+.accordion-header[aria-expanded="true"] .accordion-icon {
+    transform: rotate(180deg);
+    color: #ffffff;
+}
+
+.accordion-body {
+    display: none;
+    padding: 16px 20px;
+    background: #ffffff;
+    font-size: 0.91rem;
+    color: #2a3a5a;
+    line-height: 1.7;
+}
+
+.accordion-body.open {
+    display: block;
+}
+
+/* --- Steps list ---------------------------------------- */
+.steps {
+    list-style: none;
+    margin: 12px 0 16px 0;
+    padding: 0;
+}
+
+.steps li {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 10px;
+    align-items: flex-start;
+}
+
+.step-num {
+    background: #1558b0;
+    color: #ffffff;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+/* --- Callout boxes ------------------------------------- */
+.callout {
+    border-radius: 6px;
+    padding: 13px 16px;
+    margin: 16px 0;
+    font-size: 0.9rem;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+.callout-icon {
+    font-size: 1.1rem;
+    margin-top: 1px;
+}
+
+.callout.info {
+    background: #e8f4fd;
+    border-left: 4px solid #2196f3;
+    color: #0d47a1;
+}
+
+.callout.warning {
+    background: #fff8e1;
+    border-left: 4px solid #ffc107;
+    color: #7a5200;
+}
+
+.callout.success {
+    background: #e8f5e9;
+    border-left: 4px solid #4caf50;
+    color: #1b5e20;
+}
+
+/* --- Keyboard shortcut badges -------------------------- */
+.kbd {
+    display: inline-block;
+    background: #f0f2f8;
+    border: 1px solid #b0b8cc;
+    border-bottom-width: 2px;
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-family: "Consolas", "Courier New", monospace;
+    font-size: 0.82rem;
+    color: #1a2a4a;
+    white-space: nowrap;
+}
+
+/* --- Shortcut table ------------------------------------ */
+.shortcut-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 0.9rem;
+}
+
+.shortcut-table th {
+    background: #1558b0;
+    color: #ffffff;
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 600;
+}
+
+.shortcut-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #d0daf0;
+    color: #2a3a5a;
+}
+
+.shortcut-table tr:nth-child(even) td {
+    background: #f4f6fb;
+}
+
+.shortcut-table tr:hover td {
+    background: #e8f0fe;
+}
+
+/* --- Search results ------------------------------------ */
+#search-results-overlay {
+    display: none;
+    padding: 20px 40px;
+}
+
+#search-results-overlay.visible {
+    display: block;
+}
+
+#search-results-overlay h2 {
+    font-size: 1.1rem;
+    color: #0f2d6e;
+    margin-bottom: 14px;
+}
+
+.search-result-item {
+    background: #ffffff;
+    border: 1px solid #d0daf0;
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: box-shadow 0.15s;
+}
+
+.search-result-item:hover {
+    box-shadow: 0 3px 10px rgba(21,88,176,0.13);
+}
+
+.search-result-item h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1558b0;
+    margin-bottom: 4px;
+}
+
+.search-result-item p {
+    font-size: 0.84rem;
+    color: #5a6a8a;
+}
+
+mark {
+    background: #fff176;
+    border-radius: 2px;
+    padding: 0 2px;
+    color: #1a1a2e;
+}
+
+#no-results {
+    color: #7a8aaa;
+    font-style: italic;
+    font-size: 0.9rem;
+}
+
+/* --- Footer -------------------------------------------- */
+footer {
+    text-align: center;
+    font-size: 0.78rem;
+    color: #8898bb;
+    padding: 16px 24px;
+    border-top: 1px solid #d0daf0;
+    background: #ffffff;
+    margin-top: auto;
+}
+
+/* --- Utility ------------------------------------------- */
+h2.sub-section {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #1558b0;
+    margin: 24px 0 10px 0;
+}
+
+ul.bullet {
+    padding-left: 22px;
+    margin: 8px 0 14px 0;
+}
+
+ul.bullet li {
+    margin-bottom: 6px;
+    color: #2a3a5a;
+}
+
+p.body-text {
+    margin-bottom: 12px;
+    color: #2a3a5a;
+}
+
+/* --- Responsive / accessibility ------------------------ */
+@media (max-width: 700px) {
+    #sidebar {
+        display: none;
+    }
+    #main-content {
+        padding: 20px 16px;
+    }
+}
+
+/* Focus styles for keyboard navigation */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+    outline: 2px solid #5b9bd5;
+    outline-offset: 2px;
+}

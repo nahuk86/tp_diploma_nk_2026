@@ -25,6 +25,7 @@ namespace UI
         private readonly ILogService _logService;
         private readonly IAuthorizationService _authorizationService;
         private readonly IModuleFactory _moduleFactory;
+        private Forms.UserManualForm _helpForm;
 
         /// <summary>
         /// Inicializa una nueva instancia del formulario principal
@@ -368,11 +369,38 @@ namespace UI
         }
 
         /// <summary>
-        /// Maneja el evento Click del menú Manual de Usuario
+        /// Maneja el evento Click del menú Guía de Usuario
         /// </summary>
         private void menuUserManual_Click(object sender, EventArgs e)
         {
-            OpenModule("UserManual");
+            OpenHelpWindow();
+        }
+
+        /// <summary>
+        /// Abre la Guía de Usuario como ventana flotante independiente (no MDI).
+        /// Si ya está abierta, la trae al frente.
+        /// </summary>
+        private void OpenHelpWindow()
+        {
+            if (_helpForm == null || _helpForm.IsDisposed)
+            {
+                _helpForm = new Forms.UserManualForm();
+            }
+            _helpForm.Show();
+            _helpForm.BringToFront();
+        }
+
+        /// <summary>
+        /// Captura el atajo de teclado F1 para abrir la Guía de Usuario
+        /// </summary>
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.F1)
+            {
+                OpenHelpWindow();
+                return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         /// <summary>
