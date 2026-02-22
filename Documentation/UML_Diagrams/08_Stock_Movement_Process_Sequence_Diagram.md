@@ -24,20 +24,13 @@ sequenceDiagram
         UI->>MoveSvc: CreateMovement(movement, lines)
         activate MoveSvc
         MoveSvc->>MoveSvc: ValidateMovement(movement, lines)
-        loop For each line
-            MoveSvc->>MoveSvc: ValidateStockAvailability(type, sourceWh, productId, quantity)
-            MoveSvc->>StockRepo: GetByProductAndWarehouse(productId, sourceWh)
-            StockRepo->>DB: SELECT * FROM Stock WHERE ProductId=@P AND WarehouseId=@W
-            DB-->>StockRepo: Stock
-            StockRepo-->>MoveSvc: Stock entity
-        end
+        Note over MoveSvc: Includes stock availability check<br/>for Out and Transfer movements
         MoveSvc->>MoveRepo: GenerateMovementNumber(movementType)
         MoveRepo->>DB: SELECT COUNT(*) FROM StockMovements WHERE MovementType=@T AND YEAR(MovementDate)=YEAR(GETDATE())
         DB-->>MoveRepo: count
         MoveRepo-->>MoveSvc: movementNumber (e.g. TRF-2026-0001)
         MoveSvc->>MoveRepo: Insert(movement)
         activate MoveRepo
-        MoveRepo->>DB: BEGIN TRANSACTION
         Note over MoveRepo: INSERT INTO StockMovements (...) → movementId
         MoveRepo-->>MoveSvc: movementId
         loop For each line
@@ -45,15 +38,25 @@ sequenceDiagram
             Note over MoveRepo: INSERT INTO StockMovementLines (...)
             MoveRepo-->>MoveSvc: void
             MoveSvc->>MoveSvc: UpdateStockForMovement(type, sourceWh, destWh, productId, qty)
-            alt Entry
-                MoveSvc->>StockRepo: AddStock(productId, destWh, qty)
-            else Exit
-                MoveSvc->>StockRepo: DeductStock(productId, sourceWh, qty)
-            else Transfer
-                MoveSvc->>StockRepo: DeductStock(productId, sourceWh, qty)
-                MoveSvc->>StockRepo: AddStock(productId, destWh, qty)
-            else Adjustment
-                MoveSvc->>StockRepo: UpdateQuantity(productId, sourceWh, qty)
+            alt MovementType = In
+                MoveSvc->>StockRepo: GetCurrentStock(productId, destWh)
+                StockRepo-->>MoveSvc: currentQty
+                MoveSvc->>StockRepo: UpdateStock(productId, destWh, currentQty+qty, userId)
+            else MovementType = Out
+                MoveSvc->>StockRepo: GetCurrentStock(productId, sourceWh)
+                StockRepo-->>MoveSvc: currentQty
+                MoveSvc->>StockRepo: UpdateStock(productId, sourceWh, currentQty-qty, userId)
+            else MovementType = Transfer
+                MoveSvc->>StockRepo: GetCurrentStock(productId, sourceWh)
+                StockRepo-->>MoveSvc: currentSrcQty
+                MoveSvc->>StockRepo: UpdateStock(productId, sourceWh, currentSrcQty-qty, userId)
+                MoveSvc->>StockRepo: GetCurrentStock(productId, destWh)
+                StockRepo-->>MoveSvc: currentDstQty
+                MoveSvc->>StockRepo: UpdateStock(productId, destWh, currentDstQty+qty, userId)
+            else MovementType = Adjustment
+                MoveSvc->>StockRepo: GetCurrentStock(productId, destWh)
+                StockRepo-->>MoveSvc: currentQty
+                MoveSvc->>StockRepo: UpdateStock(productId, destWh, currentQty+qty, userId)
             end
         end
         MoveRepo->>DB: COMMIT TRANSACTION
@@ -207,26 +210,33 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     participant SVC as StockMovementService
-    participant MREPO as StockMovementRepository
     participant PREPO as ProductRepository
+    participant AuditRepo as AuditLogRepository
     participant DB as Database
 
-    Note over SVC: Triggered after Entry movement creation
-    SVC->>SVC: CheckPriceUpdates(movementId)
-    SVC->>MREPO: GetMovementLines(movementId)
-    MREPO->>DB: GetConnection()
-    DB-->>MREPO: SqlConnection
-    MREPO-->>SVC: List~StockMovementLine~
-    loop For each line where line.UnitPrice > 0
+    Note over SVC: Triggered after In movement creation
+    SVC->>SVC: CheckPriceUpdates(MovementType.In, lines)
+    Note over SVC: Returns List~PriceUpdateInfo~ with products<br/>whose price differs from movement unit price
+    loop For each line where UnitPrice is set
+        SVC->>PREPO: GetById(productId)
+        PREPO-->>SVC: Product
+        Note over SVC: Compare product.UnitPrice with line.UnitPrice
+    end
+    SVC-->>SVC: List~PriceUpdateInfo~
+
+    Note over SVC: If NeedsConfirmation (lower price) → ask user
+    SVC->>SVC: UpdateProductPrices(lines, confirmLowerPrices)
+    loop For each line with UnitPrice change
         SVC->>PREPO: GetById(productId)
         PREPO-->>SVC: Product
         SVC->>PREPO: Update(product with new UnitPrice)
         activate PREPO
         PREPO->>DB: GetConnection()
         DB-->>PREPO: SqlConnection
-        Note over PREPO: UPDATE Products SET UnitPrice=@NewPrice WHERE ProductId=@Id
+        Note over PREPO: UPDATE Products SET UnitPrice=@NewPrice, UpdatedAt=@Now WHERE ProductId=@Id
         PREPO-->>SVC: void
         deactivate PREPO
+        SVC->>AuditRepo: LogChange("Products", productId, Update, "UnitPrice", oldPrice, newPrice, userId)
     end
     SVC-->>SVC: Prices updated
 ```
@@ -238,43 +248,38 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     participant SVC as StockMovementService
-    participant MREPO as StockMovementRepository
     participant SREPO as StockRepository
     participant DB as Database
 
-    SVC->>MREPO: GetById(movementId)
-    MREPO-->>SVC: StockMovement
-    SVC->>MREPO: GetMovementLines(movementId)
-    MREPO-->>SVC: List~StockMovementLine~
-    alt MovementType = Entry
-        loop For each line
-            SVC->>SREPO: AddStock(productId, destWh, +qty)
-            SREPO->>DB: MERGE INTO Stock SET Quantity=Quantity+@Qty ...
-            DB-->>SREPO: Success
-        end
-    else MovementType = Exit
-        loop For each line
-            SVC->>SREPO: DeductStock(productId, sourceWh, qty)
-            SREPO->>DB: UPDATE Stock SET Quantity=Quantity-@Qty ...
-            alt Stock goes negative
-                SREPO->>DB: ROLLBACK
-                SREPO-->>SVC: throw Exception
-            else
-                DB-->>SREPO: Success
-            end
-        end
+    Note over SVC: Private method called per-line during CreateMovement
+    alt MovementType = In
+        SVC->>SREPO: GetCurrentStock(productId, destWh)
+        SREPO->>DB: SELECT Quantity FROM Stock WHERE ProductId=@P AND WarehouseId=@W
+        DB-->>SREPO: currentQty
+        SREPO-->>SVC: currentQty
+        SVC->>SREPO: UpdateStock(productId, destWh, currentQty+qty, userId)
+        SREPO->>DB: UPDATE Stock SET Quantity=@NewQty, LastUpdated=@Now WHERE ProductId=@P AND WarehouseId=@W
+        DB-->>SREPO: Success
+    else MovementType = Out
+        SVC->>SREPO: GetCurrentStock(productId, sourceWh)
+        SREPO-->>SVC: currentQty
+        SVC->>SREPO: UpdateStock(productId, sourceWh, currentQty-qty, userId)
+        SREPO->>DB: UPDATE Stock SET Quantity=@NewQty, LastUpdated=@Now WHERE ProductId=@P AND WarehouseId=@W
+        DB-->>SREPO: Success
     else MovementType = Transfer
-        loop For each line
-            SVC->>SREPO: DeductStock(productId, sourceWh, qty)
-            SREPO-->>SVC: void
-            SVC->>SREPO: AddStock(productId, destWh, qty)
-            SREPO-->>SVC: void
-        end
+        SVC->>SREPO: GetCurrentStock(productId, sourceWh)
+        SREPO-->>SVC: currentSrcQty
+        SVC->>SREPO: UpdateStock(productId, sourceWh, currentSrcQty-qty, userId)
+        SREPO-->>SVC: void
+        SVC->>SREPO: GetCurrentStock(productId, destWh)
+        SREPO-->>SVC: currentDstQty
+        SVC->>SREPO: UpdateStock(productId, destWh, currentDstQty+qty, userId)
+        SREPO-->>SVC: void
     else MovementType = Adjustment
-        loop For each line
-            SVC->>SREPO: UpdateQuantity(productId, warehouseId, newQty)
-            SREPO-->>SVC: void
-        end
+        SVC->>SREPO: GetCurrentStock(productId, destWh)
+        SREPO-->>SVC: currentQty
+        SVC->>SREPO: UpdateStock(productId, destWh, currentQty+qty, userId)
+        SREPO-->>SVC: void
     end
     SVC-->>SVC: Stock updated
 ```
@@ -286,9 +291,9 @@ sequenceDiagram
 | Use Case | Key Business Rules |
 |----------|-------------------|
 | CreateMovement | Movement number auto-generated per type+year; stock validated; atomic transaction |
-| UpdateStockForMovement | Entry/Exit/Transfer/Adjustment have different stock operations |
-| UpdateProductPrices | Only triggered for Entry movements with unit price specified |
-| GetMovementsByType | Supports: Entry, Exit, Transfer, Adjustment |
+| UpdateStockForMovement | In/Out/Transfer/Adjustment have different stock operations; uses GetCurrentStock+UpdateStock |
+| UpdateProductPrices | Only triggered for In movements with unit price specified; requires confirmation for lower prices |
+| GetMovementsByType | Supports: In, Out, Transfer, Adjustment |
 
 ```mermaid
 sequenceDiagram
@@ -401,28 +406,7 @@ sequenceDiagram
         
         %% Validate movement
         MoveSvc->>MoveSvc: ValidateMovement(movement, lines)
-        Note over MoveSvc: Business validations:<br/>- Lines count > 0<br/>- All quantities > 0<br/>- Source != Destination<br/>- Warehouses exist
-        
-        %% Validate stock availability for each line
-        loop For each line
-            MoveSvc->>MoveSvc: ValidateStockAvailability(Transfer, sourceWh, productId, quantity)
-            MoveSvc->>StockRepo: GetByProductAndWarehouse(productId, sourceWh)
-            activate StockRepo
-            StockRepo->>DB: SELECT...
-            activate DB
-            DB-->>StockRepo: Stock
-            deactivate DB
-            StockRepo-->>MoveSvc: Stock entity
-            deactivate StockRepo
-            
-            alt Insufficient Stock
-                MoveSvc->>Log: Warning("Insufficient stock")
-                activate Log
-                deactivate Log
-                MoveSvc-->>UI: throw Exception("Insufficient stock")
-                UI-->>User: Show error message
-            end
-        end
+        Note over MoveSvc: Business validations:<br/>- Lines count > 0<br/>- All quantities > 0<br/>- Source != Destination<br/>- Warehouses exist<br/>- Stock availability for Transfer
         
         %% Generate movement number
         MoveSvc->>MoveRepo: GenerateMovementNumber(Transfer)
@@ -442,7 +426,7 @@ sequenceDiagram
         activate MoveRepo
         MoveRepo->>DB: BEGIN TRANSACTION
         activate DB
-        Note over MoveRepo: INSERT INTO StockMovements<br/>(MovementNumber, MovementDate,<br/>MovementType, SourceWarehouseId,<br/>DestinationWarehouseId, Remarks,<br/>CreatedAt, CreatedBy)<br/>VALUES (...)
+        Note over MoveRepo: INSERT INTO StockMovements<br/>(MovementNumber, MovementDate,<br/>MovementType, SourceWarehouseId,<br/>DestinationWarehouseId, Reason, Notes,<br/>CreatedAt, CreatedBy)<br/>VALUES (...)
         MoveRepo->>DB: ExecuteScalar()
         DB-->>MoveRepo: movementId
         deactivate MoveRepo
@@ -452,7 +436,7 @@ sequenceDiagram
             %% Insert movement line
             MoveSvc->>MoveRepo: InsertLine(line)
             activate MoveRepo
-            Note over MoveRepo: INSERT INTO StockMovementLines<br/>(MovementId, ProductId, Quantity)<br/>VALUES (...)
+            Note over MoveRepo: INSERT INTO StockMovementLines<br/>(MovementId, ProductId, Quantity, UnitPrice)<br/>VALUES (...)
             MoveRepo->>DB: ExecuteNonQuery()
             DB-->>MoveRepo: Success
             deactivate MoveRepo
@@ -461,36 +445,32 @@ sequenceDiagram
             MoveSvc->>MoveSvc: UpdateStockForMovement(Transfer, sourceWh, destWh, productId, quantity)
             activate MoveSvc
             
-            %% Deduct from source warehouse
-            MoveSvc->>StockRepo: DeductStock(productId, sourceWh, quantity)
+            %% Get current stock and deduct from source warehouse
+            MoveSvc->>StockRepo: GetCurrentStock(productId, sourceWh)
             activate StockRepo
-            Note over StockRepo: UPDATE Stock<br/>SET Quantity = Quantity - @Quantity,<br/>LastUpdated = @LastUpdated<br/>WHERE ProductId = @ProductId<br/>AND WarehouseId = @SourceWh
+            StockRepo->>DB: SELECT Quantity FROM Stock WHERE ProductId=@P AND WarehouseId=@SourceWh
+            DB-->>StockRepo: currentSrcQty
+            StockRepo-->>MoveSvc: currentSrcQty
+            deactivate StockRepo
+            MoveSvc->>StockRepo: UpdateStock(productId, sourceWh, currentSrcQty-quantity, userId)
+            activate StockRepo
+            Note over StockRepo: UPDATE Stock<br/>SET Quantity = @NewQty, LastUpdated = @Now<br/>WHERE ProductId = @ProductId<br/>AND WarehouseId = @SourceWh
             StockRepo->>DB: ExecuteNonQuery()
-            
-            alt Stock goes negative
-                StockRepo->>DB: ROLLBACK
-                DB-->>StockRepo: Rolled back
-                StockRepo-->>MoveSvc: throw Exception
-                MoveSvc-->>UI: throw Exception
-                UI-->>User: Show "Stock deduction failed" error
-            else Stock valid
-                DB-->>StockRepo: Success
-            end
+            DB-->>StockRepo: Success
             deactivate StockRepo
             
-            %% Add to destination warehouse
-            MoveSvc->>StockRepo: AddStock(productId, destWh, quantity)
+            %% Get current stock and add to destination warehouse
+            MoveSvc->>StockRepo: GetCurrentStock(productId, destWh)
             activate StockRepo
-            
-            alt Stock record doesn't exist
-                Note over StockRepo: INSERT INTO Stock<br/>(ProductId, WarehouseId,<br/>Quantity, LastUpdated)<br/>VALUES (...)
-                StockRepo->>DB: ExecuteNonQuery()
-                DB-->>StockRepo: Success
-            else Stock record exists
-                Note over StockRepo: UPDATE Stock<br/>SET Quantity = Quantity + @Quantity,<br/>LastUpdated = @LastUpdated<br/>WHERE ProductId = @ProductId<br/>AND WarehouseId = @DestWh
-                StockRepo->>DB: ExecuteNonQuery()
-                DB-->>StockRepo: Success
-            end
+            StockRepo->>DB: SELECT Quantity FROM Stock WHERE ProductId=@P AND WarehouseId=@DestWh
+            DB-->>StockRepo: currentDstQty
+            StockRepo-->>MoveSvc: currentDstQty
+            deactivate StockRepo
+            MoveSvc->>StockRepo: UpdateStock(productId, destWh, currentDstQty+quantity, userId)
+            activate StockRepo
+            Note over StockRepo: UPDATE Stock<br/>SET Quantity = @NewQty, LastUpdated = @Now<br/>WHERE ProductId = @ProductId<br/>AND WarehouseId = @DestWh
+            StockRepo->>DB: ExecuteNonQuery()
+            DB-->>StockRepo: Success
             deactivate StockRepo
             deactivate MoveSvc
         end
@@ -502,7 +482,7 @@ sequenceDiagram
         %% Log audit
         MoveSvc->>AuditRepo: LogChange("StockMovements", movementId, Insert, null, null, description, userId)
         activate AuditRepo
-        AuditRepo->>DB: INSERT INTO AuditLog<br/>(TableName, RecordId, Action,<br/>Description, ChangeDate, ChangedBy)<br/>VALUES (...)
+        AuditRepo->>DB: INSERT INTO AuditLog<br/>(TableName, RecordId, Action,<br/>FieldName, OldValue, NewValue,<br/>ChangedAt, ChangedBy)<br/>VALUES (...)
         activate DB
         DB-->>AuditRepo: Success
         deactivate DB
@@ -621,11 +601,11 @@ sequenceDiagram
 
 ## Movement Types Summary
 
-### Entry (IN-YYYY-####)
+### In (IN-YYYY-####)
 - **Stock Operation**: Add to destination warehouse only
 - **Warehouses**: Destination required, source not applicable
 
-### Exit (OUT-YYYY-####)
+### Out (OUT-YYYY-####)
 - **Stock Operation**: Deduct from source warehouse only
 - **Warehouses**: Source required, destination not applicable
 

@@ -151,9 +151,11 @@ classDiagram
     class Permission {
         +int PermissionId
         +string PermissionName
+        +string PermissionCode
         +string Description
-        +string Category
+        +string Module
         +bool IsActive
+        +DateTime CreatedAt
     }
 
     class RolePermission {
@@ -240,7 +242,8 @@ classDiagram
     class Permission {
         +int PermissionId
         +string PermissionName
-        +string Category
+        +string PermissionCode
+        +string Module
         +bool IsActive
     }
 
@@ -341,30 +344,31 @@ classDiagram
     }
 
     class RoleService {
-        -IPermissionRepository _permRepo
+        -IRoleRepository _roleRepo
         +GetRolePermissions(roleId) List~Permission~
     }
 
-    class IPermissionRepository {
+    class IRoleRepository {
         <<interface>>
         +GetRolePermissions(roleId) List~Permission~
     }
 
-    class PermissionRepository {
+    class RoleRepository {
         +GetRolePermissions(roleId) List~Permission~
     }
 
     class Permission {
         +int PermissionId
         +string PermissionName
-        +string Category
+        +string PermissionCode
+        +string Module
         +bool IsActive
     }
 
     RolePermissionsForm --> RoleService : uses
-    RoleService --> IPermissionRepository : uses
-    PermissionRepository ..|> IPermissionRepository : implements
-    PermissionRepository --> Permission : returns
+    RoleService --> IRoleRepository : uses
+    RoleRepository ..|> IRoleRepository : implements
+    RoleRepository --> Permission : returns
 ```
 
 ---
@@ -720,10 +724,6 @@ User → UserRoles → Role → RolePermissions → Permission
         +GetAll() List~Permission~
         +GetAllActive() List~Permission~
         +GetById(id) Permission
-        +Insert(entity) int
-        +Update(entity) void
-        +Delete(id) void
-        +SoftDelete(id, deletedBy) void
         +GetByCode(permissionCode) Permission
         +GetByModule(module) List~Permission~
         +GetUserPermissions(userId) List~string~
@@ -744,9 +744,11 @@ User → UserRoles → Role → RolePermissions → Permission
     class Permission {
         +int PermissionId
         +string PermissionName
+        +string PermissionCode
         +string Description
-        +string Category
+        +string Module
         +bool IsActive
+        +DateTime CreatedAt
     }
 
     class User {

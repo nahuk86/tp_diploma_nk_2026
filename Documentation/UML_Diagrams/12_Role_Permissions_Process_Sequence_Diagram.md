@@ -191,12 +191,12 @@ sequenceDiagram
     activate REPO
     REPO->>DB: GetConnection()
     DB-->>REPO: SqlConnection
-    Note over REPO: SELECT * FROM Permissions WHERE IsActive=1 ORDER BY Category, PermissionName
+    Note over REPO: SELECT * FROM Permissions WHERE IsActive=1 ORDER BY Module, PermissionName
     REPO-->>BLL: List~Permission~
     deactivate REPO
     BLL-->>UI: List~Permission~
     deactivate BLL
-    UI->>UI: Group by category and render in CheckedListBox
+    UI->>UI: Group by module and render in CheckedListBox
 ```
 
 ---
@@ -261,7 +261,7 @@ sequenceDiagram
 sequenceDiagram
     participant UI as RolePermissionsForm
     participant BLL as RoleService
-    participant REPO as PermissionRepository
+    participant REPO as RoleRepository
     participant DB as Database
 
     UI->>BLL: GetRolePermissions(roleId)
@@ -334,10 +334,10 @@ sequenceDiagram
     activate REPO
     REPO->>DB: GetConnection()
     DB-->>REPO: SqlConnection
-    Note over REPO: SELECT p.* FROM Permissions p JOIN RolePermissions rp ON p.PermissionId=rp.PermissionId JOIN UserRoles ur ON rp.RoleId=ur.RoleId WHERE ur.UserId=@UserId AND p.IsActive=1
-    REPO-->>Auth: List~Permission~
+    Note over REPO: SELECT p.PermissionCode FROM Permissions p JOIN RolePermissions rp ON p.PermissionId=rp.PermissionId JOIN UserRoles ur ON rp.RoleId=ur.RoleId WHERE ur.UserId=@UserId AND p.IsActive=1
+    REPO-->>Auth: List~string~ (permission codes)
     deactivate REPO
-    Auth-->>Component: List~Permission~
+    Auth-->>Component: List~string~ (permission codes)
     deactivate Auth
 ```
 
@@ -405,26 +405,18 @@ sequenceDiagram
 
     UI->>Auth: HasPermission(userId, "MANAGE_PERMISSIONS")
     activate Auth
-    Note over Auth: Check cache first
-    alt Cached result exists
-        Auth-->>UI: cached true/false
-    else Cache miss
-        Auth->>REPO: GetUserPermissions(userId)
-        activate REPO
-        REPO->>DB: GetConnection()
-        DB-->>REPO: SqlConnection
-        Note over REPO: SELECT p.* FROM Permissions p JOIN RolePermissions rp ON p.PermissionId=rp.PermissionId JOIN UserRoles ur ON rp.RoleId=ur.RoleId WHERE ur.UserId=@UserId AND p.IsActive=1
-        REPO-->>Auth: List~Permission~
-        deactivate REPO
-        Auth->>Auth: Check if "MANAGE_PERMISSIONS" in list
-        Auth->>Auth: Store in cache
-        alt Permission found
-            Auth->>Log: Info("Permission granted: MANAGE_PERMISSIONS for userId")
-            Auth-->>UI: true
-        else Not found
-            Auth->>Log: Warning("Permission denied: MANAGE_PERMISSIONS for userId")
-            Auth-->>UI: false
-        end
+    Auth->>REPO: GetUserPermissions(userId)
+    activate REPO
+    REPO->>DB: GetConnection()
+    DB-->>REPO: SqlConnection
+    Note over REPO: SELECT p.PermissionCode FROM Permissions p JOIN RolePermissions rp ON p.PermissionId=rp.PermissionId JOIN UserRoles ur ON rp.RoleId=ur.RoleId WHERE ur.UserId=@UserId AND p.IsActive=1
+    REPO-->>Auth: List~string~ (permission codes)
+    deactivate REPO
+    Auth->>Auth: Check if "MANAGE_PERMISSIONS" in list
+    alt Permission found
+        Auth-->>UI: true
+    else Not found
+        Auth-->>UI: false
     end
     deactivate Auth
     alt false
@@ -442,7 +434,7 @@ sequenceDiagram
 User → UserRoles (table) → Role → RolePermissions (table) → Permission
      ↑
      HasPermission / HasAnyPermission / HasAllPermissions
-     (Cache → DB if miss → return result)
+     (Query DB on each call via GetUserPermissions)
 ```
 
 ## Business Rules Summary
@@ -452,7 +444,7 @@ User → UserRoles (table) → Role → RolePermissions (table) → Permission
 | CreateRole | Role name must be unique |
 | DeleteRole | Soft-delete only (IsActive=0) |
 | AssignPermissions | Atomic: delete all existing, then insert selected ones |
-| HasPermission | Uses cache; cache invalidated when role permissions change |
+| HasPermission | Queries DB each call via GetUserPermissions |
 | HasAllPermissions | Returns false if ANY required permission is missing |
 | HasAnyPermission | Returns true if AT LEAST ONE permission is present |
 
@@ -531,7 +523,7 @@ sequenceDiagram
         activate BLL
         BLL->>PermRepo: GetAllActive()
         activate PermRepo
-        PermRepo->>DB: SELECT * FROM Permissions<br/>WHERE IsActive = 1<br/>ORDER BY Category, PermissionName
+        PermRepo->>DB: SELECT * FROM Permissions<br/>WHERE IsActive = 1<br/>ORDER BY Module, PermissionName
         activate DB
         DB-->>PermRepo: ResultSet
         deactivate DB
@@ -541,7 +533,7 @@ sequenceDiagram
         BLL-->>PermUI: List<Permission>
         deactivate BLL
         
-        Note over PermUI: Group permissions by category:<br/>- User Management<br/>- Role Management<br/>- Sales Management<br/>- Product Management<br/>- Stock Management<br/>- Reports<br/>etc.
+        Note over PermUI: Group permissions by module:<br/>- User Management<br/>- Role Management<br/>- Sales Management<br/>- Product Management<br/>- Stock Management<br/>- Reports<br/>etc.
         
         %% Load current role permissions
         PermUI->>BLL: GetRolePermissions(roleId)
@@ -557,7 +549,7 @@ sequenceDiagram
         BLL-->>PermUI: List<Permission>
         deactivate BLL
         
-        Note over PermUI: Display CheckedListBox:<br/>- All permissions listed<br/>- Current permissions checked<br/>- Grouped by category
+        Note over PermUI: Display CheckedListBox:<br/>- All permissions listed<br/>- Current permissions checked<br/>- Grouped by module
         
         PermUI-->>User: Display permission selection dialog
         deactivate PermUI
@@ -626,7 +618,7 @@ sequenceDiagram
     BLL->>AuditRepo: LogChange("RolePermissions", roleId, Update, oldPermissions, newPermissions, description, currentUserId)
     activate AuditRepo
     Note over AuditRepo: Description:<br/>"Updated permissions for role 'Sales Representative'<br/>Added: CREATE_SALES, EDIT_SALES, VIEW_PRODUCTS<br/>Removed: DELETE_SALES"
-    AuditRepo->>DB: INSERT INTO AuditLog<br/>(TableName, RecordId, Action,<br/>OldValue, NewValue, Description,<br/>ChangeDate, ChangedBy)<br/>VALUES (...)
+    AuditRepo->>DB: INSERT INTO AuditLog<br/>(TableName, RecordId, Action,<br/>FieldName, OldValue, NewValue,<br/>ChangedAt, ChangedBy)<br/>VALUES (...)
     activate DB
     DB-->>AuditRepo: Success
     deactivate DB
@@ -676,7 +668,7 @@ sequenceDiagram
     SalesUI->>Auth: HasPermission(salesUserId, "CREATE_SALES")
     activate Auth
     
-    Note over Auth: Permission cache was invalidated,<br/>so reload from database
+    Note over Auth: Queries DB for current permissions
     Auth->>PermRepo: GetUserPermissions(salesUserId)
     activate PermRepo
     PermRepo->>DB: SELECT p.* FROM Permissions p<br/>INNER JOIN RolePermissions rp ON...<br/>INNER JOIN UserRoles ur ON...<br/>WHERE ur.UserId = @UserId
@@ -751,21 +743,16 @@ sequenceDiagram
 32. Describe added and removed permissions
 33. Record who made the change and when
 
-### Phase 9: Cache Invalidation
-34. Clear permission cache for all users with this role
-35. Ensures permission changes take effect immediately
-36. Next permission check will reload from database
-
-### Phase 10: Completion
+### Phase 9: Completion
 37. Display success message to administrator
 38. Close permissions dialog
 39. Refresh roles grid
 40. Log success message
 
-### Phase 11: Real-Time Effect
+### Phase 10: Real-Time Effect
 41. Sales Representative user later attempts to create a sale
 42. SalesForm checks "CREATE_SALES" permission
-43. AuthorizationService cache is invalid, reloads from database
+43. AuthorizationService queries database for current permissions
 44. New permissions include "CREATE_SALES"
 45. Permission granted, user can proceed
 
@@ -776,40 +763,34 @@ User Attempts Action
     ↓
 Check Required Permission
     ↓
-Is Permission Cached?
-    ├─ Yes → Check Cache
-    └─ No → Load from Database
-        ↓
-    Get User's Roles (UserRoles table)
-        ↓
-    Get Permissions for Each Role (RolePermissions table)
-        ↓
-    Aggregate All Permissions
-        ↓
-    Cache for Performance
-        ↓
-    Check if Required Permission Exists
-        ↓
-    Return true/false
+Load from Database (GetUserPermissions)
+    ↓
+Get User's Roles (UserRoles table)
+    ↓
+Get Permissions for Each Role (RolePermissions table)
+    ↓
+Aggregate All Permission Codes
+    ↓
+Check if Required Permission Exists
+    ↓
+Return true/false
 ```
 
-## Security & Performance Features
+## Security Features
 
 1. **Transaction Safety**: All permission changes in single transaction
-2. **Audit Trail**: Complete history of permission changes
-3. **Cache Invalidation**: Changes take effect immediately
-4. **Permission Caching**: Improves performance for frequent checks
-5. **Least Privilege**: Only grant necessary permissions
-6. **Hierarchical Organization**: Permissions grouped by category
-7. **Soft Delete**: Permissions can be deactivated, not deleted
-8. **User Context**: All changes tracked with user information
+2. **Audit Trail**: Complete history of permission changes with FieldName/OldValue/NewValue
+3. **Immediate Effect**: Permission checks query DB directly ensuring real-time updates
+4. **Least Privilege**: Only grant necessary permissions
+5. **Hierarchical Organization**: Permissions grouped by module
+6. **Soft Delete**: Roles can be deactivated, not deleted
+7. **User Context**: All changes tracked with user information
 
 ## Business Rules
 
 1. **Atomic Operations**: Permission assignment is all-or-nothing
 2. **No Partial States**: Transaction ensures consistency
-3. **Immediate Effect**: Cache invalidation ensures real-time updates
-4. **Audit Requirement**: All changes must be logged
-5. **Active Check**: Only active permissions can be assigned
-6. **Role Association**: Permissions assigned to roles, not directly to users
-7. **Multiple Roles**: Users can have multiple roles, inheriting all permissions
+3. **Audit Requirement**: All changes must be logged
+4. **Active Check**: Only active permissions can be assigned
+5. **Role Association**: Permissions assigned to roles, not directly to users
+6. **Multiple Roles**: Users can have multiple roles, inheriting all permissions
