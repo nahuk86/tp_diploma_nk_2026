@@ -79,10 +79,10 @@ namespace UI.Forms
         /// </summary>
         private void ConfigurePermissions()
         {
-            if (!SessionContext.CurrentUserId.HasValue)
+            if (!SessionContext.Instance.CurrentUserId.HasValue)
                 return;
 
-            var userId = SessionContext.CurrentUserId.Value;
+            var userId = SessionContext.Instance.CurrentUserId.Value;
             
             btnNew.Enabled = _authorizationService.HasPermission(userId, "Clients.Create");
             btnEdit.Enabled = _authorizationService.HasPermission(userId, "Clients.Edit");

@@ -115,10 +115,10 @@ namespace UI.Forms
         /// </summary>
         private void ConfigurePermissions()
         {
-            if (!SessionContext.CurrentUserId.HasValue)
+            if (!SessionContext.Instance.CurrentUserId.HasValue)
                 return;
 
-            var userId = SessionContext.CurrentUserId.Value;
+            var userId = SessionContext.Instance.CurrentUserId.Value;
             
             // Check permissions based on operation type
             // For simplicity, using Stock.Receive for create operations

@@ -141,7 +141,7 @@ namespace BLL.Services
 
                 // Set audit fields
                 role.CreatedAt = DateTime.Now;
-                role.CreatedBy = SessionContext.CurrentUserId;
+                role.CreatedBy = SessionContext.Instance.CurrentUserId;
                 role.IsActive = true;
 
                 // Insert
@@ -149,9 +149,9 @@ namespace BLL.Services
 
                 // Audit log
                 _auditRepo.LogChange("Roles", roleId, AuditAction.Insert, null, null, 
-                    $"Created role {role.RoleName}", SessionContext.CurrentUserId);
+                    $"Created role {role.RoleName}", SessionContext.Instance.CurrentUserId);
 
-                _logService.Info($"Role created: {role.RoleName} by {SessionContext.CurrentUsername}");
+                _logService.Info($"Role created: {role.RoleName} by {SessionContext.Instance.CurrentUsername}");
 
                 return roleId;
             }
@@ -189,7 +189,7 @@ namespace BLL.Services
 
                 // Set audit fields
                 role.UpdatedAt = DateTime.Now;
-                role.UpdatedBy = SessionContext.CurrentUserId;
+                role.UpdatedBy = SessionContext.Instance.CurrentUserId;
 
                 // Update
                 _roleRepo.Update(role);
@@ -198,7 +198,7 @@ namespace BLL.Services
                 LogFieldChange("Roles", role.RoleId, "RoleName", oldRole.RoleName, role.RoleName);
                 LogFieldChange("Roles", role.RoleId, "Description", oldRole.Description, role.Description);
 
-                _logService.Info($"Role updated: {role.RoleName} by {SessionContext.CurrentUsername}");
+                _logService.Info($"Role updated: {role.RoleName} by {SessionContext.Instance.CurrentUsername}");
             }
             catch (Exception ex)
             {
@@ -228,12 +228,12 @@ namespace BLL.Services
                 }
 
                 // Soft delete
-                _roleRepo.SoftDelete(roleId, SessionContext.CurrentUserId.Value);
+                _roleRepo.SoftDelete(roleId, SessionContext.Instance.CurrentUserId.Value);
 
                 // Audit log
-                _auditRepo.LogChange("Roles", roleId, AuditAction.Delete, "IsActive", "1", "0", SessionContext.CurrentUserId);
+                _auditRepo.LogChange("Roles", roleId, AuditAction.Delete, "IsActive", "1", "0", SessionContext.Instance.CurrentUserId);
 
-                _logService.Info($"Role deleted (soft): {role.RoleName} by {SessionContext.CurrentUsername}");
+                _logService.Info($"Role deleted (soft): {role.RoleName} by {SessionContext.Instance.CurrentUsername}");
             }
             catch (Exception ex)
             {
@@ -263,14 +263,14 @@ namespace BLL.Services
                 // Assign new permissions
                 foreach (var permissionId in permissionIds)
                 {
-                    _roleRepo.AssignPermission(roleId, permissionId, SessionContext.CurrentUserId.Value);
+                    _roleRepo.AssignPermission(roleId, permissionId, SessionContext.Instance.CurrentUserId.Value);
                 }
 
                 // Audit log
                 _auditRepo.LogChange("RolePermissions", roleId, AuditAction.Update, "Permissions", null, 
-                    $"Assigned {permissionIds.Count} permissions", SessionContext.CurrentUserId);
+                    $"Assigned {permissionIds.Count} permissions", SessionContext.Instance.CurrentUserId);
 
-                _logService.Info($"Permissions assigned to role: {role.RoleName} by {SessionContext.CurrentUsername}");
+                _logService.Info($"Permissions assigned to role: {role.RoleName} by {SessionContext.Instance.CurrentUsername}");
             }
             catch (Exception ex)
             {
@@ -310,7 +310,7 @@ namespace BLL.Services
         {
             if (oldValue != newValue)
             {
-                _auditRepo.LogChange(tableName, recordId, AuditAction.Update, fieldName, oldValue, newValue, SessionContext.CurrentUserId);
+                _auditRepo.LogChange(tableName, recordId, AuditAction.Update, fieldName, oldValue, newValue, SessionContext.Instance.CurrentUserId);
             }
         }
     }

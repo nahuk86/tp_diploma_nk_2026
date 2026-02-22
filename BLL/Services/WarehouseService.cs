@@ -99,7 +99,7 @@ namespace BLL.Services
 
                 // Set audit fields
                 warehouse.CreatedAt = DateTime.Now;
-                warehouse.CreatedBy = SessionContext.CurrentUserId;
+                warehouse.CreatedBy = SessionContext.Instance.CurrentUserId;
                 warehouse.IsActive = true;
 
                 // Insert
@@ -107,9 +107,9 @@ namespace BLL.Services
 
                 // Audit log
                 _auditRepo.LogChange("Warehouses", warehouseId, AuditAction.Insert, null, null, 
-                    $"Created warehouse {warehouse.Code} - {warehouse.Name}", SessionContext.CurrentUserId);
+                    $"Created warehouse {warehouse.Code} - {warehouse.Name}", SessionContext.Instance.CurrentUserId);
 
-                _logService.Info($"Warehouse created: {warehouse.Code} - {warehouse.Name} by {SessionContext.CurrentUsername}");
+                _logService.Info($"Warehouse created: {warehouse.Code} - {warehouse.Name} by {SessionContext.Instance.CurrentUsername}");
 
                 return warehouseId;
             }
@@ -146,7 +146,7 @@ namespace BLL.Services
 
                 // Set audit fields
                 warehouse.UpdatedAt = DateTime.Now;
-                warehouse.UpdatedBy = SessionContext.CurrentUserId;
+                warehouse.UpdatedBy = SessionContext.Instance.CurrentUserId;
 
                 // Update
                 _warehouseRepo.Update(warehouse);
@@ -155,7 +155,7 @@ namespace BLL.Services
                 LogFieldChange("Warehouses", warehouse.WarehouseId, "Name", oldWarehouse.Name, warehouse.Name);
                 LogFieldChange("Warehouses", warehouse.WarehouseId, "Address", oldWarehouse.Address, warehouse.Address);
 
-                _logService.Info($"Warehouse updated: {warehouse.Code} - {warehouse.Name} by {SessionContext.CurrentUsername}");
+                _logService.Info($"Warehouse updated: {warehouse.Code} - {warehouse.Name} by {SessionContext.Instance.CurrentUsername}");
             }
             catch (Exception ex)
             {
@@ -179,12 +179,12 @@ namespace BLL.Services
                 }
 
                 // Soft delete
-                _warehouseRepo.SoftDelete(warehouseId, SessionContext.CurrentUserId.Value);
+                _warehouseRepo.SoftDelete(warehouseId, SessionContext.Instance.CurrentUserId.Value);
 
                 // Audit log
-                _auditRepo.LogChange("Warehouses", warehouseId, AuditAction.Delete, "IsActive", "1", "0", SessionContext.CurrentUserId);
+                _auditRepo.LogChange("Warehouses", warehouseId, AuditAction.Delete, "IsActive", "1", "0", SessionContext.Instance.CurrentUserId);
 
-                _logService.Info($"Warehouse deleted (soft): {warehouse.Code} - {warehouse.Name} by {SessionContext.CurrentUsername}");
+                _logService.Info($"Warehouse deleted (soft): {warehouse.Code} - {warehouse.Name} by {SessionContext.Instance.CurrentUsername}");
             }
             catch (Exception ex)
             {
@@ -227,7 +227,7 @@ namespace BLL.Services
         {
             if (oldValue != newValue)
             {
-                _auditRepo.LogChange(tableName, recordId, AuditAction.Update, fieldName, oldValue, newValue, SessionContext.CurrentUserId);
+                _auditRepo.LogChange(tableName, recordId, AuditAction.Update, fieldName, oldValue, newValue, SessionContext.Instance.CurrentUserId);
             }
         }
     }

@@ -54,6 +54,7 @@
     <Compile Include="DOMAIN\Contracts\IRoleRepository.cs" />
     <Compile Include="DOMAIN\Contracts\IPermissionRepository.cs" />
     <Compile Include="DOMAIN\Contracts\IAuditLogRepository.cs" />
+    <Compile Include="DOMAIN\Contracts\IUnitOfWork.cs" />
     <!-- DOMAIN: Enums -->
     <Compile Include="DOMAIN\Enums\LogLevel.cs" />
     <Compile Include="DOMAIN\Enums\AuditAction.cs" />
@@ -64,6 +65,8 @@
     <Compile Include="DAL\Repositories\RoleRepository.cs" />
     <Compile Include="DAL\Repositories\PermissionRepository.cs" />
     <Compile Include="DAL\Repositories\AuditLogRepository.cs" />
+    <!-- DAL: Unit of Work (Unit of Work pattern) -->
+    <Compile Include="DAL\UnitOfWork.cs" />
     <!-- BLL: Interfaces -->
     <Compile Include="BLL\Interfaces\ILogService.cs" />
     <Compile Include="BLL\Interfaces\IAuthenticationService.cs" />
@@ -78,6 +81,13 @@
     <Compile Include="BLL\Services\ErrorHandlerService.cs" />
     <Compile Include="BLL\Services\UserService.cs" />
     <Compile Include="BLL\Services\RoleService.cs" />
+    <!-- BLL: Composites (Composite pattern) -->
+    <Compile Include="BLL\Composites\IPermissionRule.cs" />
+    <Compile Include="BLL\Composites\SinglePermissionRule.cs" />
+    <Compile Include="BLL\Composites\AndPermissionRule.cs" />
+    <Compile Include="BLL\Composites\OrPermissionRule.cs" />
+    <!-- BLL: Decorators (Decorator pattern) -->
+    <Compile Include="BLL\Decorators\LoggingAuthorizationDecorator.cs" />
     <!-- Session -->
     <Compile Include="SessionContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

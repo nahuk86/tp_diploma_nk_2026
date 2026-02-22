@@ -47,6 +47,10 @@
     <Compile Include="Services\SaleService.cs" />
     <Compile Include="Services\StockMovementService.cs" />
     <Compile Include="Services\ReportService.cs" />
+    <!-- Strategies (Strategy pattern) -->
+    <Compile Include="Strategies\IReportStrategy.cs" />
+    <Compile Include="Strategies\ReportStrategies.cs" />
+    <Compile Include="Strategies\ReportContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

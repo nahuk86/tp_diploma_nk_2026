@@ -9,8 +9,10 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using SERVICES;
 using SERVICES.Interfaces;
+using SERVICES.BLL.Decorators;
 using DAO.Repositories;
 using SERVICES.Implementations;
+using UI.Factories;
 
 namespace UI
 {
@@ -22,6 +24,7 @@ namespace UI
         private readonly ILocalizationService _localizationService;
         private readonly ILogService _logService;
         private readonly IAuthorizationService _authorizationService;
+        private readonly IModuleFactory _moduleFactory;
 
         /// <summary>
         /// Inicializa una nueva instancia del formulario principal
@@ -38,9 +41,13 @@ namespace UI
             // Subscribe to language change event
             _localizationService.LanguageChanged += OnLanguageChanged;
             
-            // Initialize authorization service
+            // Initialize authorization service with Decorator (adds logging)
             var permissionRepo = new PermissionRepository();
-            _authorizationService = new AuthorizationService(permissionRepo, _logService);
+            var baseAuthService = new AuthorizationService(permissionRepo, _logService);
+            _authorizationService = new LoggingAuthorizationDecorator(baseAuthService, _logService);
+
+            // Initialize module factory (AbstractFactory + FactoryMethod pattern)
+            _moduleFactory = new DefaultModuleFactory();
             
             ApplyLocalization();
             InitializeMainForm();
@@ -81,7 +88,7 @@ namespace UI
         /// </summary>
         private void ApplyLocalization()
         {
-            this.Text = $"{_localizationService.GetString("App.Title") ?? "Stock Manager"} - {SessionContext.CurrentUsername ?? "User"}";
+            this.Text = $"{_localizationService.GetString("App.Title") ?? "Stock Manager"} - {SessionContext.Instance.CurrentUsername ?? "User"}";
             
             // Menu localization
             menuFile.Text = _localizationService.GetString("Menu.File") ?? "&Archivo";
@@ -122,7 +129,7 @@ namespace UI
             this.WindowState = FormWindowState.Maximized;
             this.IsMdiContainer = true;
             
-            _logService.Info($"Main form initialized for user: {SessionContext.CurrentUsername ?? "Unknown"}");
+            _logService.Info($"Main form initialized for user: {SessionContext.Instance.CurrentUsername ?? "Unknown"}");
         }
 
         /// <summary>
@@ -130,10 +137,10 @@ namespace UI
         /// </summary>
         private void ConfigureMenuByPermissions()
         {
-            if (!SessionContext.CurrentUserId.HasValue)
+            if (!SessionContext.Instance.CurrentUserId.HasValue)
                 return;
 
-            var userId = SessionContext.CurrentUserId.Value;
+            var userId = SessionContext.Instance.CurrentUserId.Value;
 
             // Configure menu visibility based on permissions
             menuUsers.Enabled = _authorizationService.HasPermission(userId, "Users.View");
@@ -173,8 +180,8 @@ namespace UI
 
             if (result == DialogResult.Yes)
             {
-                _logService.Info($"User {SessionContext.CurrentUsername} logged out");
-                SessionContext.Clear();
+                _logService.Info($"User {SessionContext.Instance.CurrentUsername} logged out");
+                SessionContext.Instance.Clear();
                 Application.Restart();
             }
         }
@@ -192,7 +199,7 @@ namespace UI
 
             if (result == DialogResult.Yes)
             {
-                _logService.Info($"User {SessionContext.CurrentUsername} exited application");
+                _logService.Info($"User {SessionContext.Instance.CurrentUsername} exited application");
                 Application.Exit();
             }
         }
@@ -205,9 +212,7 @@ namespace UI
             if (!CheckPermission("Users.View", "No tiene permisos para ver usuarios."))
                 return;
 
-            var usersForm = new Forms.UsersForm();
-            usersForm.MdiParent = this;
-            usersForm.Show();
+            OpenModule("Users");
         }
 
         /// <summary>
@@ -218,9 +223,7 @@ namespace UI
             if (!CheckPermission("Roles.View", "No tiene permisos para ver roles."))
                 return;
 
-            var rolesForm = new Forms.RolesForm();
-            rolesForm.MdiParent = this;
-            rolesForm.Show();
+            OpenModule("Roles");
         }
 
         /// <summary>
@@ -231,9 +234,7 @@ namespace UI
             if (!CheckPermission("Products.View", "No tiene permisos para ver productos."))
                 return;
 
-            var productsForm = new Forms.ProductsForm();
-            productsForm.MdiParent = this;
-            productsForm.Show();
+            OpenModule("Products");
         }
 
         /// <summary>
@@ -244,9 +245,7 @@ namespace UI
             if (!CheckPermission("Warehouses.View", "No tiene permisos para ver almacenes."))
                 return;
 
-            var warehousesForm = new Forms.WarehousesForm();
-            warehousesForm.MdiParent = this;
-            warehousesForm.Show();
+            OpenModule("Warehouses");
         }
 
         /// <summary>
@@ -257,9 +256,7 @@ namespace UI
             if (!CheckPermission("Clients.View", "No tiene permisos para ver clientes."))
                 return;
 
-            var clientsForm = new Forms.ClientsForm();
-            clientsForm.MdiParent = this;
-            clientsForm.Show();
+            OpenModule("Clients");
         }
 
         /// <summary>
@@ -270,9 +267,7 @@ namespace UI
             if (!CheckPermission("Sales.View", _localizationService.GetString("Error.Unauthorized") ?? "No tiene permisos para realizar esta acción."))
                 return;
 
-            var salesForm = new Forms.SalesForm();
-            salesForm.MdiParent = this;
-            salesForm.Show();
+            OpenModule("Sales");
         }
 
         /// <summary>
@@ -280,17 +275,14 @@ namespace UI
         /// </summary>
         private void menuStockMovements_Click(object sender, EventArgs e)
         {
-            if (!SessionContext.CurrentUserId.HasValue)
+            if (!SessionContext.Instance.CurrentUserId.HasValue)
                 return;
 
-            var userId = SessionContext.CurrentUserId.Value;
+            var userId = SessionContext.Instance.CurrentUserId.Value;
             
             // Allow access if user has any stock operation permission
-            if (!_authorizationService.HasPermission(userId, "Stock.View") &&
-                !_authorizationService.HasPermission(userId, "Stock.Receive") &&
-                !_authorizationService.HasPermission(userId, "Stock.Issue") &&
-                !_authorizationService.HasPermission(userId, "Stock.Transfer") &&
-                !_authorizationService.HasPermission(userId, "Stock.Adjust"))
+            if (!_authorizationService.HasAnyPermission(userId,
+                "Stock.View", "Stock.Receive", "Stock.Issue", "Stock.Transfer", "Stock.Adjust"))
             {
                 MessageBox.Show(
                     _localizationService.GetString("Error.Unauthorized") ?? "No tiene permisos para registrar movimientos.",
@@ -300,9 +292,7 @@ namespace UI
                 return;
             }
 
-            var stockMovementForm = new Forms.StockMovementForm();
-            stockMovementForm.MdiParent = this;
-            stockMovementForm.Show();
+            OpenModule("StockMovements");
         }
 
         /// <summary>
@@ -313,9 +303,7 @@ namespace UI
             if (!CheckPermission("Stock.View", "No tiene permisos para consultar stock."))
                 return;
 
-            var stockQueryForm = new Forms.StockQueryForm();
-            stockQueryForm.MdiParent = this;
-            stockQueryForm.Show();
+            OpenModule("StockQuery");
         }
 
         /// <summary>
@@ -323,14 +311,13 @@ namespace UI
         /// </summary>
         private void menuReports_Click(object sender, EventArgs e)
         {
-            if (!SessionContext.CurrentUserId.HasValue)
+            if (!SessionContext.Instance.CurrentUserId.HasValue)
                 return;
 
-            var userId = SessionContext.CurrentUserId.Value;
+            var userId = SessionContext.Instance.CurrentUserId.Value;
             
             // Allow access if user has sales or stock view permission
-            if (!_authorizationService.HasPermission(userId, "Sales.View") &&
-                !_authorizationService.HasPermission(userId, "Stock.View"))
+            if (!_authorizationService.HasAnyPermission(userId, "Sales.View", "Stock.View"))
             {
                 MessageBox.Show(
                     _localizationService.GetString("Error.Unauthorized") ?? "No tiene permisos para ver reportes.",
@@ -340,9 +327,7 @@ namespace UI
                 return;
             }
 
-            var reportsForm = new Forms.ReportsForm();
-            reportsForm.MdiParent = this;
-            reportsForm.Show();
+            OpenModule("Reports");
         }
 
         /// <summary>
@@ -387,9 +372,19 @@ namespace UI
         /// </summary>
         private void menuUserManual_Click(object sender, EventArgs e)
         {
-            var userManualForm = new Forms.UserManualForm();
-            userManualForm.MdiParent = this;
-            userManualForm.Show();
+            OpenModule("UserManual");
+        }
+
+        /// <summary>
+        /// Abre un módulo de la aplicación usando la fábrica de módulos (patrón Factory Method).
+        /// Centraliza la creación y configuración de formularios MDI.
+        /// </summary>
+        /// <param name="moduleKey">Clave del módulo a abrir</param>
+        private void OpenModule(string moduleKey)
+        {
+            var form = _moduleFactory.CreateForm(moduleKey);
+            form.MdiParent = this;
+            form.Show();
         }
 
         /// <summary>
@@ -400,10 +395,10 @@ namespace UI
         /// <returns>True si tiene permiso, false en caso contrario</returns>
         private bool CheckPermission(string permissionCode, string errorMessage)
         {
-            if (!SessionContext.CurrentUserId.HasValue)
+            if (!SessionContext.Instance.CurrentUserId.HasValue)
                 return false;
 
-            if (!_authorizationService.HasPermission(SessionContext.CurrentUserId.Value, permissionCode))
+            if (!_authorizationService.HasPermission(SessionContext.Instance.CurrentUserId.Value, permissionCode))
             {
                 MessageBox.Show(
                     _localizationService.GetString("Error.Unauthorized") ?? errorMessage,
