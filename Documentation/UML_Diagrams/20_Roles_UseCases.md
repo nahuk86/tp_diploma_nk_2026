@@ -369,7 +369,7 @@ classDiagram
         +GetAll() List~Permission~
         +GetByModule(module) List~Permission~
         +GetByCode(code) Permission
-        +GetUserPermissions(userId) List~Permission~
+        +GetUserPermissions(userId) List~string~
     }
 
     class PermissionRepository {

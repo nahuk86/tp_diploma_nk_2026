@@ -95,6 +95,7 @@ sequenceDiagram
     participant RolesUI as RolesForm
     participant PermUI as RolePermissionsForm
     participant BLL as RoleService
+    participant RoleRepo as RoleRepository
     participant PermRepo as PermissionRepository
     participant AuditRepo as AuditLogRepository
     participant DB as Database
@@ -105,16 +106,16 @@ sequenceDiagram
     RolesUI->>PermUI: Open RolePermissionsForm(roleId, roleName)
     activate PermUI
     PermUI->>BLL: GetAllPermissions()
-    BLL->>PermRepo: GetAll()
+    BLL->>PermRepo: GetAllActive()
     PermRepo->>DB: SELECT * FROM Permissions WHERE IsActive=1 ORDER BY Category, PermissionName
     DB-->>PermRepo: ResultSet
     PermRepo-->>BLL: List~Permission~
     BLL-->>PermUI: List~Permission~
     PermUI->>BLL: GetRolePermissions(roleId)
-    BLL->>PermRepo: GetRolePermissions(roleId)
-    PermRepo->>DB: SELECT p.* FROM Permissions p JOIN RolePermissions rp ON p.PermissionId=rp.PermissionId WHERE rp.RoleId=@RoleId
-    DB-->>PermRepo: ResultSet
-    PermRepo-->>BLL: List~Permission~ (currently assigned)
+    BLL->>RoleRepo: GetRolePermissions(roleId)
+    RoleRepo->>DB: SELECT p.* FROM Permissions p JOIN RolePermissions rp ON p.PermissionId=rp.PermissionId WHERE rp.RoleId=@RoleId
+    DB-->>RoleRepo: ResultSet
+    RoleRepo-->>BLL: List~Permission~ (currently assigned)
     BLL-->>PermUI: List~Permission~
     PermUI-->>Admin: Display CheckedListBox with all permissions; current ones checked
     deactivate RolesUI
@@ -122,20 +123,22 @@ sequenceDiagram
     Admin->>PermUI: Check/uncheck permissions, click "Save"
     PermUI->>BLL: AssignPermissions(roleId, selectedPermissionIds)
     activate BLL
-    BLL->>Session: Get CurrentUserId
+    BLL->>Session: Instance.CurrentUserId
     Session-->>BLL: userId
-    BLL->>PermRepo: GetRolePermissions(roleId)
-    PermRepo-->>BLL: old permissions (for audit)
-    BLL->>PermRepo: AssignPermissionsToRole(roleId, selectedPermissionIds)
-    activate PermRepo
-    PermRepo->>DB: BEGIN TRANSACTION
-    Note over PermRepo: DELETE FROM RolePermissions WHERE RoleId=@RoleId
+    BLL->>RoleRepo: GetRolePermissions(roleId)
+    RoleRepo-->>BLL: old permissions (for audit)
+    BLL->>RoleRepo: ClearPermissions(roleId)
+    activate RoleRepo
+    RoleRepo->>DB: DELETE FROM RolePermissions WHERE RoleId=@RoleId
+    DB-->>RoleRepo: void
+    deactivate RoleRepo
     loop For each selectedPermissionId
-        Note over PermRepo: INSERT INTO RolePermissions (RoleId, PermissionId, AssignedAt, AssignedBy) VALUES (...)
+        BLL->>RoleRepo: AssignPermission(roleId, permissionId, userId)
+        activate RoleRepo
+        RoleRepo->>DB: INSERT INTO RolePermissions (RoleId, PermissionId, AssignedAt, AssignedBy) VALUES (...)
+        DB-->>RoleRepo: void
+        deactivate RoleRepo
     end
-    PermRepo->>DB: COMMIT
-    PermRepo-->>BLL: void
-    deactivate PermRepo
     BLL->>AuditRepo: LogChange("RolePermissions", roleId, Update, oldPerms, newPerms, description, userId)
     AuditRepo->>DB: INSERT INTO AuditLog (...)
     DB-->>AuditRepo: Success
@@ -474,17 +477,13 @@ sequenceDiagram
     %% Check permission to manage roles
     RolesUI->>Auth: HasPermission(userId, "VIEW_ROLES")
     activate Auth
-    Auth->>Session: Get CurrentUserId
-    activate Session
-    Session-->>Auth: userId
-    deactivate Session
     Auth->>PermRepo: GetUserPermissions(userId)
     activate PermRepo
     PermRepo->>DB: SELECT p.* FROM Permissions p<br/>INNER JOIN RolePermissions rp ON...<br/>INNER JOIN UserRoles ur ON...<br/>WHERE ur.UserId = @UserId
     activate DB
     DB-->>PermRepo: ResultSet
     deactivate DB
-    PermRepo-->>Auth: List<Permission>
+    PermRepo-->>Auth: List~string~ (permission codes)
     deactivate PermRepo
     Auth->>Auth: Check if "VIEW_ROLES" in permissions
     Auth-->>RolesUI: true/false
@@ -530,7 +529,7 @@ sequenceDiagram
         %% Load all available permissions
         PermUI->>BLL: GetAllPermissions()
         activate BLL
-        BLL->>PermRepo: GetAll()
+        BLL->>PermRepo: GetAllActive()
         activate PermRepo
         PermRepo->>DB: SELECT * FROM Permissions<br/>WHERE IsActive = 1<br/>ORDER BY Category, PermissionName
         activate DB
@@ -547,14 +546,14 @@ sequenceDiagram
         %% Load current role permissions
         PermUI->>BLL: GetRolePermissions(roleId)
         activate BLL
-        BLL->>PermRepo: GetRolePermissions(roleId)
-        activate PermRepo
-        PermRepo->>DB: SELECT p.* FROM Permissions p<br/>INNER JOIN RolePermissions rp<br/>  ON p.PermissionId = rp.PermissionId<br/>WHERE rp.RoleId = @RoleId<br/>  AND p.IsActive = 1
+        BLL->>RoleRepo: GetRolePermissions(roleId)
+        activate RoleRepo
+        RoleRepo->>DB: SELECT p.* FROM Permissions p<br/>INNER JOIN RolePermissions rp<br/>  ON p.PermissionId = rp.PermissionId<br/>WHERE rp.RoleId = @RoleId<br/>  AND p.IsActive = 1
         activate DB
-        DB-->>PermRepo: ResultSet
+        DB-->>RoleRepo: ResultSet
         deactivate DB
-        PermRepo-->>BLL: List<Permission>
-        deactivate PermRepo
+        RoleRepo-->>BLL: List<Permission>
+        deactivate RoleRepo
         BLL-->>PermUI: List<Permission>
         deactivate BLL
         
@@ -585,45 +584,43 @@ sequenceDiagram
     activate BLL
     
     %% Get current user for audit
-    BLL->>Session: Get CurrentUserId
+    BLL->>Session: Instance.CurrentUserId
     activate Session
     Session-->>BLL: currentUserId
     deactivate Session
     
     %% Get old permissions for audit comparison
-    BLL->>PermRepo: GetRolePermissions(roleId)
-    activate PermRepo
-    PermRepo->>DB: SELECT...
+    BLL->>RoleRepo: GetRolePermissions(roleId)
+    activate RoleRepo
+    RoleRepo->>DB: SELECT...
     activate DB
-    DB-->>PermRepo: ResultSet (old permissions)
+    DB-->>RoleRepo: ResultSet (old permissions)
     deactivate DB
-    PermRepo-->>BLL: List<Permission> (old)
-    deactivate PermRepo
+    RoleRepo-->>BLL: List<Permission> (old)
+    deactivate RoleRepo
     
     Note over BLL: Compare old and new permissions:<br/>- Determine added permissions<br/>- Determine removed permissions
     
-    %% Execute permission assignment (Transaction)
-    BLL->>PermRepo: AssignPermissionsToRole(roleId, selectedPermissionIds)
-    activate PermRepo
-    PermRepo->>DB: BEGIN TRANSACTION
+    %% Execute permission assignment
+    BLL->>RoleRepo: ClearPermissions(roleId)
+    activate RoleRepo
+    RoleRepo->>DB: DELETE FROM RolePermissions WHERE RoleId = @RoleId
     activate DB
-    
-    %% Delete all existing permissions for this role
-    Note over PermRepo: DELETE FROM RolePermissions<br/>WHERE RoleId = @RoleId
-    PermRepo->>DB: ExecuteNonQuery()
-    DB-->>PermRepo: Success
+    DB-->>RoleRepo: Success
+    deactivate DB
+    deactivate RoleRepo
     
     %% Insert new permissions
     loop For each permissionId in selectedPermissionIds
-        Note over PermRepo: INSERT INTO RolePermissions<br/>(RoleId, PermissionId, AssignedAt, AssignedBy)<br/>VALUES (@RoleId, @PermissionId, @AssignedAt, @AssignedBy)
-        PermRepo->>DB: ExecuteNonQuery()
-        DB-->>PermRepo: Success
+        BLL->>RoleRepo: AssignPermission(roleId, permissionId, currentUserId)
+        activate RoleRepo
+        Note over RoleRepo: INSERT INTO RolePermissions<br/>(RoleId, PermissionId, AssignedAt, AssignedBy)<br/>VALUES (@RoleId, @PermissionId, @AssignedAt, @AssignedBy)
+        RoleRepo->>DB: ExecuteNonQuery()
+        activate DB
+        DB-->>RoleRepo: Success
+        deactivate DB
+        deactivate RoleRepo
     end
-    
-    PermRepo->>DB: COMMIT TRANSACTION
-    deactivate DB
-    PermRepo-->>BLL: Success
-    deactivate PermRepo
     
     %% Log audit
     BLL->>AuditRepo: LogChange("RolePermissions", roleId, Update, oldPermissions, newPermissions, description, currentUserId)
@@ -639,13 +636,6 @@ sequenceDiagram
     BLL->>Log: Info($"Permissions updated for role {roleName} by {currentUsername}")
     activate Log
     deactivate Log
-    
-    %% Clear permission cache for affected users
-    Note over BLL: Invalidate permission cache<br/>for all users with this role
-    BLL->>Auth: InvalidatePermissionCacheForRole(roleId)
-    activate Auth
-    Note over Auth: Clear cached permissions<br/>for users with this role<br/>(they will reload on next check)
-    deactivate Auth
     
     BLL-->>PermUI: Success
     deactivate BLL
@@ -693,7 +683,7 @@ sequenceDiagram
     activate DB
     DB-->>PermRepo: ResultSet (includes CREATE_SALES)
     deactivate DB
-    PermRepo-->>Auth: List<Permission>
+    PermRepo-->>Auth: List~string~ (permission codes)
     deactivate PermRepo
     
     Auth->>Auth: Check if "CREATE_SALES" in permissions

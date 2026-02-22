@@ -15,7 +15,7 @@ classDiagram
         +HasPermission(userId, permissionCode) bool
         +HasAnyPermission(userId, permissionCodes) bool
         +HasAllPermissions(userId, permissionCodes) bool
-        +GetUserPermissions(userId) List~Permission~
+        +GetUserPermissions(userId) List~string~
     }
 
     class AuthorizationService {
@@ -24,12 +24,12 @@ classDiagram
         +HasPermission(userId, permissionCode) bool
         +HasAnyPermission(userId, permissionCodes) bool
         +HasAllPermissions(userId, permissionCodes) bool
-        +GetUserPermissions(userId) List~Permission~
+        +GetUserPermissions(userId) List~string~
     }
 
     class IPermissionRepository {
         <<interface>>
-        +GetUserPermissions(userId) List~Permission~
+        +GetUserPermissions(userId) List~string~
         +GetByCode(code) Permission
         +GetByModule(module) List~Permission~
         +GetAll() List~Permission~
@@ -37,7 +37,7 @@ classDiagram
 
     class PermissionRepository {
         -DatabaseHelper _db
-        +GetUserPermissions(userId) List~Permission~
+        +GetUserPermissions(userId) List~string~
         +GetByCode(code) Permission
         +GetByModule(module) List~Permission~
         -MapPermission(reader) Permission
@@ -49,9 +49,9 @@ classDiagram
     }
 
     class SessionContext {
-        <<static>>
+        <<singleton>>
         +CurrentUser User
-        +CurrentUserId int
+        +CurrentUserId int?
         +CurrentUsername string
     }
 
@@ -124,11 +124,11 @@ classDiagram
 
     class IPermissionRepository {
         <<interface>>
-        +GetUserPermissions(userId) List~Permission~
+        +GetUserPermissions(userId) List~string~
     }
 
     class PermissionRepository {
-        +GetUserPermissions(userId) List~Permission~
+        +GetUserPermissions(userId) List~string~
     }
 
     class Permission {
@@ -193,11 +193,11 @@ classDiagram
 
     class IPermissionRepository {
         <<interface>>
-        +GetUserPermissions(userId) List~Permission~
+        +GetUserPermissions(userId) List~string~
     }
 
     class PermissionRepository {
-        +GetUserPermissions(userId) List~Permission~
+        +GetUserPermissions(userId) List~string~
     }
 
     class Permission {
@@ -270,16 +270,16 @@ classDiagram
 
     class IPermissionRepository {
         <<interface>>
-        +GetUserPermissions(userId) List~Permission~
+        +GetUserPermissions(userId) List~string~
     }
 
     class PermissionRepository {
-        +GetUserPermissions(userId) List~Permission~
+        +GetUserPermissions(userId) List~string~
     }
 
     class SessionContext {
-        <<static>>
-        +CurrentUserId int
+        <<singleton>>
+        +CurrentUserId int?
         +CurrentUsername string
     }
 
