@@ -47,9 +47,6 @@
     <Reference Include="System.Xml"/>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entities\User.cs" />
-    <Compile Include="Entities\Role.cs" />
-    <Compile Include="Entities\Permission.cs" />
     <Compile Include="Entities\Product.cs" />
     <Compile Include="Entities\Warehouse.cs" />
     <Compile Include="Entities\Client.cs" />
@@ -58,7 +55,6 @@
     <Compile Include="Entities\Stock.cs" />
     <Compile Include="Entities\StockMovement.cs" />
     <Compile Include="Entities\StockMovementLine.cs" />
-    <Compile Include="Entities\AuditLog.cs" />
     <Compile Include="Entities\Reports\TopProductsReportDTO.cs" />
     <Compile Include="Entities\Reports\ClientPurchasesReportDTO.cs" />
     <Compile Include="Entities\Reports\PriceVariationReportDTO.cs" />
@@ -67,21 +63,20 @@
     <Compile Include="Entities\Reports\RevenueByDateReportDTO.cs" />
     <Compile Include="Entities\Reports\ClientProductRankingReportDTO.cs" />
     <Compile Include="Enums\MovementType.cs" />
-    <Compile Include="Enums\LogLevel.cs" />
-    <Compile Include="Enums\AuditAction.cs" />
-    <Compile Include="Contracts\IRepository.cs" />
-    <Compile Include="Contracts\IUserRepository.cs" />
-    <Compile Include="Contracts\IRoleRepository.cs" />
-    <Compile Include="Contracts\IPermissionRepository.cs" />
     <Compile Include="Contracts\IProductRepository.cs" />
     <Compile Include="Contracts\IWarehouseRepository.cs" />
     <Compile Include="Contracts\IClientRepository.cs" />
     <Compile Include="Contracts\ISaleRepository.cs" />
     <Compile Include="Contracts\IStockRepository.cs" />
     <Compile Include="Contracts\IStockMovementRepository.cs" />
-    <Compile Include="Contracts\IAuditLogRepository.cs" />
     <Compile Include="Contracts\IReportRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SERVICES\SERVICES.csproj">
+      <Project>{b543fe76-e9b5-408b-ac0d-bb5dd553445c}</Project>
+      <Name>SERVICES</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
  </Project>
