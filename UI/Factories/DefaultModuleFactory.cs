@@ -23,8 +23,6 @@ namespace UI.Factories
             "Reports",
             "Users",
             "Roles",
-            "UserRoles",
-            "RolePermissions",
             "UserManual"
         };
 
@@ -66,10 +64,6 @@ namespace UI.Factories
                     return new UsersForm();
                 case "roles":
                     return new RolesForm();
-                case "userroles":
-                    return new UserRolesForm();
-                case "rolepermissions":
-                    return new RolePermissionsForm();
                 case "usermanual":
                     return new UserManualForm();
                 default:
