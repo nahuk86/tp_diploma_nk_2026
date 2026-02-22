@@ -43,24 +43,44 @@
     <Reference Include="System.Xml"/>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Interfaces\ILogService.cs" />
-    <Compile Include="Interfaces\IAuthenticationService.cs" />
-    <Compile Include="Interfaces\IAuthorizationService.cs" />
-    <Compile Include="Interfaces\ILocalizationService.cs" />
-    <Compile Include="Interfaces\IErrorHandlerService.cs" />
-    <Compile Include="Implementations\FileLogService.cs" />
-    <Compile Include="Implementations\AuthenticationService.cs" />
-    <Compile Include="Implementations\AuthorizationService.cs" />
-    <Compile Include="Implementations\LocalizationService.cs" />
-    <Compile Include="Implementations\ErrorHandlerService.cs" />
+    <!-- DOMAIN: Entities -->
+    <Compile Include="DOMAIN\Entities\User.cs" />
+    <Compile Include="DOMAIN\Entities\Role.cs" />
+    <Compile Include="DOMAIN\Entities\Permission.cs" />
+    <Compile Include="DOMAIN\Entities\AuditLog.cs" />
+    <!-- DOMAIN: Contracts -->
+    <Compile Include="DOMAIN\Contracts\IRepository.cs" />
+    <Compile Include="DOMAIN\Contracts\IUserRepository.cs" />
+    <Compile Include="DOMAIN\Contracts\IRoleRepository.cs" />
+    <Compile Include="DOMAIN\Contracts\IPermissionRepository.cs" />
+    <Compile Include="DOMAIN\Contracts\IAuditLogRepository.cs" />
+    <!-- DOMAIN: Enums -->
+    <Compile Include="DOMAIN\Enums\LogLevel.cs" />
+    <Compile Include="DOMAIN\Enums\AuditAction.cs" />
+    <!-- DAL: Helpers -->
+    <Compile Include="DAL\Helpers\DatabaseHelper.cs" />
+    <!-- DAL: Repositories -->
+    <Compile Include="DAL\Repositories\UserRepository.cs" />
+    <Compile Include="DAL\Repositories\RoleRepository.cs" />
+    <Compile Include="DAL\Repositories\PermissionRepository.cs" />
+    <Compile Include="DAL\Repositories\AuditLogRepository.cs" />
+    <!-- BLL: Interfaces -->
+    <Compile Include="BLL\Interfaces\ILogService.cs" />
+    <Compile Include="BLL\Interfaces\IAuthenticationService.cs" />
+    <Compile Include="BLL\Interfaces\IAuthorizationService.cs" />
+    <Compile Include="BLL\Interfaces\ILocalizationService.cs" />
+    <Compile Include="BLL\Interfaces\IErrorHandlerService.cs" />
+    <!-- BLL: Services -->
+    <Compile Include="BLL\Services\FileLogService.cs" />
+    <Compile Include="BLL\Services\AuthenticationService.cs" />
+    <Compile Include="BLL\Services\AuthorizationService.cs" />
+    <Compile Include="BLL\Services\LocalizationService.cs" />
+    <Compile Include="BLL\Services\ErrorHandlerService.cs" />
+    <Compile Include="BLL\Services\UserService.cs" />
+    <Compile Include="BLL\Services\RoleService.cs" />
+    <!-- Session -->
     <Compile Include="SessionContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DOMAIN\DOMAIN.csproj">
-      <Project>{919bb719-a785-4507-bd0f-b2a2ebf3fb14}</Project>
-      <Name>DOMAIN</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
  </Project>
