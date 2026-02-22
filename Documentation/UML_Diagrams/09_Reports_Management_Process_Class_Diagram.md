@@ -1,11 +1,364 @@
-# Reports Management Process - Class Diagram
+# Reports Management Process - Class Diagrams (Per Use Case)
 
-## UML Class Diagram (Mermaid Format)
+This document contains UML Class Diagrams organized per use case for all Report operations.
+
+---
+
+## UC-01: GetCategorySalesReport
 
 ```mermaid
 classDiagram
-    %% UI Layer
     class ReportsForm {
+        -ReportService _reportService
+        -IAuthorizationService _authService
+        -ILogService _logService
+        +LoadCategorySalesReport(from, to) void
+    }
+
+    class ReportService {
+        -IReportRepository _reportRepo
+        -ILogService _logService
+        +GetCategorySalesReport(startDate, endDate, orderBy) List~CategorySalesReportDTO~
+    }
+
+    class IReportRepository {
+        <<interface>>
+        +GetCategorySalesReport(startDate, endDate, orderBy) List~CategorySalesReportDTO~
+    }
+
+    class ReportRepository {
+        -DatabaseHelper _db
+        +GetCategorySalesReport(startDate, endDate, orderBy) List~CategorySalesReportDTO~
+        -MapCategorySalesReport(reader) CategorySalesReportDTO
+    }
+
+    class DatabaseHelper {
+        <<static>>
+        +GetConnection() SqlConnection
+    }
+
+    class CategorySalesReportDTO {
+        +string Category
+        +int TotalUnits
+        +decimal TotalRevenue
+        +int TransactionCount
+        +decimal AveragePrice
+        +decimal RevenuePercentage
+    }
+
+    ReportsForm --> ReportService : uses
+    ReportService --> IReportRepository : uses
+    ReportRepository ..|> IReportRepository : implements
+    ReportRepository --> DatabaseHelper : uses
+    ReportRepository --> CategorySalesReportDTO : returns
+```
+
+---
+
+## UC-02: GetClientProductRankingReport
+
+```mermaid
+classDiagram
+    class ReportsForm {
+        -ReportService _reportService
+        +LoadClientProductRankingReport(clientId) void
+    }
+
+    class ReportService {
+        -IReportRepository _reportRepo
+        +GetClientProductRankingReport(clientId) List~ClientProductRankingReportDTO~
+    }
+
+    class IReportRepository {
+        <<interface>>
+        +GetClientProductRankingReport(clientId) List~ClientProductRankingReportDTO~
+    }
+
+    class ReportRepository {
+        +GetClientProductRankingReport(clientId) List~ClientProductRankingReportDTO~
+        -MapClientProductRankingReport(reader) ClientProductRankingReportDTO
+    }
+
+    class ClientProductRankingReportDTO {
+        +int ClientId
+        +string ClientName
+        +string ProductName
+        +string SKU
+        +int TotalQuantity
+        +decimal TotalSpent
+        +int PurchaseCount
+        +int Rank
+    }
+
+    ReportsForm --> ReportService : uses
+    ReportService --> IReportRepository : uses
+    ReportRepository ..|> IReportRepository : implements
+    ReportRepository --> ClientProductRankingReportDTO : returns
+```
+
+---
+
+## UC-03: GetClientPurchasesReport
+
+```mermaid
+classDiagram
+    class ReportsForm {
+        -ReportService _reportService
+        +LoadClientPurchasesReport(clientId, from, to) void
+    }
+
+    class ReportService {
+        -IReportRepository _reportRepo
+        +GetClientPurchasesReport(startDate, endDate, clientId, topN) List~ClientPurchasesReportDTO~
+    }
+
+    class IReportRepository {
+        <<interface>>
+        +GetClientPurchasesReport(startDate, endDate, clientId, topN) List~ClientPurchasesReportDTO~
+    }
+
+    class ReportRepository {
+        +GetClientPurchasesReport(startDate, endDate, clientId, topN) List~ClientPurchasesReportDTO~
+        -MapClientPurchasesReport(reader) ClientPurchasesReportDTO
+    }
+
+    class ClientPurchasesReportDTO {
+        +string ClientName
+        +string ClientDNI
+        +int TotalPurchases
+        +decimal TotalSpent
+        +DateTime LastPurchaseDate
+        +decimal AverageTicket
+    }
+
+    ReportsForm --> ReportService : uses
+    ReportService --> IReportRepository : uses
+    ReportRepository ..|> IReportRepository : implements
+    ReportRepository --> ClientPurchasesReportDTO : returns
+```
+
+---
+
+## UC-04: GetPriceVariationReport
+
+```mermaid
+classDiagram
+    class ReportsForm {
+        -ReportService _reportService
+        +LoadPriceVariationReport(productId, from, to) void
+    }
+
+    class ReportService {
+        -IReportRepository _reportRepo
+        +GetPriceVariationReport(startDate, endDate, productId, category) List~PriceVariationReportDTO~
+    }
+
+    class IReportRepository {
+        <<interface>>
+        +GetPriceVariationReport(startDate, endDate, productId, category) List~PriceVariationReportDTO~
+    }
+
+    class ReportRepository {
+        +GetPriceVariationReport(startDate, endDate, productId, category) List~PriceVariationReportDTO~
+        -MapPriceVariationReport(reader) PriceVariationReportDTO
+    }
+
+    class PriceVariationReportDTO {
+        +string ProductName
+        +string SKU
+        +string Category
+        +DateTime SaleDate
+        +decimal UnitPrice
+        +decimal PriceVariation
+        +decimal PercentageChange
+    }
+
+    ReportsForm --> ReportService : uses
+    ReportService --> IReportRepository : uses
+    ReportRepository ..|> IReportRepository : implements
+    ReportRepository --> PriceVariationReportDTO : returns
+```
+
+---
+
+## UC-05: GetRevenueByDateReport
+
+```mermaid
+classDiagram
+    class ReportsForm {
+        -ReportService _reportService
+        +LoadRevenueByDateReport(from, to, groupBy) void
+    }
+
+    class ReportService {
+        -IReportRepository _reportRepo
+        +GetRevenueByDateReport(startDate, endDate, groupBy) List~RevenueByDateReportDTO~
+    }
+
+    class IReportRepository {
+        <<interface>>
+        +GetRevenueByDateReport(startDate, endDate, groupBy) List~RevenueByDateReportDTO~
+    }
+
+    class ReportRepository {
+        +GetRevenueByDateReport(startDate, endDate, groupBy) List~RevenueByDateReportDTO~
+    }
+
+    class RevenueByDateReportDTO {
+        +DateTime PeriodDate
+        +string PeriodLabel
+        +decimal TotalRevenue
+        +int TotalSales
+        +int TotalItemsSold
+    }
+
+    ReportsForm --> ReportService : uses
+    ReportService --> IReportRepository : uses
+    ReportRepository ..|> IReportRepository : implements
+    ReportRepository --> RevenueByDateReportDTO : returns
+```
+
+---
+
+## UC-06: GetSellerPerformanceReport
+
+```mermaid
+classDiagram
+    class ReportsForm {
+        -ReportService _reportService
+        +LoadSellerPerformanceReport(from, to) void
+    }
+
+    class ReportService {
+        -IReportRepository _reportRepo
+        +GetSellerPerformanceReport(startDate, endDate, sellerName, category) List~SellerPerformanceReportDTO~
+    }
+
+    class IReportRepository {
+        <<interface>>
+        +GetSellerPerformanceReport(startDate, endDate, sellerName, category) List~SellerPerformanceReportDTO~
+    }
+
+    class ReportRepository {
+        +GetSellerPerformanceReport(startDate, endDate, sellerName, category) List~SellerPerformanceReportDTO~
+        -MapSellerPerformanceReport(reader) SellerPerformanceReportDTO
+    }
+
+    class SellerPerformanceReportDTO {
+        +string SellerName
+        +int SalesCount
+        +int TotalUnits
+        +decimal TotalRevenue
+        +decimal AverageTicket
+        +decimal MinSale
+        +decimal MaxSale
+    }
+
+    ReportsForm --> ReportService : uses
+    ReportService --> IReportRepository : uses
+    ReportRepository ..|> IReportRepository : implements
+    ReportRepository --> SellerPerformanceReportDTO : returns
+```
+
+---
+
+## UC-07: GetTopProductsReport
+
+```mermaid
+classDiagram
+    class ReportsForm {
+        -ReportService _reportService
+        -IAuthorizationService _authService
+        -ILogService _logService
+        +LoadTopProductsReport(from, to, category, topN, orderBy) void
+        +btnGenerate_Click(sender, e) void
+        +btnExport_Click(sender, e) void
+        -GenerateReport() void
+        -ExportToExcel() void
+    }
+
+    class ReportService {
+        -IReportRepository _reportRepo
+        -ILogService _logService
+        +GetTopProductsReport(startDate, endDate, category, topN, orderBy) List~TopProductsReportDTO~
+    }
+
+    class IReportRepository {
+        <<interface>>
+        +GetTopProductsReport(startDate, endDate, category, topN, orderBy) List~TopProductsReportDTO~
+    }
+
+    class ReportRepository {
+        +GetTopProductsReport(startDate, endDate, category, topN, orderBy) List~TopProductsReportDTO~
+        -MapTopProductsReport(reader) TopProductsReportDTO
+    }
+
+    class DatabaseHelper {
+        <<static>>
+        +GetConnection() SqlConnection
+        +CreateParameter(name, value) SqlParameter
+    }
+
+    class IAuthorizationService {
+        <<interface>>
+        +HasAnyPermission(userId, permissions) bool
+    }
+
+    class TopProductsReportDTO {
+        +string ProductName
+        +string SKU
+        +string Category
+        +int UnitsSold
+        +decimal Revenue
+        +int TransactionCount
+    }
+
+    ReportsForm --> ReportService : uses
+    ReportsForm --> IAuthorizationService : uses
+    ReportService --> IReportRepository : uses
+    ReportRepository ..|> IReportRepository : implements
+    ReportRepository --> DatabaseHelper : uses
+    ReportRepository --> TopProductsReportDTO : returns
+```
+
+---
+
+## Layer Communication Flow
+
+```
+┌────────────────────┐
+│    UI LAYER        │  ReportsForm
+└─────────┬──────────┘
+          │ uses
+          ▼
+┌────────────────────┐
+│   BLL LAYER        │  ReportService
+└─────────┬──────────┘
+          │ calls
+          ▼
+┌────────────────────┐
+│   DAO LAYER        │  ReportRepository
+│                    │  DatabaseHelper
+└─────────┬──────────┘
+          │ returns
+          ▼
+┌────────────────────┐
+│  DOMAIN LAYER      │  Report DTOs (CategorySalesReportDTO,
+│                    │  ClientPurchasesReportDTO, etc.)
+└────────────────────┘
+```
+
+## Available Reports Summary
+
+| Use Case | Filters | Key Metrics |
+|----------|---------|-------------|
+| GetCategorySalesReport | Date range, orderBy | Units, revenue, avg price, % of total |
+| GetClientProductRankingReport | ClientId | Products ranked by qty/spend |
+| GetClientPurchasesReport | ClientId, date range, topN | Total purchases, spend, avg ticket |
+| GetPriceVariationReport | ProductId, category, date range | Price at sale, variation, % change |
+| GetRevenueByDateReport | Date range, groupBy (Day/Week/Month) | Revenue, sales count, items sold |
+| GetSellerPerformanceReport | Date range, seller, category | Sales count, revenue, avg/min/max |
+| GetTopProductsReport | Date range, category, topN, orderBy | Units sold, revenue, transaction count |
         -ReportService _reportService
         -IAuthorizationService _authService
         -ILocalizationService _localizationService

@@ -1,6 +1,6 @@
 # UML Diagrams Documentation
 
-This directory contains comprehensive UML class diagrams and sequence diagrams for all major processes in the **tp_diploma_nk_2026** inventory management system. All diagrams are provided in **Mermaid format** following UML standards and show the complete layer communication (UI → BLL → DAO → Services).
+This directory contains comprehensive UML class diagrams and sequence diagrams for all major processes in the **tp_diploma_nk_2026** inventory management system. All diagrams are provided in **Mermaid format** following UML standards and are organized **per use case**.
 
 ## 📋 Table of Contents
 
@@ -22,9 +22,9 @@ The system follows a layered architecture pattern with clear separation of conce
 - **Services Layer**: Cross-cutting concerns (authentication, authorization, logging, localization)
 - **Domain Layer**: Entities and DTOs
 
-Each process includes:
-1. **Class Diagram**: Shows classes, attributes, methods, and relationships
-2. **Sequence Diagram**: Shows interaction flow between layers
+Each file contains diagrams organized **per use case**, where each use case has:
+1. **Class Diagram**: Shows the classes, attributes, methods, and relationships relevant to that use case
+2. **Sequence Diagram**: Shows the interaction flow between layers for that use case
 
 ---
 
@@ -65,145 +65,139 @@ Each process includes:
 
 ## 📊 Diagram Index
 
-### 1. Login Process
+### 1. Login Process — Per Use Case (Class Diagrams)
 - **[01_Login_Process_Class_Diagram.md](./01_Login_Process_Class_Diagram.md)**
-  - Classes: LoginForm, AuthenticationService, UserRepository, SessionContext
-  - Layer Flow: UI → Services → DAO → Domain
-  - Security: PBKDF2 password hashing with salt
+  - UC-01: Authenticate
+  - UC-02: InitializeAdminPassword
 
+### 2. Login Process — Per Use Case (Sequence Diagrams)
 - **[02_Login_Process_Sequence_Diagram.md](./02_Login_Process_Sequence_Diagram.md)**
-  - Flow: Form load → Input validation → Authentication → Session establishment
-  - Key Operations: Password verification, last login update, session context setting
+  - UC-01: Authenticate
+  - UC-02: InitializeAdminPassword
 
 ---
 
-### 2. User Management Process
+### 3. User Management Process — Per Use Case (Class Diagrams)
 - **[03_User_Management_Process_Class_Diagram.md](./03_User_Management_Process_Class_Diagram.md)**
-  - Classes: UsersForm, UserService, UserRepository, AuditLogRepository
-  - Operations: Create, Update, Delete, Assign Roles
-  - Validation: Username uniqueness, email uniqueness, password strength
+  - UC-01: CreateUser | UC-02: UpdateUser | UC-03: DeleteUser
+  - UC-04: GetAllUsers | UC-05: GetActiveUsers | UC-06: GetUserById
+  - UC-07: AssignRolesToUser | UC-08: GetUserRoles | UC-09: ChangePassword
 
+### 4. User Management Process — Per Use Case (Sequence Diagrams)
 - **[04_User_Management_Process_Sequence_Diagram.md](./04_User_Management_Process_Sequence_Diagram.md)**
-  - Flow: Create User with password hashing and audit logging
-  - Key Operations: Validation, duplication check, password hashing, audit trail
+  - UC-01 through UC-09 (same use cases)
 
 ---
 
-### 3. Sales Management Process
+### 5. Sales Management Process — Per Use Case (Class Diagrams)
 - **[05_Sales_Management_Process_Class_Diagram.md](./05_Sales_Management_Process_Class_Diagram.md)**
-  - Classes: SalesForm, SaleService, SaleRepository, ClientRepository, ProductRepository, StockRepository
-  - Relationships: Sale → SaleLines → Products, Client association
-  - Business Rules: Stock validation, automatic number generation
+  - UC-01: CreateSale | UC-02: DeleteSale | UC-03: GetAllSales
+  - UC-04: GetAllSalesWithDetails | UC-05: GetAvailabelStockByWarehouse
+  - UC-06: GetSaleById | UC-07: GetSaleByIdWithLines | UC-08: GetSaleByClient
+  - UC-09: GetSaleByDateRange | UC-10: GetSaleBySeller
+  - UC-11: GetTotalAvailableStock | UC-12: UpdateSale
 
+### 6. Sales Management Process — Per Use Case (Sequence Diagrams)
 - **[06_Sales_Management_Process_Sequence_Diagram.md](./06_Sales_Management_Process_Sequence_Diagram.md)**
-  - Flow: Create Sale with lines, stock validation, inventory deduction
-  - Key Operations: Sale lines, stock checks, transaction management, inventory updates
+  - UC-01 through UC-12 (same use cases)
 
 ---
 
-### 4. Stock Movement Process
+### 7. Stock Movement Process — Per Use Case (Class Diagrams)
 - **[07_Stock_Movement_Process_Class_Diagram.md](./07_Stock_Movement_Process_Class_Diagram.md)**
-  - Classes: StockMovementForm, StockMovementService, StockMovementRepository, StockRepository
-  - Movement Types: Entry, Exit, Transfer, Adjustment
-  - Warehouse Management: Source and destination tracking
+  - UC-01: CreateMovement | UC-02: GetAllMovements | UC-03: GetAllMovementsById
+  - UC-04: GetMovementLines | UC-05: GetMovementsByDateRange | UC-06: GetMovementsByType
+  - UC-07: UpdateProductPrices | UC-08: UpdateStockForMovement
 
+### 8. Stock Movement Process — Per Use Case (Sequence Diagrams)
 - **[08_Stock_Movement_Process_Sequence_Diagram.md](./08_Stock_Movement_Process_Sequence_Diagram.md)**
-  - Flow: Transfer Movement between warehouses with stock updates
-  - Key Operations: Stock validation, dual warehouse updates, transaction safety
+  - UC-01 through UC-08 (same use cases)
 
 ---
 
-### 5. Reports Management Process
+### 9. Reports Management Process — Per Use Case (Class Diagrams)
 - **[09_Reports_Management_Process_Class_Diagram.md](./09_Reports_Management_Process_Class_Diagram.md)**
-  - Classes: ReportsForm, ReportService, ReportRepository
-  - Report Types: Top Products, Client Purchases, Price Variation, Seller Performance, Category Sales, Low Stock, Stock Movements
-  - DTOs: Specialized report DTOs for each report type
+  - UC-01: GetCategorySalesReport | UC-02: GetClientProductRankingReport
+  - UC-03: GetClientPurchasesReport | UC-04: GetPriceVariationReport
+  - UC-05: GetRevenueByDateReport | UC-06: GetSellerPerformanceReport
+  - UC-07: GetTopProductsReport
 
+### 10. Reports Management Process — Per Use Case (Sequence Diagrams)
 - **[10_Reports_Management_Process_Sequence_Diagram.md](./10_Reports_Management_Process_Sequence_Diagram.md)**
-  - Flow: Top Products Report generation with filtering and export
-  - Key Operations: Complex SQL aggregation, dynamic filtering, export to Excel
+  - UC-01 through UC-07 (same use cases)
 
 ---
 
-### 6. Role & Permissions Management Process
+### 11. Role & Permissions Management — Per Use Case (Class Diagrams)
 - **[11_Role_Permissions_Process_Class_Diagram.md](./11_Role_Permissions_Process_Class_Diagram.md)**
-  - Classes: RolesForm, RolePermissionsForm, RoleService, AuthorizationService, PermissionRepository
-  - RBAC Model: User → Roles → Permissions
-  - Permission Categories: 40+ permissions across 9 categories
+  - UC-01: CreateRole | UC-02: DeleteRole | UC-03: AssignPermissions
+  - UC-04: GetActiveRoles | UC-05: GetAllPermissions | UC-06: GetAllRoles
+  - UC-07: GetRoleById | UC-08: GetRolePermissions | UC-09: UpdateRole
+  - UC-10: GetUserPermissions | UC-11: HasAllPermissions | UC-12: HasAnyPermission | UC-13: HasPermission
 
+### 12. Role & Permissions Management — Per Use Case (Sequence Diagrams)
 - **[12_Role_Permissions_Process_Sequence_Diagram.md](./12_Role_Permissions_Process_Sequence_Diagram.md)**
-  - Flow: Assign permissions to role with cache invalidation
-  - Key Operations: Permission assignment, transaction management, cache invalidation, real-time effect
+  - UC-01 through UC-13 (same use cases)
 
 ---
 
-### 7. Products — Individual Use Cases
+### 13. Products — Individual Use Cases
 - **[13_Products_UseCases.md](./13_Products_UseCases.md)**
-  - Use Cases: CreateProduct, DeleteProduct, GetActiveProducts, GetAllProducts, GetProductById, GetProductsByCategory, SearchProduct, UpdateProduct
-  - Each use case includes a Class Diagram and a Sequence Diagram
+  - CreateProduct, DeleteProduct, GetActiveProducts, GetAllProducts, GetProductById, GetProductsByCategory, SearchProduct, UpdateProduct
 
 ---
 
-### 8. Stock Movements — Individual Use Cases
+### 14. Stock Movements — Individual Use Cases
 - **[14_Movements_UseCases.md](./14_Movements_UseCases.md)**
-  - Use Cases: CreateMovement, GetAllMovements, GetAllMovementsById, GetMovementLines, GetMovementsByDateRange, GetMovementsByType, UpdateProductPrices, UpdateStockForMovement
-  - Each use case includes a Class Diagram and a Sequence Diagram
+  - CreateMovement, GetAllMovements, GetAllMovementsById, GetMovementLines, GetMovementsByDateRange, GetMovementsByType, UpdateProductPrices, UpdateStockForMovement
 
 ---
 
-### 9. Sales — Individual Use Cases
+### 15. Sales — Individual Use Cases
 - **[15_Sales_UseCases.md](./15_Sales_UseCases.md)**
-  - Use Cases: CreateSale, DeleteSale, GetAllSales, GetAllSalesWithDetails, GetAvailabelStockByWarehouse, GetSaleById, GetSaleByIdWithLines, GetSaleByClient, GetSaleByDateRange, GetSaleBySeller, GetTotalAvailableStock, UpdateSale
-  - Each use case includes a Class Diagram and a Sequence Diagram
+  - CreateSale, DeleteSale, GetAllSales, GetAllSalesWithDetails, GetAvailabelStockByWarehouse, GetSaleById, GetSaleByIdWithLines, GetSaleByClient, GetSaleByDateRange, GetSaleBySeller, GetTotalAvailableStock, UpdateSale
 
 ---
 
-### 10. Warehouses — Individual Use Cases
+### 16. Warehouses — Individual Use Cases
 - **[16_Warehouses_UseCases.md](./16_Warehouses_UseCases.md)**
-  - Use Cases: CreateWareHouse, DeleteWarehouse, GetAllActiveWarehouses, GetAllWarehouses, GetWarehousesById, UpdateWarehouse
-  - Each use case includes a Class Diagram and a Sequence Diagram
+  - CreateWareHouse, DeleteWarehouse, GetAllActiveWarehouses, GetAllWarehouses, GetWarehousesById, UpdateWarehouse
 
 ---
 
-### 11. Clients — Individual Use Cases
+### 17. Clients — Individual Use Cases
 - **[17_Clients_UseCases.md](./17_Clients_UseCases.md)**
-  - Use Cases: CreateClient, DeleteClient, GetActiveClients, GetAllClients, GetClientById, UpdateClient
-  - Each use case includes a Class Diagram and a Sequence Diagram
+  - CreateClient, DeleteClient, GetActiveClients, GetAllClients, GetClientById, UpdateClient
 
 ---
 
-### 12. Reports — Individual Use Cases
+### 18. Reports — Individual Use Cases
 - **[18_Reports_UseCases.md](./18_Reports_UseCases.md)**
-  - Use Cases: GetCategorySalesReport, GetClientProductRankingReport, GetClientPurchasesReport, GetPriceVariationReport, GetRevenueByDateReport, GetSellerPerformanceReport, GetTopProductsReport
-  - Each use case includes a Class Diagram and a Sequence Diagram
+  - GetCategorySalesReport, GetClientProductRankingReport, GetClientPurchasesReport, GetPriceVariationReport, GetRevenueByDateReport, GetSellerPerformanceReport, GetTopProductsReport
 
 ---
 
-### 13. Users — Individual Use Cases
+### 19. Users — Individual Use Cases
 - **[19_Users_UseCases.md](./19_Users_UseCases.md)**
-  - Use Cases: AssignRolesToUser, ChangePassword, CreateUser, DeleteUser, GetActiveUsers, GetAllUsers, GetUserById, GetUserRoles, UpdateUser
-  - Each use case includes a Class Diagram and a Sequence Diagram
+  - AssignRolesToUser, ChangePassword, CreateUser, DeleteUser, GetActiveUsers, GetAllUsers, GetUserById, GetUserRoles, UpdateUser
 
 ---
 
-### 14. Roles — Individual Use Cases
+### 20. Roles — Individual Use Cases
 - **[20_Roles_UseCases.md](./20_Roles_UseCases.md)**
-  - Use Cases: CreateRole, DeleteRole, AssignPermissions, GetActiveRoles, GetAllPermissions, GetAllRoles, GetRoleById, GetRolePermissions, UpdateRole
-  - Each use case includes a Class Diagram and a Sequence Diagram
+  - CreateRole, DeleteRole, AssignPermissions, GetActiveRoles, GetAllPermissions, GetAllRoles, GetRoleById, GetRolePermissions, UpdateRole
 
 ---
 
-### 15. Permissions & Authorization — Individual Use Cases
+### 21. Permissions & Authorization — Individual Use Cases
 - **[21_Permissions_UseCases.md](./21_Permissions_UseCases.md)**
-  - Use Cases: GetUserPermissions, HasAllPermissions, HasAnyPermission, HasPermission
-  - Each use case includes a Class Diagram and a Sequence Diagram
+  - GetUserPermissions, HasAllPermissions, HasAnyPermission, HasPermission
 
 ---
 
-### 16. Localization — Individual Use Cases
+### 22. Localization — Individual Use Cases
 - **[22_Localization_UseCases.md](./22_Localization_UseCases.md)**
-  - Use Cases: LoadAllTranslations, LoadDefaultTranslations, OnLanguageChanged, SetLanguage
-  - Each use case includes a Class Diagram and a Sequence Diagram
+  - LoadAllTranslations, LoadDefaultTranslations, OnLanguageChanged, SetLanguage
 
 ---
 
@@ -250,20 +244,6 @@ ext install bierner.markdown-mermaid
 - GitBook
 - MkDocs with Mermaid plugin
 
-### Example Rendering
-
-```mermaid
-classDiagram
-    class LoginForm {
-        -IAuthenticationService _authService
-        +btnLogin_Click(sender, e) void
-    }
-    class AuthenticationService {
-        +Authenticate(username, password) User
-    }
-    LoginForm --> AuthenticationService : uses
-```
-
 ---
 
 ## 📐 Diagram Standards
@@ -275,12 +255,12 @@ All diagrams follow these standards:
 - **Types**: Return types and parameter types specified
 - **Relationships**: 
   - `-->` uses/dependency
-  - `--|>` inheritance/implements
+  - `..|>` implements
+  - `--|>` inherits
   - `--*` composition
-  - `--o` aggregation
 
 ### Sequence Diagrams
-- **Participants**: Organized top-to-bottom by layer
+- **Participants**: Organized by layer (UI → BLL → DAO → DB)
 - **Activation**: Shows when objects are active
 - **Alt/Opt/Loop**: Control flow clearly marked
 - **Notes**: Explain complex operations
@@ -294,11 +274,6 @@ All diagrams follow these standards:
 2. **New Features**: Add diagrams for new major features
 3. **Refactoring**: Update diagrams to reflect architectural changes
 4. **Documentation**: Keep this README updated with new diagrams
-
-### Version Control
-- All diagrams are version controlled with code
-- Changes to diagrams should be part of feature branches
-- Review diagrams during code review process
 
 ---
 
@@ -317,16 +292,7 @@ All diagrams follow these standards:
 
 ---
 
-## 📝 Notes
-
-- All diagrams include **methods and attributes** as required
-- **Layer communication** is clearly shown in all diagrams
-- Diagrams follow **UML 2.0 standards**
-- **Mermaid syntax** is validated and renderable
-- Each process has both **class and sequence diagrams**
-
----
-
-**Last Updated**: 2026-02-17  
-**Version**: 1.0  
+**Last Updated**: 2026-02-22  
+**Version**: 2.0  
 **Author**: Development Team
+
