@@ -187,29 +187,30 @@ classDiagram
 classDiagram
     class ReportsForm {
         -ReportService _reportService
-        +LoadRevenueByDateReport(from, to, groupBy) void
+        +LoadRevenueByDateReport(from, to, movementType, warehouseId) void
     }
 
     class ReportService {
         -IReportRepository _reportRepo
-        +GetRevenueByDateReport(startDate, endDate, groupBy) List~RevenueByDateReportDTO~
+        +GetRevenueByDateReport(startDate, endDate, movementType, warehouseId) List~RevenueByDateReportDTO~
     }
 
     class IReportRepository {
         <<interface>>
-        +GetRevenueByDateReport(startDate, endDate, groupBy) List~RevenueByDateReportDTO~
+        +GetRevenueByDateReport(startDate, endDate, movementType, warehouseId) List~RevenueByDateReportDTO~
     }
 
     class ReportRepository {
-        +GetRevenueByDateReport(startDate, endDate, groupBy) List~RevenueByDateReportDTO~
+        +GetRevenueByDateReport(startDate, endDate, movementType, warehouseId) List~RevenueByDateReportDTO~
     }
 
     class RevenueByDateReportDTO {
-        +DateTime PeriodDate
-        +string PeriodLabel
-        +decimal TotalRevenue
-        +int TotalSales
-        +int TotalItemsSold
+        +DateTime ReportDate
+        +decimal SalesRevenue
+        +int StockInMovements
+        +int StockInUnits
+        +int StockOutMovements
+        +int StockOutUnits
     }
 
     ReportsForm --> ReportService : uses
@@ -394,24 +395,28 @@ classDiagram
         +GetClientPurchasesReport(startDate, endDate, clientId, topN) List~ClientPurchasesReportDTO~
         +GetPriceVariationReport(startDate, endDate, productId, category) List~PriceVariationReportDTO~
         +GetSellerPerformanceReport(startDate, endDate, sellerName, category) List~SellerPerformanceReportDTO~
-        +GetCategorySalesReport(startDate, endDate, orderBy) List~CategorySalesReportDTO~
-        +GetLowStockReport(warehouseId, threshold) List~LowStockReportDTO~
-        +GetStockMovementsReport(startDate, endDate, warehouseId, movementType) List~StockMovementsReportDTO~
+        +GetCategorySalesReport(startDate, endDate, category) List~CategorySalesReportDTO~
+        +GetRevenueByDateReport(startDate, endDate, movementType, warehouseId) List~RevenueByDateReportDTO~
+        +GetClientProductRankingReport(startDate, endDate, productId, category, topN) List~ClientProductRankingReportDTO~
     }
 
     %% Services Layer
     class IAuthorizationService {
         <<interface>>
-        +HasPermission(userId, permission) bool
-        +HasAnyPermission(userId, permissions) bool
-        +GetUserPermissions(userId) List~Permission~
+        +HasPermission(userId, permissionCode) bool
+        +HasAnyPermission(userId, permissionCodes) bool
+        +HasAllPermissions(userId, permissionCodes) bool
+        +GetUserPermissions(userId) List~string~
     }
 
     class ILogService {
         <<interface>>
-        +Info(message) void
-        +Warning(message) void
-        +Error(message, exception) void
+        +Debug(message, logger) void
+        +Info(message, logger) void
+        +Warning(message, logger) void
+        +Error(message, exception, logger) void
+        +Fatal(message, exception, logger) void
+        +Log(level, message, exception, logger) void
     }
 
     %% DAO Layer
@@ -420,16 +425,16 @@ classDiagram
         +GetClientPurchasesReport(startDate, endDate, clientId, topN) List~ClientPurchasesReportDTO~
         +GetPriceVariationReport(startDate, endDate, productId, category) List~PriceVariationReportDTO~
         +GetSellerPerformanceReport(startDate, endDate, sellerName, category) List~SellerPerformanceReportDTO~
-        +GetCategorySalesReport(startDate, endDate, orderBy) List~CategorySalesReportDTO~
-        +GetLowStockReport(warehouseId, threshold) List~LowStockReportDTO~
-        +GetStockMovementsReport(startDate, endDate, warehouseId, movementType) List~StockMovementsReportDTO~
+        +GetCategorySalesReport(startDate, endDate, category) List~CategorySalesReportDTO~
+        +GetRevenueByDateReport(startDate, endDate, movementType, warehouseId) List~RevenueByDateReportDTO~
+        +GetClientProductRankingReport(startDate, endDate, productId, category, topN) List~ClientProductRankingReportDTO~
         -MapTopProductsReport(reader) TopProductsReportDTO
         -MapClientPurchasesReport(reader) ClientPurchasesReportDTO
         -MapPriceVariationReport(reader) PriceVariationReportDTO
         -MapSellerPerformanceReport(reader) SellerPerformanceReportDTO
         -MapCategorySalesReport(reader) CategorySalesReportDTO
-        -MapLowStockReport(reader) LowStockReportDTO
-        -MapStockMovementsReport(reader) StockMovementsReportDTO
+        -MapRevenueByDateReport(reader) RevenueByDateReportDTO
+        -MapClientProductRankingReport(reader) ClientProductRankingReportDTO
     }
 
     class IReportRepository {
@@ -438,8 +443,9 @@ classDiagram
         +GetClientPurchasesReport(startDate, endDate, clientId, topN) List~ClientPurchasesReportDTO~
         +GetPriceVariationReport(startDate, endDate, productId, category) List~PriceVariationReportDTO~
         +GetSellerPerformanceReport(startDate, endDate, sellerName, category) List~SellerPerformanceReportDTO~
-        +GetCategorySalesReport(startDate, endDate, orderBy) List~CategorySalesReportDTO~
-        +GetLowStockReport(warehouseId, threshold) List~LowStockReportDTO~
+        +GetCategorySalesReport(startDate, endDate, category) List~CategorySalesReportDTO~
+        +GetRevenueByDateReport(startDate, endDate, movementType, warehouseId) List~RevenueByDateReportDTO~
+        +GetClientProductRankingReport(startDate, endDate, productId, category, topN) List~ClientProductRankingReportDTO~
     }
 
     class DatabaseHelper {
@@ -496,25 +502,25 @@ classDiagram
         +decimal RevenuePercentage
     }
 
-    class LowStockReportDTO {
+    class RevenueByDateReportDTO {
+        +DateTime ReportDate
+        +decimal SalesRevenue
+        +int StockInMovements
+        +int StockInUnits
+        +int StockOutMovements
+        +int StockOutUnits
+    }
+
+    class ClientProductRankingReportDTO {
+        +int ClientId
+        +string ClientFullName
+        +string DNI
         +string ProductName
         +string SKU
         +string Category
-        +string WarehouseName
-        +int CurrentStock
-        +int MinStockLevel
-        +int Deficit
-    }
-
-    class StockMovementsReportDTO {
-        +string MovementNumber
-        +DateTime MovementDate
-        +string MovementType
-        +string ProductName
-        +string SourceWarehouse
-        +string DestinationWarehouse
-        +int Quantity
-        +string CreatedByUser
+        +int UnitsPurchased
+        +decimal TotalSpent
+        +decimal PercentageOfProductSales
     }
 
     %% Relationships
@@ -533,8 +539,8 @@ classDiagram
     ReportRepository --> PriceVariationReportDTO : returns
     ReportRepository --> SellerPerformanceReportDTO : returns
     ReportRepository --> CategorySalesReportDTO : returns
-    ReportRepository --> LowStockReportDTO : returns
-    ReportRepository --> StockMovementsReportDTO : returns
+    ReportRepository --> RevenueByDateReportDTO : returns
+    ReportRepository --> ClientProductRankingReportDTO : returns
 ```
 
 ## Layer Communication Flow

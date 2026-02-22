@@ -111,7 +111,8 @@ classDiagram
     }
 
     class RoleService {
-        -IPermissionRepository _permRepo
+        -IRoleRepository _roleRepo
+        -IPermissionRepository _permissionRepo
         -IAuditLogRepository _auditRepo
         -ILogService _logService
         +AssignPermissions(roleId, permissionIds) void
@@ -119,17 +120,26 @@ classDiagram
         +GetRolePermissions(roleId) List~Permission~
     }
 
+    class IRoleRepository {
+        <<interface>>
+        +GetRolePermissions(roleId) List~Permission~
+        +AssignPermission(roleId, permissionId, assignedBy) void
+        +ClearPermissions(roleId) void
+    }
+
     class IPermissionRepository {
         <<interface>>
-        +GetAll() List~Permission~
+        +GetAllActive() List~Permission~
+    }
+
+    class RoleRepository {
         +GetRolePermissions(roleId) List~Permission~
-        +AssignPermissionsToRole(roleId, permissionIds) void
+        +AssignPermission(roleId, permissionId, assignedBy) void
+        +ClearPermissions(roleId) void
     }
 
     class PermissionRepository {
-        +GetAll() List~Permission~
-        +GetRolePermissions(roleId) List~Permission~
-        +AssignPermissionsToRole(roleId, permissionIds) void
+        +GetAllActive() List~Permission~
         -MapPermission(reader) Permission
     }
 
@@ -155,10 +165,12 @@ classDiagram
     }
 
     RolePermissionsForm --> RoleService : uses
+    RoleService --> IRoleRepository : uses
     RoleService --> IPermissionRepository : uses
+    RoleRepository ..|> IRoleRepository : implements
     PermissionRepository ..|> IPermissionRepository : implements
-    PermissionRepository --> DatabaseHelper : uses
-    PermissionRepository --> Permission : returns
+    RoleRepository --> DatabaseHelper : uses
+    RoleRepository --> Permission : returns
     Permission "many" --> "many" RolePermission : linked via
 ```
 
@@ -405,36 +417,28 @@ classDiagram
 ```mermaid
 classDiagram
     class AuthorizationService {
-        -IPermissionRepository _permRepo
+        -IPermissionRepository _permissionRepository
         -ILogService _logService
-        +GetUserPermissions(userId) List~Permission~
+        +GetUserPermissions(userId) List~string~
     }
 
     class IPermissionRepository {
         <<interface>>
-        +GetUserPermissions(userId) List~Permission~
+        +GetUserPermissions(userId) List~string~
     }
 
     class PermissionRepository {
-        +GetUserPermissions(userId) List~Permission~
-    }
-
-    class Permission {
-        +int PermissionId
-        +string PermissionName
-        +string Category
-        +bool IsActive
+        +GetUserPermissions(userId) List~string~
     }
 
     class IAuthorizationService {
         <<interface>>
-        +GetUserPermissions(userId) List~Permission~
+        +GetUserPermissions(userId) List~string~
     }
 
     AuthorizationService ..|> IAuthorizationService : implements
     AuthorizationService --> IPermissionRepository : uses
     PermissionRepository ..|> IPermissionRepository : implements
-    PermissionRepository --> Permission : returns
 ```
 
 ---
@@ -444,29 +448,22 @@ classDiagram
 ```mermaid
 classDiagram
     class AuthorizationService {
-        -IPermissionRepository _permRepo
-        +HasAllPermissions(userId, permissions) bool
-        -LoadUserPermissions(userId) List~Permission~
+        -IPermissionRepository _permissionRepository
+        +HasAllPermissions(userId, permissionCodes) bool
     }
 
     class IAuthorizationService {
         <<interface>>
-        +HasAllPermissions(userId, permissions) bool
+        +HasAllPermissions(userId, permissionCodes) bool
     }
 
     class IPermissionRepository {
         <<interface>>
-        +GetUserPermissions(userId) List~Permission~
-    }
-
-    class Permission {
-        +int PermissionId
-        +string PermissionName
+        +GetUserPermissions(userId) List~string~
     }
 
     AuthorizationService ..|> IAuthorizationService : implements
     AuthorizationService --> IPermissionRepository : uses
-    IPermissionRepository --> Permission : returns
 ```
 
 ---
@@ -476,29 +473,22 @@ classDiagram
 ```mermaid
 classDiagram
     class AuthorizationService {
-        -IPermissionRepository _permRepo
-        +HasAnyPermission(userId, permissions) bool
-        -LoadUserPermissions(userId) List~Permission~
+        -IPermissionRepository _permissionRepository
+        +HasAnyPermission(userId, permissionCodes) bool
     }
 
     class IAuthorizationService {
         <<interface>>
-        +HasAnyPermission(userId, permissions) bool
+        +HasAnyPermission(userId, permissionCodes) bool
     }
 
     class IPermissionRepository {
         <<interface>>
-        +GetUserPermissions(userId) List~Permission~
-    }
-
-    class Permission {
-        +int PermissionId
-        +string PermissionName
+        +GetUserPermissions(userId) List~string~
     }
 
     AuthorizationService ..|> IAuthorizationService : implements
     AuthorizationService --> IPermissionRepository : uses
-    IPermissionRepository --> Permission : returns
 ```
 
 ---
@@ -508,42 +498,28 @@ classDiagram
 ```mermaid
 classDiagram
     class AuthorizationService {
-        -IPermissionRepository _permRepo
+        -IPermissionRepository _permissionRepository
         -ILogService _logService
-        +HasPermission(userId, permissionName) bool
-        -LoadUserPermissionsCache(userId) void
+        +HasPermission(userId, permissionCode) bool
     }
 
     class IAuthorizationService {
         <<interface>>
-        +HasPermission(userId, permissionName) bool
+        +HasPermission(userId, permissionCode) bool
     }
 
     class IPermissionRepository {
         <<interface>>
-        +GetUserPermissions(userId) List~Permission~
+        +GetUserPermissions(userId) List~string~
     }
 
     class PermissionRepository {
-        +GetUserPermissions(userId) List~Permission~
-    }
-
-    class SessionContext {
-        <<static>>
-        +CurrentUserId int
-    }
-
-    class Permission {
-        +int PermissionId
-        +string PermissionName
-        +string Category
+        +GetUserPermissions(userId) List~string~
     }
 
     AuthorizationService ..|> IAuthorizationService : implements
     AuthorizationService --> IPermissionRepository : uses
-    AuthorizationService --> SessionContext : reads
     PermissionRepository ..|> IPermissionRepository : implements
-    PermissionRepository --> Permission : returns
 ```
 
 ---
@@ -633,71 +609,124 @@ User → UserRoles → Role → RolePermissions → Permission
 
     %% Services Layer
     class AuthorizationService {
-        -IPermissionRepository _permRepo
-        -IUserRepository _userRepo
+        -IPermissionRepository _permissionRepository
         -ILogService _logService
-        +AuthorizationService(repos, services...)
-        +HasPermission(userId, permissionName) bool
-        +HasAnyPermission(userId, permissions) bool
-        +HasAllPermissions(userId, permissions) bool
-        +GetUserPermissions(userId) List~Permission~
-        +GetUserRoles(userId) List~Role~
-        -LoadUserPermissionsCache(userId) void
+        +AuthorizationService(permissionRepository, logService)
+        +HasPermission(userId, permissionCode) bool
+        +HasAnyPermission(userId, permissionCodes) bool
+        +HasAllPermissions(userId, permissionCodes) bool
+        +GetUserPermissions(userId) List~string~
+    }
+
+    class LoggingAuthorizationDecorator {
+        -IAuthorizationService _inner
+        -ILogService _logService
+        +LoggingAuthorizationDecorator(inner, logService)
+        +HasPermission(userId, permissionCode) bool
+        +HasAnyPermission(userId, permissionCodes) bool
+        +HasAllPermissions(userId, permissionCodes) bool
+        +GetUserPermissions(userId) List~string~
     }
 
     class IAuthorizationService {
         <<interface>>
-        +HasPermission(userId, permissionName) bool
-        +HasAnyPermission(userId, permissions) bool
-        +GetUserPermissions(userId) List~Permission~
+        +HasPermission(userId, permissionCode) bool
+        +HasAnyPermission(userId, permissionCodes) bool
+        +HasAllPermissions(userId, permissionCodes) bool
+        +GetUserPermissions(userId) List~string~
     }
 
     class SessionContext {
-        <<static>>
+        <<singleton>>
+        -_instance SessionContext$
+        +Instance SessionContext$
         +CurrentUser User
-        +CurrentUserId int
+        +CurrentUserId int?
         +CurrentUsername string
+        +Clear() void
+    }
+
+    %% Composite Pattern - Permission Rules
+    class IPermissionRule {
+        <<interface>>
+        +Evaluate(userId, permissionRepository) bool
+    }
+
+    class SinglePermissionRule {
+        -string _permissionCode
+        +SinglePermissionRule(permissionCode)
+        +Evaluate(userId, permissionRepository) bool
+    }
+
+    class AndPermissionRule {
+        -IEnumerable~IPermissionRule~ _rules
+        +AndPermissionRule(rules)
+        +AndPermissionRule(permissionCodes)
+        +Evaluate(userId, permissionRepository) bool
+    }
+
+    class OrPermissionRule {
+        -IEnumerable~IPermissionRule~ _rules
+        +OrPermissionRule(rules)
+        +OrPermissionRule(permissionCodes)
+        +Evaluate(userId, permissionRepository) bool
     }
 
     %% DAO Layer
     class RoleRepository {
         +GetAll() List~Role~
+        +GetAllActive() List~Role~
         +GetById(id) Role
         +GetByName(name) Role
         +Insert(entity) int
         +Update(entity) void
         +Delete(id) void
         +SoftDelete(id, deletedBy) void
+        +GetRolePermissions(roleId) List~Permission~
+        +AssignPermission(roleId, permissionId, assignedBy) void
+        +RemovePermission(roleId, permissionId) void
+        +ClearPermissions(roleId) void
         -MapRole(reader) Role
     }
 
     class IRoleRepository {
         <<interface>>
         +GetAll() List~Role~
+        +GetAllActive() List~Role~
         +GetById(id) Role
         +Insert(entity) int
         +Update(entity) void
         +Delete(id) void
+        +SoftDelete(id, deletedBy) void
+        +GetByName(name) Role
+        +GetRolePermissions(roleId) List~Permission~
+        +AssignPermission(roleId, permissionId, assignedBy) void
+        +RemovePermission(roleId, permissionId) void
+        +ClearPermissions(roleId) void
     }
 
     class PermissionRepository {
         +GetAll() List~Permission~
+        +GetAllActive() List~Permission~
         +GetById(id) Permission
-        +GetByName(name) Permission
-        +GetRolePermissions(roleId) List~Permission~
-        +GetUserPermissions(userId) List~Permission~
-        +AssignPermissionToRole(roleId, permissionId) void
-        +RemovePermissionFromRole(roleId, permissionId) void
-        +AssignPermissionsToRole(roleId, permissionIds) void
+        +GetByCode(permissionCode) Permission
+        +GetByModule(module) List~Permission~
+        +GetUserPermissions(userId) List~string~
         -MapPermission(reader) Permission
     }
 
     class IPermissionRepository {
         <<interface>>
         +GetAll() List~Permission~
-        +GetRolePermissions(roleId) List~Permission~
-        +GetUserPermissions(userId) List~Permission~
-        +AssignPermissionsToRole(roleId, permissionIds) void
+        +GetAllActive() List~Permission~
+        +GetById(id) Permission
+        +Insert(entity) int
+        +Update(entity) void
+        +Delete(id) void
+        +SoftDelete(id, deletedBy) void
+        +GetByCode(permissionCode) Permission
+        +GetByModule(module) List~Permission~
+        +GetUserPermissions(userId) List~string~
     }
 
     %% Domain Layer
@@ -758,7 +787,15 @@ User → UserRoles → Role → RolePermissions → Permission
     
     AuthorizationService ..|> IAuthorizationService : implements
     AuthorizationService --> IPermissionRepository : uses
-    AuthorizationService --> IUserRepository : uses
+    
+    LoggingAuthorizationDecorator ..|> IAuthorizationService : implements
+    LoggingAuthorizationDecorator --> IAuthorizationService : decorates
+    
+    SinglePermissionRule ..|> IPermissionRule : implements
+    AndPermissionRule ..|> IPermissionRule : implements
+    OrPermissionRule ..|> IPermissionRule : implements
+    AndPermissionRule --> IPermissionRule : composes
+    OrPermissionRule --> IPermissionRule : composes
     
     RoleRepository ..|> IRoleRepository : implements
     PermissionRepository ..|> IPermissionRepository : implements
@@ -790,8 +827,10 @@ User → UserRoles → Role → RolePermissions → Permission
 │   DAO LAYER         │  │    SERVICES         │
 │                     │  │     LAYER           │
 │ RoleRepository      │  │ AuthorizationService│
-│ PermissionRepository│  │ LogService          │
-│ AuditLogRepository  │  │ SessionContext      │
+│ PermissionRepository│  │ LoggingAuthorizatio-│
+│ AuditLogRepository  │  │   nDecorator        │
+│                     │  │ LogService          │
+│                     │  │ SessionContext      │
 └──────────┬──────────┘  └─────────────────────┘
            │ returns
            ▼
@@ -933,3 +972,31 @@ User → Assigned Roles → Role Permissions → Permission Checks
 4. **Cache Invalidation**: Permission changes reflected immediately
 5. **Soft Delete**: Roles deactivated, not deleted (preserves history)
 6. **Transaction Safety**: Permission assignments atomic
+
+## Design Patterns Applied (Post-Refactoring)
+
+### Singleton Pattern — SessionContext
+`SessionContext` is implemented as a Singleton to guarantee a single instance throughout the application lifecycle.
+
+```csharp
+// Access via: SessionContext.Instance.CurrentUser
+```
+
+### Composite Pattern — Permission Rules
+Allows building flexible RBAC permission checks using tree structures with AND/OR logic.
+
+```
+IPermissionRule
+    ├── SinglePermissionRule   (leaf: checks one permission code)
+    ├── AndPermissionRule      (composite: ALL rules must pass)
+    └── OrPermissionRule       (composite: AT LEAST ONE rule must pass)
+```
+
+### Decorator Pattern — LoggingAuthorizationDecorator
+Wraps `IAuthorizationService` to add detailed debug logging without modifying the core `AuthorizationService` implementation.
+
+```
+IAuthorizationService
+    ├── AuthorizationService               (concrete implementation)
+    └── LoggingAuthorizationDecorator      (adds logging transparently)
+```

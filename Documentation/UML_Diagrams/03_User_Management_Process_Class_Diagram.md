@@ -153,8 +153,9 @@ classDiagram
     }
 
     class SessionContext {
-        <<static>>
-        +CurrentUserId int
+        <<singleton>>
+        +Instance SessionContext$
+        +CurrentUserId int?
     }
 
     class User {
@@ -530,16 +531,20 @@ classDiagram
 
     class IAuthorizationService {
         <<interface>>
-        +HasPermission(userId, permission) bool
-        +HasAnyPermission(userId, permissions) bool
-        +GetUserPermissions(userId) List~Permission~
+        +HasPermission(userId, permissionCode) bool
+        +HasAnyPermission(userId, permissionCodes) bool
+        +HasAllPermissions(userId, permissionCodes) bool
+        +GetUserPermissions(userId) List~string~
     }
 
     class ILogService {
         <<interface>>
-        +Info(message) void
-        +Warning(message) void
-        +Error(message, exception) void
+        +Debug(message, logger) void
+        +Info(message, logger) void
+        +Warning(message, logger) void
+        +Error(message, exception, logger) void
+        +Fatal(message, exception, logger) void
+        +Log(level, message, exception, logger) void
     }
 
     class IErrorHandlerService {
@@ -549,10 +554,13 @@ classDiagram
     }
 
     class SessionContext {
-        <<static>>
+        <<singleton>>
+        -_instance SessionContext$
+        +Instance SessionContext$
         +CurrentUser User
-        +CurrentUserId int
+        +CurrentUserId int?
         +CurrentUsername string
+        +Clear() void
     }
 
     %% DAO Layer

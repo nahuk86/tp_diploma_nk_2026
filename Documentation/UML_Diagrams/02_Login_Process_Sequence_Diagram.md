@@ -72,7 +72,7 @@ sequenceDiagram
             Auth->>Log: Info("User authenticated successfully")
             Auth-->>UI: User entity
             deactivate Auth
-            UI->>Session: Set CurrentUser = user
+            UI->>Session: Instance.CurrentUser = user
             Session-->>UI: Session established
             Note over UI: Set DialogResult = OK
             UI-->>User: Close form, proceed to main form

@@ -56,18 +56,24 @@ classDiagram
     }
 
     class SessionContext {
-        <<static>>
+        <<singleton>>
+        -_instance SessionContext$
+        -_currentUser User
+        +Instance SessionContext$
         +CurrentUser User
-        +CurrentUserId int
+        +CurrentUserId int?
         +CurrentUsername string
         +Clear() void
     }
 
     class ILogService {
         <<interface>>
-        +Info(message) void
-        +Warning(message) void
-        +Error(message, exception) void
+        +Debug(message, logger) void
+        +Info(message, logger) void
+        +Warning(message, logger) void
+        +Error(message, exception, logger) void
+        +Fatal(message, exception, logger) void
+        +Log(level, message, exception, logger) void
     }
 
     class ILocalizationService {
