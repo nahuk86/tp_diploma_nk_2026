@@ -38,13 +38,24 @@ classDiagram
 
     class IStockRepository {
         <<interface>>
+        +GetByProductAndWarehouse(productId, warehouseId) Stock
         +GetByProduct(productId) List~Stock~
-        +DeductStock(productId, warehouseId, quantity) void
+        +GetByWarehouse(warehouseId) List~Stock~
+        +GetAll() List~Stock~
+        +GetLowStock() List~Stock~
+        +UpdateStock(productId, warehouseId, quantity, updatedBy) void
+        +GetCurrentStock(productId, warehouseId) int
     }
 
     class StockRepository {
+        +GetByProductAndWarehouse(productId, warehouseId) Stock
         +GetByProduct(productId) List~Stock~
-        +DeductStock(productId, warehouseId, quantity) void
+        +GetByWarehouse(warehouseId) List~Stock~
+        +GetAll() List~Stock~
+        +GetLowStock() List~Stock~
+        +UpdateStock(productId, warehouseId, quantity, updatedBy) void
+        +GetCurrentStock(productId, warehouseId) int
+        -MapStock(reader) Stock
     }
 
     class DatabaseHelper {
@@ -56,10 +67,15 @@ classDiagram
         +int SaleId
         +string SaleNumber
         +DateTime SaleDate
-        +int ClientId
+        +int? ClientId
         +string SellerName
         +decimal TotalAmount
+        +string Notes
         +bool IsActive
+        +DateTime CreatedAt
+        +int? CreatedBy
+        +DateTime? UpdatedAt
+        +int? UpdatedBy
         +List~SaleLine~ SaleLines
     }
 
@@ -68,6 +84,7 @@ classDiagram
         +int SaleId
         +int ProductId
         +string ProductName
+        +string SKU
         +int Quantity
         +decimal UnitPrice
         +decimal LineTotal
@@ -711,20 +728,25 @@ classDiagram
     }
 
     class StockRepository {
+        +GetByProductAndWarehouse(productId, warehouseId) Stock
         +GetByProduct(productId) List~Stock~
         +GetByWarehouse(warehouseId) List~Stock~
-        +GetByProductAndWarehouse(productId, warehouseId) Stock
-        +UpdateQuantity(productId, warehouseId, quantity) void
-        +DeductStock(productId, warehouseId, quantity) void
-        +AddStock(productId, warehouseId, quantity) void
+        +GetAll() List~Stock~
+        +GetLowStock() List~Stock~
+        +UpdateStock(productId, warehouseId, quantity, updatedBy) void
+        +GetCurrentStock(productId, warehouseId) int
         -MapStock(reader) Stock
     }
 
     class IStockRepository {
         <<interface>>
+        +GetByProductAndWarehouse(productId, warehouseId) Stock
         +GetByProduct(productId) List~Stock~
-        +UpdateQuantity(productId, warehouseId, quantity) void
-        +DeductStock(productId, warehouseId, quantity) void
+        +GetByWarehouse(warehouseId) List~Stock~
+        +GetAll() List~Stock~
+        +GetLowStock() List~Stock~
+        +UpdateStock(productId, warehouseId, quantity, updatedBy) void
+        +GetCurrentStock(productId, warehouseId) int
     }
 
     %% Domain Layer
@@ -732,11 +754,13 @@ classDiagram
         +int SaleId
         +string SaleNumber
         +DateTime SaleDate
-        +int ClientId
+        +int? ClientId
         +string SellerName
         +decimal TotalAmount
+        +string Notes
+        +bool IsActive
         +DateTime CreatedAt
-        +int CreatedBy
+        +int? CreatedBy
         +DateTime? UpdatedAt
         +int? UpdatedBy
         +List~SaleLine~ SaleLines
@@ -747,6 +771,7 @@ classDiagram
         +int SaleId
         +int ProductId
         +string ProductName
+        +string SKU
         +int Quantity
         +decimal UnitPrice
         +decimal LineTotal
@@ -759,9 +784,12 @@ classDiagram
         +string DNI
         +string Correo
         +string Telefono
+        +string Direccion
         +bool IsActive
         +DateTime CreatedAt
         +int? CreatedBy
+        +DateTime? UpdatedAt
+        +int? UpdatedBy
     }
 
     class Product {
@@ -782,6 +810,10 @@ classDiagram
         +int WarehouseId
         +int Quantity
         +DateTime LastUpdated
+        +int? UpdatedBy
+        +string ProductName
+        +string ProductSKU
+        +string WarehouseName
     }
 
     %% Relationships

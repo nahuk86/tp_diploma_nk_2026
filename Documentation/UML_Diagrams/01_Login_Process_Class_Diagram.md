@@ -34,7 +34,9 @@ classDiagram
         -IUserRepository _userRepository
         -ILogService _logService
         +Authenticate(username, password) User
+        +HashPassword(password, out salt) string
         +VerifyPassword(password, hash, salt) bool
+        +InitializeAdminPassword(username, newPassword) void
         -HashPasswordWithSalt(password, salt) byte[]
     }
 
@@ -78,8 +80,12 @@ classDiagram
 
     class ILocalizationService {
         <<interface>>
+        +CurrentLanguage string
+        +AvailableLanguages List~string~
+        +LanguageChanged EventHandler
         +GetString(key) string
-        +SetLanguage(languageCode) void
+        +GetString(key, language) string
+        +SetLanguage(language) void
     }
 
     class User {

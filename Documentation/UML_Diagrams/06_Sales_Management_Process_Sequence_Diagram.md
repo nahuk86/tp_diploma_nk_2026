@@ -42,9 +42,12 @@ sequenceDiagram
         SaleRepo-->>SaleSvc: saleId
         deactivate SaleRepo
         SaleSvc->>SaleSvc: DeductInventoryForSale(saleLines, userId, saleNumber)
-        loop For each line
-            SaleSvc->>StockRepo: DeductStock(productId, warehouseId, quantity)
-            StockRepo->>DB: UPDATE Stock SET Quantity=Quantity-@Qty ...
+        loop For each product group
+            SaleSvc->>StockRepo: GetByProduct(productId)
+            StockRepo-->>SaleSvc: List~Stock~
+            Note over SaleSvc: FIFO deduction across warehouses
+            SaleSvc->>StockRepo: UpdateStock(productId, warehouseId, newQuantity, userId)
+            StockRepo->>DB: UPDATE Stock SET Quantity=@NewQty, LastUpdated=@Now WHERE ProductId=@PId AND WarehouseId=@WId
         end
         SaleSvc-->>UI: saleId
         deactivate SaleSvc
@@ -513,27 +516,25 @@ sequenceDiagram
         SaleSvc->>SaleSvc: DeductInventoryForSale(saleLines, userId, saleNumber)
         activate SaleSvc
         
-        loop For each sale line
-            SaleSvc->>StockRepo: DeductStock(productId, warehouseId, quantity)
+        loop For each product group (FIFO across warehouses)
+            SaleSvc->>StockRepo: GetByProduct(productId)
             activate StockRepo
-            StockRepo->>DB: BEGIN TRANSACTION
+            StockRepo->>DB: SELECT * FROM Stock WHERE ProductId=@ProductId AND Quantity>0 ORDER BY WarehouseName
             activate DB
+            DB-->>StockRepo: ResultSet
+            deactivate DB
+            StockRepo-->>SaleSvc: List~Stock~
+            deactivate StockRepo
             
-            Note over StockRepo: UPDATE Stock<br/>SET Quantity = Quantity - @Quantity,<br/>LastUpdated = @LastUpdated<br/>WHERE ProductId = @ProductId<br/>AND WarehouseId = @WarehouseId
+            Note over SaleSvc: Calculate newQuantity = stock.Quantity - quantityToDeduct
+            SaleSvc->>StockRepo: UpdateStock(productId, warehouseId, newQuantity, userId)
+            activate StockRepo
+            Note over StockRepo: UPDATE Stock<br/>SET Quantity = @NewQuantity,<br/>LastUpdated = @Now<br/>WHERE ProductId = @ProductId<br/>AND WarehouseId = @WarehouseId
             StockRepo->>DB: ExecuteNonQuery()
-            
-            alt Stock becomes negative
-                StockRepo->>DB: ROLLBACK
-                DB-->>StockRepo: Transaction rolled back
-                StockRepo-->>SaleSvc: throw Exception
-                SaleSvc-->>UI: throw Exception
-                UI-->>User: Show "Insufficient stock" error
-            else Stock valid
-                StockRepo->>DB: COMMIT
-                DB-->>StockRepo: Success
-                deactivate DB
-                StockRepo-->>SaleSvc: Success
-            end
+            activate DB
+            DB-->>StockRepo: Success
+            deactivate DB
+            StockRepo-->>SaleSvc: void
             deactivate StockRepo
         end
         deactivate SaleSvc
@@ -541,7 +542,7 @@ sequenceDiagram
         %% Log audit
         SaleSvc->>AuditRepo: LogChange("Sales", saleId, Insert, null, null, description, userId)
         activate AuditRepo
-        AuditRepo->>DB: INSERT INTO AuditLog<br/>(TableName, RecordId, Action,<br/>Description, ChangeDate, ChangedBy)<br/>VALUES (...)
+        AuditRepo->>DB: INSERT INTO AuditLog<br/>(TableName, RecordId, Action,<br/>FieldName, OldValue, NewValue,<br/>ChangedAt, ChangedBy)<br/>VALUES (...)
         activate DB
         DB-->>AuditRepo: Success
         deactivate DB

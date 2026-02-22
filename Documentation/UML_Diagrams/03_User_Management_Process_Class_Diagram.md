@@ -407,18 +407,16 @@ classDiagram
 
     class UserService {
         -IUserRepository _userRepo
-        +UpdateUser(user) void
-        +GetUserById(id) User
+        -IAuthenticationService _authService
+        +ChangePassword(userId, newPassword) void
     }
 
     class IAuthenticationService {
         <<interface>>
-        +VerifyPassword(password, hash, salt) bool
         +HashPassword(password, out salt) string
     }
 
     class AuthenticationService {
-        +VerifyPassword(password, hash, salt) bool
         +HashPassword(password, out salt) string
         -HashPasswordWithSalt(password, salt) byte[]
     }
@@ -442,7 +440,7 @@ classDiagram
     }
 
     UsersForm --> UserService : uses
-    UsersForm --> IAuthenticationService : uses
+    UserService --> IAuthenticationService : uses
     AuthenticationService ..|> IAuthenticationService : implements
     UserService --> IUserRepository : uses
     UserRepository ..|> IUserRepository : implements
@@ -514,7 +512,7 @@ classDiagram
         +CreateUser(user, password) int
         +UpdateUser(user) void
         +DeleteUser(userId) void
-        +ChangePassword(userId, oldPassword, newPassword) void
+        +ChangePassword(userId, newPassword) void
         +AssignRolesToUser(userId, roleIds) void
         +GetUserRoles(userId) List~Role~
         -ValidateUser(user) void
@@ -550,7 +548,8 @@ classDiagram
     class IErrorHandlerService {
         <<interface>>
         +HandleError(exception, context) void
-        +ShowError(message) void
+        +GetFriendlyMessage(exception) string
+        +ShowError(exception, context) void
     }
 
     class SessionContext {
@@ -597,15 +596,19 @@ classDiagram
         +AssignRoles(userId, roleIds) void
     }
 
-    class AuditLogRepository {
-        +LogChange(tableName, recordId, action, oldValue, newValue, description, userId) void
-        +GetAuditLogs(tableName, recordId) List~AuditLog~
-        +GetUserAuditLogs(userId) List~AuditLog~
-    }
-
     class IAuditLogRepository {
         <<interface>>
-        +LogChange(tableName, recordId, action, oldValue, newValue, description, userId) void
+        +LogChange(tableName, recordId, action, fieldName, oldValue, newValue, changedBy) void
+        +GetByTable(tableName, recordId) List~AuditLog~
+        +GetByDateRange(startDate, endDate) List~AuditLog~
+        +GetByUser(userId) List~AuditLog~
+    }
+
+    class AuditLogRepository {
+        +LogChange(tableName, recordId, action, fieldName, oldValue, newValue, changedBy) void
+        +GetByTable(tableName, recordId) List~AuditLog~
+        +GetByDateRange(startDate, endDate) List~AuditLog~
+        +GetByUser(userId) List~AuditLog~
     }
 
     %% Domain Layer
@@ -636,15 +639,16 @@ classDiagram
     }
 
     class AuditLog {
-        +int AuditLogId
+        +int AuditId
         +string TableName
         +int RecordId
         +string Action
+        +string FieldName
         +string OldValue
         +string NewValue
-        +string Description
-        +DateTime ChangeDate
-        +int ChangedBy
+        +DateTime ChangedAt
+        +int? ChangedBy
+        +string ChangedByUsername
     }
 
     class AuditAction {
