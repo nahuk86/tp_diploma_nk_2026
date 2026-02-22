@@ -1,6 +1,257 @@
-# Reports Management Process - Sequence Diagram (Top Products Report)
+# Reports Management Process - Sequence Diagrams (Per Use Case)
 
-## UML Sequence Diagram (Mermaid Format)
+This document contains UML Sequence Diagrams organized per use case for all Report operations.
+
+---
+
+## UC-01: GetCategorySalesReport
+
+```mermaid
+sequenceDiagram
+    participant User as Business User
+    participant UI as ReportsForm
+    participant SVC as ReportService
+    participant REPO as ReportRepository
+    participant DB as Database
+
+    User->>UI: Select "Category Sales Report", set filters, click Generate
+    activate UI
+    UI->>UI: ValidateFilters()
+    UI->>SVC: GetCategorySalesReport(startDate, endDate, orderBy)
+    activate SVC
+    SVC->>REPO: GetCategorySalesReport(startDate, endDate, orderBy)
+    activate REPO
+    REPO->>DB: GetConnection()
+    DB-->>REPO: SqlConnection
+    Note over REPO: SELECT p.Category, SUM(sl.Quantity) AS TotalUnits, SUM(sl.LineTotal) AS TotalRevenue, COUNT(DISTINCT s.SaleId) AS TransactionCount, AVG(sl.UnitPrice) AS AveragePrice FROM Products p JOIN SaleLines sl ON p.ProductId=sl.ProductId JOIN Sales s ON sl.SaleId=s.SaleId WHERE s.SaleDate BETWEEN @Start AND @End GROUP BY p.Category ORDER BY @OrderBy DESC
+    loop For each row
+        REPO->>REPO: MapCategorySalesReport(reader)
+    end
+    REPO->>REPO: Calculate RevenuePercentage per category
+    REPO-->>SVC: List~CategorySalesReportDTO~
+    deactivate REPO
+    SVC-->>UI: List~CategorySalesReportDTO~
+    deactivate SVC
+    UI->>UI: dgvReport.DataSource = reportData
+    UI-->>User: Display category sales report
+    deactivate UI
+```
+
+---
+
+## UC-02: GetClientProductRankingReport
+
+```mermaid
+sequenceDiagram
+    participant User as Business User
+    participant UI as ReportsForm
+    participant SVC as ReportService
+    participant REPO as ReportRepository
+    participant DB as Database
+
+    User->>UI: Select client and click Generate
+    activate UI
+    UI->>SVC: GetClientProductRankingReport(clientId)
+    activate SVC
+    SVC->>REPO: GetClientProductRankingReport(clientId)
+    activate REPO
+    REPO->>DB: GetConnection()
+    DB-->>REPO: SqlConnection
+    Note over REPO: SELECT p.Name, p.SKU, SUM(sl.Quantity) AS TotalQty, SUM(sl.LineTotal) AS TotalSpent, COUNT(DISTINCT s.SaleId) AS PurchaseCount, RANK() OVER (ORDER BY SUM(sl.Quantity) DESC) AS Rank FROM SaleLines sl JOIN Sales s ON sl.SaleId=s.SaleId JOIN Products p ON sl.ProductId=p.ProductId WHERE s.ClientId=@ClientId GROUP BY p.ProductId, p.Name, p.SKU
+    REPO-->>SVC: List~ClientProductRankingReportDTO~
+    deactivate REPO
+    SVC-->>UI: List~ClientProductRankingReportDTO~
+    deactivate SVC
+    UI-->>User: Display client product ranking
+    deactivate UI
+```
+
+---
+
+## UC-03: GetClientPurchasesReport
+
+```mermaid
+sequenceDiagram
+    participant User as Business User
+    participant UI as ReportsForm
+    participant SVC as ReportService
+    participant REPO as ReportRepository
+    participant DB as Database
+
+    User->>UI: Set date range, optional client, click Generate
+    activate UI
+    UI->>SVC: GetClientPurchasesReport(startDate, endDate, clientId, topN)
+    activate SVC
+    SVC->>REPO: GetClientPurchasesReport(startDate, endDate, clientId, topN)
+    activate REPO
+    REPO->>DB: GetConnection()
+    DB-->>REPO: SqlConnection
+    Note over REPO: SELECT TOP(@TopN) c.Nombre+' '+c.Apellido, c.DNI, COUNT(s.SaleId) AS TotalPurchases, SUM(s.TotalAmount) AS TotalSpent, MAX(s.SaleDate) AS LastPurchase, AVG(s.TotalAmount) AS AvgTicket FROM Clients c JOIN Sales s ON c.ClientId=s.ClientId WHERE s.SaleDate BETWEEN @Start AND @End AND (@ClientId IS NULL OR c.ClientId=@ClientId) GROUP BY c.ClientId, c.Nombre, c.Apellido, c.DNI ORDER BY TotalSpent DESC
+    REPO-->>SVC: List~ClientPurchasesReportDTO~
+    deactivate REPO
+    SVC-->>UI: List~ClientPurchasesReportDTO~
+    deactivate SVC
+    UI-->>User: Display client purchases report
+    deactivate UI
+```
+
+---
+
+## UC-04: GetPriceVariationReport
+
+```mermaid
+sequenceDiagram
+    participant User as Business User
+    participant UI as ReportsForm
+    participant SVC as ReportService
+    participant REPO as ReportRepository
+    participant DB as Database
+
+    User->>UI: Set date range, product/category filter, click Generate
+    activate UI
+    UI->>SVC: GetPriceVariationReport(startDate, endDate, productId, category)
+    activate SVC
+    SVC->>REPO: GetPriceVariationReport(startDate, endDate, productId, category)
+    activate REPO
+    REPO->>DB: GetConnection()
+    DB-->>REPO: SqlConnection
+    Note over REPO: SELECT p.Name, p.SKU, p.Category, s.SaleDate, sl.UnitPrice, sl.UnitPrice - LAG(sl.UnitPrice) OVER (PARTITION BY p.ProductId ORDER BY s.SaleDate) AS PriceVariation, ... FROM SaleLines sl JOIN Sales s ON sl.SaleId=s.SaleId JOIN Products p ON sl.ProductId=p.ProductId WHERE s.SaleDate BETWEEN @Start AND @End
+    REPO-->>SVC: List~PriceVariationReportDTO~
+    deactivate REPO
+    SVC-->>UI: List~PriceVariationReportDTO~
+    deactivate SVC
+    UI-->>User: Display price variation report
+    deactivate UI
+```
+
+---
+
+## UC-05: GetRevenueByDateReport
+
+```mermaid
+sequenceDiagram
+    participant User as Business User
+    participant UI as ReportsForm
+    participant SVC as ReportService
+    participant REPO as ReportRepository
+    participant DB as Database
+
+    User->>UI: Set date range and groupBy (Day/Week/Month), click Generate
+    activate UI
+    UI->>SVC: GetRevenueByDateReport(startDate, endDate, groupBy)
+    activate SVC
+    SVC->>REPO: GetRevenueByDateReport(startDate, endDate, groupBy)
+    activate REPO
+    REPO->>DB: GetConnection()
+    DB-->>REPO: SqlConnection
+    Note over REPO: SELECT DATETRUNC(@GroupBy, s.SaleDate) AS Period, SUM(s.TotalAmount) AS TotalRevenue, COUNT(DISTINCT s.SaleId) AS TotalSales, SUM(sl.Quantity) AS TotalItemsSold FROM Sales s JOIN SaleLines sl ON s.SaleId=sl.SaleId WHERE s.SaleDate BETWEEN @Start AND @End GROUP BY DATETRUNC(@GroupBy, s.SaleDate) ORDER BY Period
+    REPO-->>SVC: List~RevenueByDateReportDTO~
+    deactivate REPO
+    SVC-->>UI: List~RevenueByDateReportDTO~
+    deactivate SVC
+    UI->>UI: Render time-series chart + grid
+    UI-->>User: Display revenue by date report
+    deactivate UI
+```
+
+---
+
+## UC-06: GetSellerPerformanceReport
+
+```mermaid
+sequenceDiagram
+    participant User as Business User
+    participant UI as ReportsForm
+    participant SVC as ReportService
+    participant REPO as ReportRepository
+    participant DB as Database
+
+    User->>UI: Set date range, optional seller/category, click Generate
+    activate UI
+    UI->>SVC: GetSellerPerformanceReport(startDate, endDate, sellerName, category)
+    activate SVC
+    SVC->>REPO: GetSellerPerformanceReport(startDate, endDate, sellerName, category)
+    activate REPO
+    REPO->>DB: GetConnection()
+    DB-->>REPO: SqlConnection
+    Note over REPO: SELECT s.SellerName, COUNT(s.SaleId) AS SalesCount, SUM(sl.Quantity) AS TotalUnits, SUM(s.TotalAmount) AS TotalRevenue, AVG(s.TotalAmount) AS AvgTicket, MIN(s.TotalAmount) AS MinSale, MAX(s.TotalAmount) AS MaxSale FROM Sales s JOIN SaleLines sl ON s.SaleId=sl.SaleId WHERE s.SaleDate BETWEEN @Start AND @End AND (@Seller IS NULL OR s.SellerName=@Seller) GROUP BY s.SellerName
+    REPO-->>SVC: List~SellerPerformanceReportDTO~
+    deactivate REPO
+    SVC-->>UI: List~SellerPerformanceReportDTO~
+    deactivate SVC
+    UI-->>User: Display seller performance report
+    deactivate UI
+```
+
+---
+
+## UC-07: GetTopProductsReport
+
+```mermaid
+sequenceDiagram
+    participant User as Business User
+    participant UI as ReportsForm
+    participant Auth as AuthorizationService
+    participant SVC as ReportService
+    participant REPO as ReportRepository
+    participant DB as Database
+    participant Log as ILogService
+
+    User->>UI: Open Reports Form
+    activate UI
+    UI->>Auth: HasAnyPermission(userId, ["VIEW_REPORTS_GENERAL","VIEW_REPORTS_ADVANCED"])
+    Auth-->>UI: true
+    UI->>UI: LoadReportTypes() — populate dropdown
+    UI-->>User: Display report form
+
+    User->>UI: Select "Top Products Report", set filters
+    User->>UI: Click "Generate Report"
+    UI->>UI: ValidateFilters()
+    UI->>SVC: GetTopProductsReport(startDate, endDate, category, topN, orderBy)
+    activate SVC
+    SVC->>Log: Info("Generating Top Products Report...")
+    SVC->>REPO: GetTopProductsReport(startDate, endDate, category, topN, orderBy)
+    activate REPO
+    REPO->>DB: GetConnection()
+    DB-->>REPO: SqlConnection
+    Note over REPO: SELECT TOP(@TopN) p.Name, p.SKU, p.Category, SUM(sl.Quantity) AS UnitsSold, SUM(sl.LineTotal) AS Revenue, COUNT(DISTINCT s.SaleId) AS TransactionCount FROM Products p JOIN SaleLines sl ON p.ProductId=sl.ProductId JOIN Sales s ON sl.SaleId=s.SaleId WHERE (@Start IS NULL OR s.SaleDate>=@Start) AND (@End IS NULL OR s.SaleDate<=@End) AND (@Category IS NULL OR p.Category=@Category) GROUP BY p.ProductId, p.Name, p.SKU, p.Category ORDER BY Revenue DESC
+    loop For each row
+        REPO->>REPO: MapTopProductsReport(reader)
+    end
+    REPO-->>SVC: List~TopProductsReportDTO~
+    deactivate REPO
+    SVC->>Log: Info("Report generated. Records: count")
+    SVC-->>UI: List~TopProductsReportDTO~
+    deactivate SVC
+    UI->>UI: dgvReport.DataSource = results
+    UI->>UI: Format currency/number columns
+    UI->>UI: Enable Export and Print buttons
+    UI-->>User: Display top products report with summary
+    deactivate UI
+
+    opt Export to Excel
+        User->>UI: Click "Export"
+        activate UI
+        UI->>UI: ExportToExcel()
+        UI->>Log: Info("Report exported")
+        UI-->>User: Save file dialog → file saved
+        deactivate UI
+    end
+```
+
+---
+
+## Report Access Permissions
+
+| Report | Required Permission |
+|--------|--------------------|
+| GetTopProductsReport | VIEW_REPORTS_GENERAL or VIEW_REPORTS_ADVANCED |
+| GetClientPurchasesReport | VIEW_REPORTS_CLIENTS |
+| GetPriceVariationReport | VIEW_REPORTS_ADVANCED |
+| GetSellerPerformanceReport | VIEW_REPORTS_ADVANCED |
+| GetCategorySalesReport | VIEW_REPORTS_GENERAL |
+| GetRevenueByDateReport | VIEW_REPORTS_GENERAL |
+| GetClientProductRankingReport | VIEW_REPORTS_CLIENTS |
 
 ```mermaid
 sequenceDiagram

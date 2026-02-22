@@ -1,11 +1,426 @@
-# Stock Movement Process - Class Diagram
+# Stock Movement Process - Class Diagrams (Per Use Case)
 
-## UML Class Diagram (Mermaid Format)
+This document contains UML Class Diagrams organized per use case for all Stock Movement operations.
+
+---
+
+## UC-01: CreateMovement
 
 ```mermaid
 classDiagram
-    %% UI Layer
     class StockMovementForm {
+        -StockMovementService _movementService
+        -ILogService _logService
+        +btnSave_Click(sender, e) void
+        -ValidateForm() bool
+        -LoadMovements() void
+    }
+
+    class StockMovementService {
+        -IStockMovementRepository _movementRepo
+        -IStockRepository _stockRepo
+        -IProductRepository _productRepo
+        -ILogService _logService
+        +CreateMovement(movement, lines) int
+        -ValidateMovement(movement, lines) void
+        -ValidateStockAvailability(movementType, sourceWh, productId, quantity) void
+        -UpdateStockForMovement(movementType, sourceWh, destWh, productId, quantity) void
+    }
+
+    class IStockMovementRepository {
+        <<interface>>
+        +Insert(movement) int
+        +InsertLine(line) void
+        +GenerateMovementNumber(movementType) string
+    }
+
+    class StockMovementRepository {
+        +Insert(movement) int
+        +InsertLine(line) void
+        +GenerateMovementNumber(movementType) string
+        -MapStockMovement(reader) StockMovement
+    }
+
+    class IStockRepository {
+        <<interface>>
+        +GetByProductAndWarehouse(productId, warehouseId) Stock
+        +DeductStock(productId, warehouseId, quantity) void
+        +AddStock(productId, warehouseId, quantity) void
+    }
+
+    class StockRepository {
+        +GetByProductAndWarehouse(productId, warehouseId) Stock
+        +DeductStock(productId, warehouseId, quantity) void
+        +AddStock(productId, warehouseId, quantity) void
+    }
+
+    class DatabaseHelper {
+        <<static>>
+        +GetConnection() SqlConnection
+    }
+
+    class StockMovement {
+        +int MovementId
+        +string MovementNumber
+        +DateTime MovementDate
+        +MovementType MovementType
+        +int SourceWarehouseId
+        +int DestinationWarehouseId
+        +string Remarks
+        +DateTime CreatedAt
+        +int CreatedBy
+        +List~StockMovementLine~ Lines
+    }
+
+    class StockMovementLine {
+        +int LineId
+        +int MovementId
+        +int ProductId
+        +string ProductName
+        +int Quantity
+    }
+
+    class MovementType {
+        <<enumeration>>
+        Entry
+        Exit
+        Transfer
+        Adjustment
+    }
+
+    StockMovementForm --> StockMovementService : uses
+    StockMovementService --> IStockMovementRepository : uses
+    StockMovementService --> IStockRepository : uses
+    StockMovementRepository ..|> IStockMovementRepository : implements
+    StockRepository ..|> IStockRepository : implements
+    StockMovementRepository --> DatabaseHelper : uses
+    StockMovement "1" --> "many" StockMovementLine : contains
+    StockMovement --> MovementType : has
+```
+
+---
+
+## UC-02: GetAllMovements
+
+```mermaid
+classDiagram
+    class StockMovementForm {
+        -StockMovementService _movementService
+        +LoadMovements() void
+    }
+
+    class StockMovementService {
+        -IStockMovementRepository _movementRepo
+        +GetAllMovements() List~StockMovement~
+    }
+
+    class IStockMovementRepository {
+        <<interface>>
+        +GetAll() List~StockMovement~
+    }
+
+    class StockMovementRepository {
+        +GetAll() List~StockMovement~
+    }
+
+    class StockMovement {
+        +int MovementId
+        +string MovementNumber
+        +DateTime MovementDate
+        +MovementType MovementType
+        +string Remarks
+    }
+
+    StockMovementForm --> StockMovementService : uses
+    StockMovementService --> IStockMovementRepository : uses
+    StockMovementRepository ..|> IStockMovementRepository : implements
+    StockMovementRepository --> StockMovement : returns
+```
+
+---
+
+## UC-03: GetAllMovementsById
+
+```mermaid
+classDiagram
+    class StockMovementForm {
+        -StockMovementService _movementService
+        +LoadMovementDetails(id) void
+    }
+
+    class StockMovementService {
+        -IStockMovementRepository _movementRepo
+        +GetMovementById(movementId) StockMovement
+    }
+
+    class IStockMovementRepository {
+        <<interface>>
+        +GetById(id) StockMovement
+    }
+
+    class StockMovementRepository {
+        +GetById(id) StockMovement
+    }
+
+    class StockMovement {
+        +int MovementId
+        +string MovementNumber
+        +MovementType MovementType
+        +DateTime MovementDate
+        +int SourceWarehouseId
+        +int DestinationWarehouseId
+    }
+
+    StockMovementForm --> StockMovementService : uses
+    StockMovementService --> IStockMovementRepository : uses
+    StockMovementRepository ..|> IStockMovementRepository : implements
+    StockMovementRepository --> StockMovement : returns
+```
+
+---
+
+## UC-04: GetMovementLines
+
+```mermaid
+classDiagram
+    class StockMovementForm {
+        -StockMovementService _movementService
+        +LoadMovementLines(movementId) void
+    }
+
+    class StockMovementService {
+        -IStockMovementRepository _movementRepo
+        +GetMovementLines(movementId) List~StockMovementLine~
+    }
+
+    class IStockMovementRepository {
+        <<interface>>
+        +GetMovementLines(movementId) List~StockMovementLine~
+    }
+
+    class StockMovementRepository {
+        +GetMovementLines(movementId) List~StockMovementLine~
+        -MapStockMovementLine(reader) StockMovementLine
+    }
+
+    class StockMovementLine {
+        +int LineId
+        +int MovementId
+        +int ProductId
+        +string ProductName
+        +string SKU
+        +int Quantity
+    }
+
+    StockMovementForm --> StockMovementService : uses
+    StockMovementService --> IStockMovementRepository : uses
+    StockMovementRepository ..|> IStockMovementRepository : implements
+    StockMovementRepository --> StockMovementLine : returns
+```
+
+---
+
+## UC-05: GetMovementsByDateRange
+
+```mermaid
+classDiagram
+    class StockMovementForm {
+        -StockMovementService _movementService
+        +FilterByDateRange(from, to) void
+    }
+
+    class StockMovementService {
+        -IStockMovementRepository _movementRepo
+        +GetMovementsByDateRange(startDate, endDate) List~StockMovement~
+    }
+
+    class IStockMovementRepository {
+        <<interface>>
+        +GetByDateRange(startDate, endDate) List~StockMovement~
+    }
+
+    class StockMovementRepository {
+        +GetByDateRange(startDate, endDate) List~StockMovement~
+    }
+
+    class StockMovement {
+        +int MovementId
+        +string MovementNumber
+        +MovementType MovementType
+        +DateTime MovementDate
+    }
+
+    StockMovementForm --> StockMovementService : uses
+    StockMovementService --> IStockMovementRepository : uses
+    StockMovementRepository ..|> IStockMovementRepository : implements
+    StockMovementRepository --> StockMovement : returns
+```
+
+---
+
+## UC-06: GetMovementsByType
+
+```mermaid
+classDiagram
+    class StockMovementForm {
+        -StockMovementService _movementService
+        +FilterByType(movementType) void
+    }
+
+    class StockMovementService {
+        -IStockMovementRepository _movementRepo
+        +GetMovementsByType(movementType) List~StockMovement~
+    }
+
+    class IStockMovementRepository {
+        <<interface>>
+        +GetByType(movementType) List~StockMovement~
+    }
+
+    class StockMovementRepository {
+        +GetByType(movementType) List~StockMovement~
+    }
+
+    class StockMovement {
+        +int MovementId
+        +string MovementNumber
+        +MovementType MovementType
+        +DateTime MovementDate
+    }
+
+    class MovementType {
+        <<enumeration>>
+        Entry
+        Exit
+        Transfer
+        Adjustment
+    }
+
+    StockMovementForm --> StockMovementService : uses
+    StockMovementService --> IStockMovementRepository : uses
+    StockMovementRepository ..|> IStockMovementRepository : implements
+    StockMovement --> MovementType : has
+```
+
+---
+
+## UC-07: UpdateProductPrices
+
+```mermaid
+classDiagram
+    class StockMovementService {
+        -IStockMovementRepository _movementRepo
+        -IProductRepository _productRepo
+        -ILogService _logService
+        +UpdateProductPrices(movementId) void
+        +CheckPriceUpdates(movementId) bool
+    }
+
+    class IStockMovementRepository {
+        <<interface>>
+        +GetMovementLines(movementId) List~StockMovementLine~
+    }
+
+    class IProductRepository {
+        <<interface>>
+        +Update(product) void
+        +GetById(id) Product
+    }
+
+    class ProductRepository {
+        +Update(product) void
+        +GetById(id) Product
+    }
+
+    class StockMovementLine {
+        +int LineId
+        +int ProductId
+        +int Quantity
+        +decimal UnitPrice
+    }
+
+    class Product {
+        +int ProductId
+        +string Name
+        +decimal UnitPrice
+    }
+
+    StockMovementService --> IStockMovementRepository : uses
+    StockMovementService --> IProductRepository : uses
+    ProductRepository ..|> IProductRepository : implements
+    StockMovementLine --> Product : references
+```
+
+---
+
+## UC-08: UpdateStockForMovement
+
+```mermaid
+classDiagram
+    class StockMovementService {
+        -IStockMovementRepository _movementRepo
+        -IStockRepository _stockRepo
+        -ILogService _logService
+        +UpdateStockForMovement(movementType, sourceWh, destWh, productId, quantity) void
+    }
+
+    class IStockMovementRepository {
+        <<interface>>
+        +GetById(id) StockMovement
+        +GetMovementLines(movementId) List~StockMovementLine~
+    }
+
+    class IStockRepository {
+        <<interface>>
+        +GetByProductAndWarehouse(productId, warehouseId) Stock
+        +DeductStock(productId, warehouseId, quantity) void
+        +AddStock(productId, warehouseId, quantity) void
+        +TransferStock(productId, sourceWh, destWh, quantity) void
+    }
+
+    class StockMovementRepository {
+        +GetById(id) StockMovement
+        +GetMovementLines(movementId) List~StockMovementLine~
+    }
+
+    class StockRepository {
+        +DeductStock(productId, warehouseId, quantity) void
+        +AddStock(productId, warehouseId, quantity) void
+        +TransferStock(productId, sourceWh, destWh, quantity) void
+    }
+
+    class StockMovement {
+        +int MovementId
+        +MovementType MovementType
+        +int SourceWarehouseId
+        +int DestinationWarehouseId
+    }
+
+    class Stock {
+        +int StockId
+        +int ProductId
+        +int WarehouseId
+        +int Quantity
+        +DateTime LastUpdated
+    }
+
+    StockMovementService --> IStockMovementRepository : uses
+    StockMovementService --> IStockRepository : uses
+    StockMovementRepository ..|> IStockMovementRepository : implements
+    StockRepository ..|> IStockRepository : implements
+    StockMovement --> Stock : affects
+```
+
+---
+
+## Movement Types & Stock Operations
+
+| MovementType | SourceWarehouse | DestinationWarehouse | Stock Operation |
+|--------------|-----------------|----------------------|-----------------|
+| Entry | Not required | Required | Add to destination |
+| Exit | Required | Not required | Deduct from source |
+| Transfer | Required | Required | Deduct source + Add destination |
+| Adjustment | Required | Not required | Set absolute quantity |
         -StockMovementService _movementService
         -ProductService _productService
         -WarehouseService _warehouseService

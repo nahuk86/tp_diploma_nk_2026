@@ -1,11 +1,580 @@
-# Role & Permissions Management Process - Class Diagram
+# Role & Permissions Management Process - Class Diagrams (Per Use Case)
 
-## UML Class Diagram (Mermaid Format)
+This document contains UML Class Diagrams organized per use case for all Role and Permission operations.
+
+---
+
+## UC-01: CreateRole
 
 ```mermaid
 classDiagram
-    %% UI Layer
     class RolesForm {
+        -RoleService _roleService
+        -ILogService _logService
+        +btnSave_Click(sender, e) void
+        -ValidateForm() bool
+        -LoadRoles() void
+    }
+
+    class RoleService {
+        -IRoleRepository _roleRepo
+        -ILogService _logService
+        +CreateRole(role) int
+        -ValidateRole(role) void
+    }
+
+    class IRoleRepository {
+        <<interface>>
+        +Insert(role) int
+        +GetByName(name) Role
+    }
+
+    class RoleRepository {
+        +Insert(role) int
+        +GetByName(name) Role
+        -MapRole(reader) Role
+    }
+
+    class DatabaseHelper {
+        <<static>>
+        +GetConnection() SqlConnection
+    }
+
+    class Role {
+        +int RoleId
+        +string RoleName
+        +string Description
+        +bool IsActive
+        +DateTime CreatedAt
+        +int CreatedBy
+    }
+
+    RolesForm --> RoleService : uses
+    RoleService --> IRoleRepository : uses
+    RoleRepository ..|> IRoleRepository : implements
+    RoleRepository --> DatabaseHelper : uses
+    RoleRepository --> Role : maps
+```
+
+---
+
+## UC-02: DeleteRole
+
+```mermaid
+classDiagram
+    class RolesForm {
+        -RoleService _roleService
+        +btnDelete_Click(sender, e) void
+        -LoadRoles() void
+    }
+
+    class RoleService {
+        -IRoleRepository _roleRepo
+        +DeleteRole(roleId) void
+    }
+
+    class IRoleRepository {
+        <<interface>>
+        +SoftDelete(id, deletedBy) void
+    }
+
+    class RoleRepository {
+        +SoftDelete(id, deletedBy) void
+    }
+
+    class Role {
+        +int RoleId
+        +string RoleName
+        +bool IsActive
+    }
+
+    RolesForm --> RoleService : uses
+    RoleService --> IRoleRepository : uses
+    RoleRepository ..|> IRoleRepository : implements
+    RoleRepository --> Role : maps
+```
+
+---
+
+## UC-03: AssignPermissions
+
+```mermaid
+classDiagram
+    class RolePermissionsForm {
+        -RoleService _roleService
+        -ILogService _logService
+        -int _roleId
+        -CheckedListBox clbPermissions
+        +LoadPermissions() void
+        +LoadRolePermissions() void
+        +btnSave_Click(sender, e) void
+    }
+
+    class RoleService {
+        -IPermissionRepository _permRepo
+        -IAuditLogRepository _auditRepo
+        -ILogService _logService
+        +AssignPermissions(roleId, permissionIds) void
+        +GetAllPermissions() List~Permission~
+        +GetRolePermissions(roleId) List~Permission~
+    }
+
+    class IPermissionRepository {
+        <<interface>>
+        +GetAll() List~Permission~
+        +GetRolePermissions(roleId) List~Permission~
+        +AssignPermissionsToRole(roleId, permissionIds) void
+    }
+
+    class PermissionRepository {
+        +GetAll() List~Permission~
+        +GetRolePermissions(roleId) List~Permission~
+        +AssignPermissionsToRole(roleId, permissionIds) void
+        -MapPermission(reader) Permission
+    }
+
+    class DatabaseHelper {
+        <<static>>
+        +GetConnection() SqlConnection
+    }
+
+    class Permission {
+        +int PermissionId
+        +string PermissionName
+        +string Description
+        +string Category
+        +bool IsActive
+    }
+
+    class RolePermission {
+        <<join_table>>
+        +int RoleId
+        +int PermissionId
+        +DateTime AssignedAt
+        +int AssignedBy
+    }
+
+    RolePermissionsForm --> RoleService : uses
+    RoleService --> IPermissionRepository : uses
+    PermissionRepository ..|> IPermissionRepository : implements
+    PermissionRepository --> DatabaseHelper : uses
+    PermissionRepository --> Permission : returns
+    Permission "many" --> "many" RolePermission : linked via
+```
+
+---
+
+## UC-04: GetActiveRoles
+
+```mermaid
+classDiagram
+    class RolesForm {
+        -RoleService _roleService
+        +LoadActiveRoles() void
+    }
+
+    class RoleService {
+        -IRoleRepository _roleRepo
+        +GetActiveRoles() List~Role~
+    }
+
+    class IRoleRepository {
+        <<interface>>
+        +GetAll() List~Role~
+    }
+
+    class RoleRepository {
+        +GetAll() List~Role~
+    }
+
+    class Role {
+        +int RoleId
+        +string RoleName
+        +string Description
+        +bool IsActive
+    }
+
+    RolesForm --> RoleService : uses
+    RoleService --> IRoleRepository : uses
+    RoleRepository ..|> IRoleRepository : implements
+    RoleRepository --> Role : returns
+```
+
+---
+
+## UC-05: GetAllPermissions
+
+```mermaid
+classDiagram
+    class RolePermissionsForm {
+        -RoleService _roleService
+        +LoadPermissions() void
+    }
+
+    class RoleService {
+        -IPermissionRepository _permRepo
+        +GetAllPermissions() List~Permission~
+    }
+
+    class IPermissionRepository {
+        <<interface>>
+        +GetAll() List~Permission~
+    }
+
+    class PermissionRepository {
+        +GetAll() List~Permission~
+    }
+
+    class Permission {
+        +int PermissionId
+        +string PermissionName
+        +string Category
+        +bool IsActive
+    }
+
+    RolePermissionsForm --> RoleService : uses
+    RoleService --> IPermissionRepository : uses
+    PermissionRepository ..|> IPermissionRepository : implements
+    PermissionRepository --> Permission : returns
+```
+
+---
+
+## UC-06: GetAllRoles
+
+```mermaid
+classDiagram
+    class RolesForm {
+        -RoleService _roleService
+        +LoadRoles() void
+    }
+
+    class RoleService {
+        -IRoleRepository _roleRepo
+        +GetAllRoles() List~Role~
+    }
+
+    class IRoleRepository {
+        <<interface>>
+        +GetAll() List~Role~
+    }
+
+    class RoleRepository {
+        +GetAll() List~Role~
+    }
+
+    class Role {
+        +int RoleId
+        +string RoleName
+        +string Description
+        +bool IsActive
+        +DateTime CreatedAt
+    }
+
+    RolesForm --> RoleService : uses
+    RoleService --> IRoleRepository : uses
+    RoleRepository ..|> IRoleRepository : implements
+    RoleRepository --> Role : returns
+```
+
+---
+
+## UC-07: GetRoleById
+
+```mermaid
+classDiagram
+    class RolesForm {
+        -RoleService _roleService
+        +LoadRoleDetails(id) void
+    }
+
+    class RoleService {
+        -IRoleRepository _roleRepo
+        +GetRoleById(roleId) Role
+    }
+
+    class IRoleRepository {
+        <<interface>>
+        +GetById(id) Role
+    }
+
+    class RoleRepository {
+        +GetById(id) Role
+    }
+
+    class Role {
+        +int RoleId
+        +string RoleName
+        +string Description
+        +bool IsActive
+        +DateTime CreatedAt
+        +DateTime UpdatedAt
+    }
+
+    RolesForm --> RoleService : uses
+    RoleService --> IRoleRepository : uses
+    RoleRepository ..|> IRoleRepository : implements
+    RoleRepository --> Role : returns
+```
+
+---
+
+## UC-08: GetRolePermissions
+
+```mermaid
+classDiagram
+    class RolePermissionsForm {
+        -RoleService _roleService
+        +LoadRolePermissions(roleId) void
+    }
+
+    class RoleService {
+        -IPermissionRepository _permRepo
+        +GetRolePermissions(roleId) List~Permission~
+    }
+
+    class IPermissionRepository {
+        <<interface>>
+        +GetRolePermissions(roleId) List~Permission~
+    }
+
+    class PermissionRepository {
+        +GetRolePermissions(roleId) List~Permission~
+    }
+
+    class Permission {
+        +int PermissionId
+        +string PermissionName
+        +string Category
+        +bool IsActive
+    }
+
+    RolePermissionsForm --> RoleService : uses
+    RoleService --> IPermissionRepository : uses
+    PermissionRepository ..|> IPermissionRepository : implements
+    PermissionRepository --> Permission : returns
+```
+
+---
+
+## UC-09: UpdateRole
+
+```mermaid
+classDiagram
+    class RolesForm {
+        -RoleService _roleService
+        +btnSave_Click(sender, e) void
+        -ValidateForm() bool
+    }
+
+    class RoleService {
+        -IRoleRepository _roleRepo
+        +UpdateRole(role) void
+        -ValidateRole(role) void
+    }
+
+    class IRoleRepository {
+        <<interface>>
+        +Update(role) void
+        +GetByName(name) Role
+    }
+
+    class RoleRepository {
+        +Update(role) void
+    }
+
+    class Role {
+        +int RoleId
+        +string RoleName
+        +string Description
+        +bool IsActive
+        +DateTime UpdatedAt
+        +int UpdatedBy
+    }
+
+    RolesForm --> RoleService : uses
+    RoleService --> IRoleRepository : uses
+    RoleRepository ..|> IRoleRepository : implements
+    RoleRepository --> Role : maps
+```
+
+---
+
+## UC-10: GetUserPermissions
+
+```mermaid
+classDiagram
+    class AuthorizationService {
+        -IPermissionRepository _permRepo
+        -ILogService _logService
+        +GetUserPermissions(userId) List~Permission~
+    }
+
+    class IPermissionRepository {
+        <<interface>>
+        +GetUserPermissions(userId) List~Permission~
+    }
+
+    class PermissionRepository {
+        +GetUserPermissions(userId) List~Permission~
+    }
+
+    class Permission {
+        +int PermissionId
+        +string PermissionName
+        +string Category
+        +bool IsActive
+    }
+
+    class IAuthorizationService {
+        <<interface>>
+        +GetUserPermissions(userId) List~Permission~
+    }
+
+    AuthorizationService ..|> IAuthorizationService : implements
+    AuthorizationService --> IPermissionRepository : uses
+    PermissionRepository ..|> IPermissionRepository : implements
+    PermissionRepository --> Permission : returns
+```
+
+---
+
+## UC-11: HasAllPermissions
+
+```mermaid
+classDiagram
+    class AuthorizationService {
+        -IPermissionRepository _permRepo
+        +HasAllPermissions(userId, permissions) bool
+        -LoadUserPermissions(userId) List~Permission~
+    }
+
+    class IAuthorizationService {
+        <<interface>>
+        +HasAllPermissions(userId, permissions) bool
+    }
+
+    class IPermissionRepository {
+        <<interface>>
+        +GetUserPermissions(userId) List~Permission~
+    }
+
+    class Permission {
+        +int PermissionId
+        +string PermissionName
+    }
+
+    AuthorizationService ..|> IAuthorizationService : implements
+    AuthorizationService --> IPermissionRepository : uses
+    IPermissionRepository --> Permission : returns
+```
+
+---
+
+## UC-12: HasAnyPermission
+
+```mermaid
+classDiagram
+    class AuthorizationService {
+        -IPermissionRepository _permRepo
+        +HasAnyPermission(userId, permissions) bool
+        -LoadUserPermissions(userId) List~Permission~
+    }
+
+    class IAuthorizationService {
+        <<interface>>
+        +HasAnyPermission(userId, permissions) bool
+    }
+
+    class IPermissionRepository {
+        <<interface>>
+        +GetUserPermissions(userId) List~Permission~
+    }
+
+    class Permission {
+        +int PermissionId
+        +string PermissionName
+    }
+
+    AuthorizationService ..|> IAuthorizationService : implements
+    AuthorizationService --> IPermissionRepository : uses
+    IPermissionRepository --> Permission : returns
+```
+
+---
+
+## UC-13: HasPermission
+
+```mermaid
+classDiagram
+    class AuthorizationService {
+        -IPermissionRepository _permRepo
+        -ILogService _logService
+        +HasPermission(userId, permissionName) bool
+        -LoadUserPermissionsCache(userId) void
+    }
+
+    class IAuthorizationService {
+        <<interface>>
+        +HasPermission(userId, permissionName) bool
+    }
+
+    class IPermissionRepository {
+        <<interface>>
+        +GetUserPermissions(userId) List~Permission~
+    }
+
+    class PermissionRepository {
+        +GetUserPermissions(userId) List~Permission~
+    }
+
+    class SessionContext {
+        <<static>>
+        +CurrentUserId int
+    }
+
+    class Permission {
+        +int PermissionId
+        +string PermissionName
+        +string Category
+    }
+
+    AuthorizationService ..|> IAuthorizationService : implements
+    AuthorizationService --> IPermissionRepository : uses
+    AuthorizationService --> SessionContext : reads
+    PermissionRepository ..|> IPermissionRepository : implements
+    PermissionRepository --> Permission : returns
+```
+
+---
+
+## Layer Communication Flow
+
+```
+┌─────────────────────┐
+│    UI LAYER         │  RolesForm / RolePermissionsForm
+└──────────┬──────────┘
+           │ uses
+           ▼
+┌─────────────────────┐
+│   BLL LAYER         │  RoleService
+└──────────┬──────────┘
+           │ calls
+           ├──────────────────────┐
+           ▼                      ▼
+┌─────────────────────┐  ┌─────────────────────┐
+│   DAO LAYER         │  │    SERVICES         │
+│ RoleRepository      │  │ AuthorizationService│
+│ PermissionRepository│  │ LogService          │
+│ AuditLogRepository  │  │ SessionContext      │
+└─────────────────────┘  └─────────────────────┘
+```
+
+## RBAC Model
+
+```
+User → UserRoles → Role → RolePermissions → Permission
+```
         -RoleService _roleService
         -IAuthorizationService _authService
         -ILocalizationService _localizationService

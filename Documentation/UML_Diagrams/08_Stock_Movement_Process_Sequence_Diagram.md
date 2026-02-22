@@ -1,6 +1,294 @@
-# Stock Movement Process - Sequence Diagram (Transfer Movement)
+# Stock Movement Process - Sequence Diagrams (Per Use Case)
 
-## UML Sequence Diagram (Mermaid Format)
+This document contains UML Sequence Diagrams organized per use case for all Stock Movement operations.
+
+---
+
+## UC-01: CreateMovement
+
+```mermaid
+sequenceDiagram
+    participant User as Warehouse Manager
+    participant UI as StockMovementForm
+    participant MoveSvc as StockMovementService
+    participant MoveRepo as StockMovementRepository
+    participant StockRepo as StockRepository
+    participant DB as Database
+
+    User->>UI: Fill movement form + lines, click "Save"
+    activate UI
+    UI->>UI: ValidateForm()
+    alt Validation Fails
+        UI-->>User: Show validation errors
+    else Validation Passes
+        UI->>MoveSvc: CreateMovement(movement, lines)
+        activate MoveSvc
+        MoveSvc->>MoveSvc: ValidateMovement(movement, lines)
+        loop For each line
+            MoveSvc->>MoveSvc: ValidateStockAvailability(type, sourceWh, productId, quantity)
+            MoveSvc->>StockRepo: GetByProductAndWarehouse(productId, sourceWh)
+            StockRepo->>DB: SELECT * FROM Stock WHERE ProductId=@P AND WarehouseId=@W
+            DB-->>StockRepo: Stock
+            StockRepo-->>MoveSvc: Stock entity
+        end
+        MoveSvc->>MoveRepo: GenerateMovementNumber(movementType)
+        MoveRepo->>DB: SELECT COUNT(*) FROM StockMovements WHERE MovementType=@T AND YEAR(MovementDate)=YEAR(GETDATE())
+        DB-->>MoveRepo: count
+        MoveRepo-->>MoveSvc: movementNumber (e.g. TRF-2026-0001)
+        MoveSvc->>MoveRepo: Insert(movement)
+        activate MoveRepo
+        MoveRepo->>DB: BEGIN TRANSACTION
+        Note over MoveRepo: INSERT INTO StockMovements (...) → movementId
+        MoveRepo-->>MoveSvc: movementId
+        loop For each line
+            MoveSvc->>MoveRepo: InsertLine(line)
+            Note over MoveRepo: INSERT INTO StockMovementLines (...)
+            MoveRepo-->>MoveSvc: void
+            MoveSvc->>MoveSvc: UpdateStockForMovement(type, sourceWh, destWh, productId, qty)
+            alt Entry
+                MoveSvc->>StockRepo: AddStock(productId, destWh, qty)
+            else Exit
+                MoveSvc->>StockRepo: DeductStock(productId, sourceWh, qty)
+            else Transfer
+                MoveSvc->>StockRepo: DeductStock(productId, sourceWh, qty)
+                MoveSvc->>StockRepo: AddStock(productId, destWh, qty)
+            else Adjustment
+                MoveSvc->>StockRepo: UpdateQuantity(productId, sourceWh, qty)
+            end
+        end
+        MoveRepo->>DB: COMMIT TRANSACTION
+        deactivate MoveRepo
+        MoveSvc-->>UI: movementId
+        deactivate MoveSvc
+        UI->>MoveSvc: GetAllMovements()
+        MoveSvc-->>UI: List~StockMovement~
+        UI-->>User: Show success & refresh grid
+    end
+    deactivate UI
+```
+
+---
+
+## UC-02: GetAllMovements
+
+```mermaid
+sequenceDiagram
+    participant UI as StockMovementForm
+    participant SVC as StockMovementService
+    participant REPO as StockMovementRepository
+    participant DB as Database
+
+    UI->>SVC: GetAllMovements()
+    activate SVC
+    SVC->>REPO: GetAll()
+    activate REPO
+    REPO->>DB: GetConnection()
+    DB-->>REPO: SqlConnection
+    Note over REPO: SELECT * FROM StockMovements ORDER BY MovementDate DESC
+    REPO->>REPO: MapStockMovement(reader) for each row
+    REPO-->>SVC: List~StockMovement~
+    deactivate REPO
+    SVC-->>UI: List~StockMovement~
+    deactivate SVC
+    UI->>UI: Bind to DataGridView
+```
+
+---
+
+## UC-03: GetAllMovementsById
+
+```mermaid
+sequenceDiagram
+    participant UI as StockMovementForm
+    participant SVC as StockMovementService
+    participant REPO as StockMovementRepository
+    participant DB as Database
+
+    UI->>SVC: GetMovementById(movementId)
+    activate SVC
+    SVC->>REPO: GetById(id)
+    activate REPO
+    REPO->>DB: GetConnection()
+    DB-->>REPO: SqlConnection
+    Note over REPO: SELECT * FROM StockMovements WHERE MovementId=@Id
+    REPO-->>SVC: StockMovement
+    deactivate REPO
+    alt Not found
+        SVC-->>UI: null
+        UI-->>UI: Show not found message
+    else Found
+        SVC-->>UI: StockMovement
+        deactivate SVC
+        UI->>UI: Populate form details
+    end
+```
+
+---
+
+## UC-04: GetMovementLines
+
+```mermaid
+sequenceDiagram
+    participant UI as StockMovementForm
+    participant SVC as StockMovementService
+    participant REPO as StockMovementRepository
+    participant DB as Database
+
+    UI->>SVC: GetMovementLines(movementId)
+    activate SVC
+    SVC->>REPO: GetMovementLines(movementId)
+    activate REPO
+    REPO->>DB: GetConnection()
+    DB-->>REPO: SqlConnection
+    Note over REPO: SELECT sml.*, p.Name, p.SKU FROM StockMovementLines sml JOIN Products p ON sml.ProductId=p.ProductId WHERE sml.MovementId=@Id
+    REPO-->>SVC: List~StockMovementLine~
+    deactivate REPO
+    SVC-->>UI: List~StockMovementLine~
+    deactivate SVC
+    UI->>UI: Bind lines to DataGridView
+```
+
+---
+
+## UC-05: GetMovementsByDateRange
+
+```mermaid
+sequenceDiagram
+    participant UI as StockMovementForm
+    participant SVC as StockMovementService
+    participant REPO as StockMovementRepository
+    participant DB as Database
+
+    UI->>UI: User selects date range
+    UI->>SVC: GetMovementsByDateRange(startDate, endDate)
+    activate SVC
+    SVC->>REPO: GetByDateRange(startDate, endDate)
+    activate REPO
+    REPO->>DB: GetConnection()
+    DB-->>REPO: SqlConnection
+    Note over REPO: SELECT * FROM StockMovements WHERE MovementDate BETWEEN @Start AND @End ORDER BY MovementDate DESC
+    REPO-->>SVC: List~StockMovement~
+    deactivate REPO
+    SVC-->>UI: List~StockMovement~
+    deactivate SVC
+    UI->>UI: Bind filtered results
+```
+
+---
+
+## UC-06: GetMovementsByType
+
+```mermaid
+sequenceDiagram
+    participant UI as StockMovementForm
+    participant SVC as StockMovementService
+    participant REPO as StockMovementRepository
+    participant DB as Database
+
+    UI->>UI: User selects movement type filter
+    UI->>SVC: GetMovementsByType(movementType)
+    activate SVC
+    SVC->>REPO: GetByType(movementType)
+    activate REPO
+    REPO->>DB: GetConnection()
+    DB-->>REPO: SqlConnection
+    Note over REPO: SELECT * FROM StockMovements WHERE MovementType=@Type ORDER BY MovementDate DESC
+    REPO-->>SVC: List~StockMovement~
+    deactivate REPO
+    SVC-->>UI: List~StockMovement~
+    deactivate SVC
+    UI->>UI: Bind filtered results
+```
+
+---
+
+## UC-07: UpdateProductPrices
+
+```mermaid
+sequenceDiagram
+    participant SVC as StockMovementService
+    participant MREPO as StockMovementRepository
+    participant PREPO as ProductRepository
+    participant DB as Database
+
+    Note over SVC: Triggered after Entry movement creation
+    SVC->>SVC: CheckPriceUpdates(movementId)
+    SVC->>MREPO: GetMovementLines(movementId)
+    MREPO->>DB: GetConnection()
+    DB-->>MREPO: SqlConnection
+    MREPO-->>SVC: List~StockMovementLine~
+    loop For each line where line.UnitPrice > 0
+        SVC->>PREPO: GetById(productId)
+        PREPO-->>SVC: Product
+        SVC->>PREPO: Update(product with new UnitPrice)
+        activate PREPO
+        PREPO->>DB: GetConnection()
+        DB-->>PREPO: SqlConnection
+        Note over PREPO: UPDATE Products SET UnitPrice=@NewPrice WHERE ProductId=@Id
+        PREPO-->>SVC: void
+        deactivate PREPO
+    end
+    SVC-->>SVC: Prices updated
+```
+
+---
+
+## UC-08: UpdateStockForMovement
+
+```mermaid
+sequenceDiagram
+    participant SVC as StockMovementService
+    participant MREPO as StockMovementRepository
+    participant SREPO as StockRepository
+    participant DB as Database
+
+    SVC->>MREPO: GetById(movementId)
+    MREPO-->>SVC: StockMovement
+    SVC->>MREPO: GetMovementLines(movementId)
+    MREPO-->>SVC: List~StockMovementLine~
+    alt MovementType = Entry
+        loop For each line
+            SVC->>SREPO: AddStock(productId, destWh, +qty)
+            SREPO->>DB: MERGE INTO Stock SET Quantity=Quantity+@Qty ...
+            DB-->>SREPO: Success
+        end
+    else MovementType = Exit
+        loop For each line
+            SVC->>SREPO: DeductStock(productId, sourceWh, qty)
+            SREPO->>DB: UPDATE Stock SET Quantity=Quantity-@Qty ...
+            alt Stock goes negative
+                SREPO->>DB: ROLLBACK
+                SREPO-->>SVC: throw Exception
+            else
+                DB-->>SREPO: Success
+            end
+        end
+    else MovementType = Transfer
+        loop For each line
+            SVC->>SREPO: DeductStock(productId, sourceWh, qty)
+            SREPO-->>SVC: void
+            SVC->>SREPO: AddStock(productId, destWh, qty)
+            SREPO-->>SVC: void
+        end
+    else MovementType = Adjustment
+        loop For each line
+            SVC->>SREPO: UpdateQuantity(productId, warehouseId, newQty)
+            SREPO-->>SVC: void
+        end
+    end
+    SVC-->>SVC: Stock updated
+```
+
+---
+
+## Business Rules Summary
+
+| Use Case | Key Business Rules |
+|----------|-------------------|
+| CreateMovement | Movement number auto-generated per type+year; stock validated; atomic transaction |
+| UpdateStockForMovement | Entry/Exit/Transfer/Adjustment have different stock operations |
+| UpdateProductPrices | Only triggered for Entry movements with unit price specified |
+| GetMovementsByType | Supports: Entry, Exit, Transfer, Adjustment |
 
 ```mermaid
 sequenceDiagram

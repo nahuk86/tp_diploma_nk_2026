@@ -1,6 +1,375 @@
-# Sales Management Process - Sequence Diagram (Create Sale)
+# Sales Management Process - Sequence Diagrams (Per Use Case)
 
-## UML Sequence Diagram (Mermaid Format)
+This document contains UML Sequence Diagrams organized per use case for all Sales Management operations.
+
+---
+
+## UC-01: CreateSale
+
+```mermaid
+sequenceDiagram
+    participant User as Sales User
+    participant UI as SalesForm
+    participant SaleSvc as SaleService
+    participant SaleRepo as SaleRepository
+    participant StockRepo as StockRepository
+    participant DB as Database
+
+    User->>UI: Fill sale header + lines, click "Save"
+    activate UI
+    UI->>UI: ValidateForm()
+    alt Validation Fails
+        UI-->>User: Show validation errors
+    else Validation Passes
+        UI->>SaleSvc: CreateSale(sale, saleLines, currentUserId)
+        activate SaleSvc
+        SaleSvc->>SaleSvc: ValidateSale(sale, saleLines)
+        SaleSvc->>SaleSvc: GenerateSaleNumber()
+        Note over SaleSvc: Format: SALE-{yyyyMMdd}-{seq}
+        loop For each line
+            SaleSvc->>StockRepo: GetByProduct(productId)
+            StockRepo-->>SaleSvc: List~Stock~
+            Note over SaleSvc: Verify available stock
+        end
+        SaleSvc->>SaleRepo: CreateWithLines(sale, saleLines)
+        activate SaleRepo
+        SaleRepo->>DB: BEGIN TRANSACTION
+        Note over SaleRepo: INSERT INTO Sales (...) → saleId
+        loop For each line
+            Note over SaleRepo: INSERT INTO SaleLines (SaleId, ProductId, Qty, ...)
+        end
+        SaleRepo->>DB: COMMIT
+        SaleRepo-->>SaleSvc: saleId
+        deactivate SaleRepo
+        SaleSvc->>SaleSvc: DeductInventoryForSale(saleLines, userId, saleNumber)
+        loop For each line
+            SaleSvc->>StockRepo: DeductStock(productId, warehouseId, quantity)
+            StockRepo->>DB: UPDATE Stock SET Quantity=Quantity-@Qty ...
+        end
+        SaleSvc-->>UI: saleId
+        deactivate SaleSvc
+        UI->>SaleSvc: GetAllSalesWithDetails()
+        SaleSvc-->>UI: List~Sale~
+        UI-->>User: Show success & refresh grid
+    end
+    deactivate UI
+```
+
+---
+
+## UC-02: DeleteSale
+
+```mermaid
+sequenceDiagram
+    participant User as Sales User
+    participant UI as SalesForm
+    participant SVC as SaleService
+    participant REPO as SaleRepository
+    participant DB as Database
+
+    User->>UI: Select sale, click "Delete"
+    activate UI
+    UI->>UI: Confirm deletion dialog
+    alt User cancels
+        UI-->>User: Do nothing
+    else User confirms
+        UI->>SVC: DeleteSale(saleId, currentUserId)
+        activate SVC
+        SVC->>REPO: SoftDelete(id, deletedBy)
+        activate REPO
+        REPO->>DB: GetConnection()
+        DB-->>REPO: SqlConnection
+        Note over REPO: UPDATE Sales SET IsActive=0, UpdatedAt=@Now WHERE SaleId=@Id
+        REPO-->>SVC: void
+        deactivate REPO
+        SVC-->>UI: void
+        deactivate SVC
+        UI->>SVC: GetAllSales()
+        SVC-->>UI: List~Sale~
+        UI-->>User: Show success & refresh grid
+    end
+    deactivate UI
+```
+
+---
+
+## UC-03: GetAllSales
+
+```mermaid
+sequenceDiagram
+    participant UI as SalesForm
+    participant SVC as SaleService
+    participant REPO as SaleRepository
+    participant DB as Database
+
+    UI->>SVC: GetAllSales()
+    activate SVC
+    SVC->>REPO: GetAll()
+    activate REPO
+    REPO->>DB: GetConnection()
+    DB-->>REPO: SqlConnection
+    Note over REPO: SELECT s.*, c.Nombre + ' ' + c.Apellido AS ClientName FROM Sales s JOIN Clients c ON s.ClientId=c.ClientId ORDER BY SaleDate DESC
+    REPO-->>SVC: List~Sale~
+    deactivate REPO
+    SVC-->>UI: List~Sale~
+    deactivate SVC
+    UI->>UI: Bind to DataGridView
+```
+
+---
+
+## UC-04: GetAllSalesWithDetails
+
+```mermaid
+sequenceDiagram
+    participant UI as SalesForm
+    participant SVC as SaleService
+    participant REPO as SaleRepository
+    participant DB as Database
+
+    UI->>SVC: GetAllSalesWithDetails()
+    activate SVC
+    SVC->>REPO: GetAllWithDetails()
+    activate REPO
+    REPO->>DB: GetConnection()
+    DB-->>REPO: SqlConnection
+    Note over REPO: SELECT s.*, sl.*, p.Name FROM Sales s LEFT JOIN SaleLines sl ON s.SaleId=sl.SaleId LEFT JOIN Products p ON sl.ProductId=p.ProductId
+    REPO->>REPO: MapSale + MapSaleLines for each row
+    REPO-->>SVC: List~Sale~ with SaleLines
+    deactivate REPO
+    SVC-->>UI: List~Sale~ with SaleLines
+    deactivate SVC
+    UI->>UI: Bind master-detail view
+```
+
+---
+
+## UC-05: GetAvailabelStockByWarehouse
+
+```mermaid
+sequenceDiagram
+    participant UI as SalesForm
+    participant SVC as SaleService
+    participant SREPO as StockRepository
+    participant DB as Database
+
+    UI->>UI: User selects a product
+    UI->>SVC: GetAvailableStockByWarehouse(productId)
+    activate SVC
+    SVC->>SREPO: GetByProduct(productId)
+    activate SREPO
+    SREPO->>DB: GetConnection()
+    DB-->>SREPO: SqlConnection
+    Note over SREPO: SELECT s.*, w.Name FROM Stock s JOIN Warehouses w ON s.WarehouseId=w.WarehouseId WHERE s.ProductId=@ProductId AND s.Quantity > 0
+    SREPO-->>SVC: List~Stock~
+    deactivate SREPO
+    SVC->>SVC: Build Dictionary[warehouseId, quantity]
+    SVC-->>UI: Dictionary~int,int~
+    deactivate SVC
+    UI->>UI: Show stock per warehouse in dropdown
+```
+
+---
+
+## UC-06: GetSaleById
+
+```mermaid
+sequenceDiagram
+    participant UI as SalesForm
+    participant SVC as SaleService
+    participant REPO as SaleRepository
+    participant DB as Database
+
+    UI->>SVC: GetSaleById(saleId)
+    activate SVC
+    SVC->>REPO: GetById(id)
+    activate REPO
+    REPO->>DB: GetConnection()
+    DB-->>REPO: SqlConnection
+    Note over REPO: SELECT * FROM Sales WHERE SaleId=@Id
+    REPO-->>SVC: Sale
+    deactivate REPO
+    SVC-->>UI: Sale
+    deactivate SVC
+    UI->>UI: Populate form fields
+```
+
+---
+
+## UC-07: GetSaleByIdWithLines
+
+```mermaid
+sequenceDiagram
+    participant UI as SalesForm
+    participant SVC as SaleService
+    participant REPO as SaleRepository
+    participant DB as Database
+
+    UI->>SVC: GetSaleByIdWithLines(saleId)
+    activate SVC
+    SVC->>REPO: GetByIdWithLines(id)
+    activate REPO
+    REPO->>DB: GetConnection()
+    DB-->>REPO: SqlConnection
+    Note over REPO: SELECT s.*, sl.*, p.Name FROM Sales s LEFT JOIN SaleLines sl ON s.SaleId=sl.SaleId LEFT JOIN Products p ON sl.ProductId=p.ProductId WHERE s.SaleId=@Id
+    REPO-->>SVC: Sale with SaleLines
+    deactivate REPO
+    SVC-->>UI: Sale with SaleLines
+    deactivate SVC
+    UI->>UI: Populate header + lines grid
+```
+
+---
+
+## UC-08: GetSaleByClient
+
+```mermaid
+sequenceDiagram
+    participant UI as SalesForm
+    participant SVC as SaleService
+    participant REPO as SaleRepository
+    participant DB as Database
+
+    UI->>UI: User selects client filter
+    UI->>SVC: GetSalesByClient(clientId)
+    activate SVC
+    SVC->>REPO: GetByClient(clientId)
+    activate REPO
+    REPO->>DB: GetConnection()
+    DB-->>REPO: SqlConnection
+    Note over REPO: SELECT * FROM Sales WHERE ClientId=@ClientId AND IsActive=1 ORDER BY SaleDate DESC
+    REPO-->>SVC: List~Sale~
+    deactivate REPO
+    SVC-->>UI: List~Sale~
+    deactivate SVC
+    UI->>UI: Bind filtered results
+```
+
+---
+
+## UC-09: GetSaleByDateRange
+
+```mermaid
+sequenceDiagram
+    participant UI as SalesForm
+    participant SVC as SaleService
+    participant REPO as SaleRepository
+    participant DB as Database
+
+    UI->>UI: User selects date range
+    UI->>SVC: GetSalesByDateRange(startDate, endDate)
+    activate SVC
+    SVC->>REPO: GetByDateRange(startDate, endDate)
+    activate REPO
+    REPO->>DB: GetConnection()
+    DB-->>REPO: SqlConnection
+    Note over REPO: SELECT * FROM Sales WHERE SaleDate BETWEEN @Start AND @End AND IsActive=1
+    REPO-->>SVC: List~Sale~
+    deactivate REPO
+    SVC-->>UI: List~Sale~
+    deactivate SVC
+    UI->>UI: Bind filtered results
+```
+
+---
+
+## UC-10: GetSaleBySeller
+
+```mermaid
+sequenceDiagram
+    participant UI as SalesForm
+    participant SVC as SaleService
+    participant REPO as SaleRepository
+    participant DB as Database
+
+    UI->>UI: User filters by seller name
+    UI->>SVC: GetSalesBySeller(sellerName)
+    activate SVC
+    SVC->>REPO: GetBySeller(sellerName)
+    activate REPO
+    REPO->>DB: GetConnection()
+    DB-->>REPO: SqlConnection
+    Note over REPO: SELECT * FROM Sales WHERE SellerName=@SellerName AND IsActive=1 ORDER BY SaleDate DESC
+    REPO-->>SVC: List~Sale~
+    deactivate REPO
+    SVC-->>UI: List~Sale~
+    deactivate SVC
+    UI->>UI: Bind filtered results
+```
+
+---
+
+## UC-11: GetTotalAvailableStock
+
+```mermaid
+sequenceDiagram
+    participant UI as SalesForm
+    participant SVC as SaleService
+    participant SREPO as StockRepository
+    participant DB as Database
+
+    UI->>SVC: GetTotalAvailableStock(productId)
+    activate SVC
+    SVC->>SREPO: GetByProduct(productId)
+    activate SREPO
+    SREPO->>DB: GetConnection()
+    DB-->>SREPO: SqlConnection
+    Note over SREPO: SELECT SUM(Quantity) FROM Stock WHERE ProductId=@ProductId
+    SREPO-->>SVC: List~Stock~
+    deactivate SREPO
+    SVC->>SVC: Sum all warehouse quantities
+    SVC-->>UI: totalStock (int)
+    deactivate SVC
+    UI->>UI: Show total available stock label
+```
+
+---
+
+## UC-12: UpdateSale
+
+```mermaid
+sequenceDiagram
+    participant User as Sales User
+    participant UI as SalesForm
+    participant SVC as SaleService
+    participant REPO as SaleRepository
+    participant DB as Database
+
+    User->>UI: Modify sale fields, click "Save"
+    activate UI
+    UI->>UI: ValidateForm()
+    alt Validation Fails
+        UI-->>User: Show validation errors
+    else Validation Passes
+        UI->>SVC: UpdateSale(sale, currentUserId)
+        activate SVC
+        SVC->>REPO: Update(sale)
+        activate REPO
+        REPO->>DB: GetConnection()
+        DB-->>REPO: SqlConnection
+        Note over REPO: UPDATE Sales SET SaleDate=@Date, SellerName=@Seller, Notes=@Notes, UpdatedAt=@Now WHERE SaleId=@Id
+        REPO-->>SVC: void
+        deactivate REPO
+        SVC-->>UI: void
+        deactivate SVC
+        UI->>SVC: GetAllSales()
+        SVC-->>UI: List~Sale~
+        UI-->>User: Show success & refresh grid
+    end
+    deactivate UI
+```
+
+---
+
+## Business Rules Summary
+
+| Use Case | Key Business Rules |
+|----------|-------------------|
+| CreateSale | Sale number auto-generated; stock validated before save; atomic transaction |
+| DeleteSale | Soft-delete only (IsActive=0) |
+| UpdateSale | Header fields only; lines managed separately |
+| GetAvailabelStockByWarehouse | Only returns warehouses with Quantity > 0 |
+| GetTotalAvailableStock | Sums across all warehouses |
 
 ```mermaid
 sequenceDiagram

@@ -1,11 +1,480 @@
-# User Management Process - Class Diagram
+# User Management Process - Class Diagrams (Per Use Case)
 
-## UML Class Diagram (Mermaid Format)
+This document contains UML Class Diagrams organized per use case for all User Management operations.
+
+---
+
+## UC-01: CreateUser
 
 ```mermaid
 classDiagram
-    %% UI Layer
     class UsersForm {
+        -UserService _userService
+        -IAuthenticationService _authService
+        -ILogService _logService
+        +btnSave_Click(sender, e) void
+        -ValidateForm() bool
+        -LoadUsers() void
+    }
+
+    class UserService {
+        -IUserRepository _userRepo
+        -IAuthenticationService _authService
+        -ILogService _logService
+        +CreateUser(user, password) int
+        -ValidateUser(user) void
+        -ValidatePassword(password) void
+    }
+
+    class IAuthenticationService {
+        <<interface>>
+        +HashPassword(password, out salt) string
+    }
+
+    class IUserRepository {
+        <<interface>>
+        +Insert(user) int
+        +GetByUsername(username) User
+        +GetByEmail(email) User
+    }
+
+    class UserRepository {
+        +Insert(user) int
+        +GetByUsername(username) User
+        +GetByEmail(email) User
+        -MapUser(reader) User
+    }
+
+    class DatabaseHelper {
+        <<static>>
+        +GetConnection() SqlConnection
+    }
+
+    class User {
+        +int UserId
+        +string Username
+        +string PasswordHash
+        +string PasswordSalt
+        +string FullName
+        +string Email
+        +bool IsActive
+        +DateTime CreatedAt
+        +int CreatedBy
+    }
+
+    UsersForm --> UserService : uses
+    UserService --> IUserRepository : uses
+    UserService --> IAuthenticationService : uses
+    UserRepository ..|> IUserRepository : implements
+    UserRepository --> DatabaseHelper : uses
+    UserRepository --> User : maps
+```
+
+---
+
+## UC-02: UpdateUser
+
+```mermaid
+classDiagram
+    class UsersForm {
+        -UserService _userService
+        +btnSave_Click(sender, e) void
+        -ValidateForm() bool
+        -LoadUsers() void
+    }
+
+    class UserService {
+        -IUserRepository _userRepo
+        -ILogService _logService
+        +UpdateUser(user) void
+        -ValidateUser(user) void
+    }
+
+    class IUserRepository {
+        <<interface>>
+        +Update(user) void
+        +GetByUsername(username) User
+        +GetByEmail(email) User
+        +GetById(id) User
+    }
+
+    class UserRepository {
+        +Update(user) void
+        +GetById(id) User
+    }
+
+    class DatabaseHelper {
+        <<static>>
+        +GetConnection() SqlConnection
+    }
+
+    class User {
+        +int UserId
+        +string Username
+        +string FullName
+        +string Email
+        +bool IsActive
+        +DateTime UpdatedAt
+        +int UpdatedBy
+    }
+
+    UsersForm --> UserService : uses
+    UserService --> IUserRepository : uses
+    UserRepository ..|> IUserRepository : implements
+    UserRepository --> DatabaseHelper : uses
+    UserRepository --> User : maps
+```
+
+---
+
+## UC-03: DeleteUser
+
+```mermaid
+classDiagram
+    class UsersForm {
+        -UserService _userService
+        +btnDelete_Click(sender, e) void
+        -LoadUsers() void
+    }
+
+    class UserService {
+        -IUserRepository _userRepo
+        +DeleteUser(userId) void
+    }
+
+    class IUserRepository {
+        <<interface>>
+        +SoftDelete(id, deletedBy) void
+        +GetById(id) User
+    }
+
+    class UserRepository {
+        +SoftDelete(id, deletedBy) void
+    }
+
+    class SessionContext {
+        <<static>>
+        +CurrentUserId int
+    }
+
+    class User {
+        +int UserId
+        +string Username
+        +bool IsActive
+    }
+
+    UsersForm --> UserService : uses
+    UserService --> IUserRepository : uses
+    UserService --> SessionContext : reads
+    UserRepository ..|> IUserRepository : implements
+    UserRepository --> User : maps
+```
+
+---
+
+## UC-04: GetAllUsers
+
+```mermaid
+classDiagram
+    class UsersForm {
+        -UserService _userService
+        +LoadUsers() void
+    }
+
+    class UserService {
+        -IUserRepository _userRepo
+        +GetAllUsers() List~User~
+    }
+
+    class IUserRepository {
+        <<interface>>
+        +GetAll() List~User~
+    }
+
+    class UserRepository {
+        +GetAll() List~User~
+    }
+
+    class User {
+        +int UserId
+        +string Username
+        +string FullName
+        +string Email
+        +bool IsActive
+        +DateTime LastLogin
+    }
+
+    UsersForm --> UserService : uses
+    UserService --> IUserRepository : uses
+    UserRepository ..|> IUserRepository : implements
+    UserRepository --> User : returns
+```
+
+---
+
+## UC-05: GetActiveUsers
+
+```mermaid
+classDiagram
+    class UsersForm {
+        -UserService _userService
+        +LoadActiveUsers() void
+    }
+
+    class UserService {
+        -IUserRepository _userRepo
+        +GetActiveUsers() List~User~
+    }
+
+    class IUserRepository {
+        <<interface>>
+        +GetAllActive() List~User~
+    }
+
+    class UserRepository {
+        +GetAllActive() List~User~
+    }
+
+    class User {
+        +int UserId
+        +string Username
+        +string FullName
+        +bool IsActive
+    }
+
+    UsersForm --> UserService : uses
+    UserService --> IUserRepository : uses
+    UserRepository ..|> IUserRepository : implements
+    UserRepository --> User : returns
+```
+
+---
+
+## UC-06: GetUserById
+
+```mermaid
+classDiagram
+    class UsersForm {
+        -UserService _userService
+        +LoadUserDetails(id) void
+    }
+
+    class UserService {
+        -IUserRepository _userRepo
+        +GetUserById(userId) User
+    }
+
+    class IUserRepository {
+        <<interface>>
+        +GetById(id) User
+    }
+
+    class UserRepository {
+        +GetById(id) User
+    }
+
+    class User {
+        +int UserId
+        +string Username
+        +string FullName
+        +string Email
+        +bool IsActive
+        +DateTime CreatedAt
+        +DateTime LastLogin
+    }
+
+    UsersForm --> UserService : uses
+    UserService --> IUserRepository : uses
+    UserRepository ..|> IUserRepository : implements
+    UserRepository --> User : returns
+```
+
+---
+
+## UC-07: AssignRolesToUser
+
+```mermaid
+classDiagram
+    class UserRolesForm {
+        -UserService _userService
+        -ILogService _logService
+        +btnAssignRoles_Click(sender, e) void
+        -LoadUserRoles(userId) void
+    }
+
+    class UserService {
+        -IUserRepository _userRepo
+        -ILogService _logService
+        +AssignRolesToUser(userId, roleIds) void
+        +GetUserRoles(userId) List~Role~
+    }
+
+    class IUserRepository {
+        <<interface>>
+        +AssignRoles(userId, roleIds) void
+        +GetUserRoles(userId) List~Role~
+        +RemoveRole(userId, roleId) void
+    }
+
+    class UserRepository {
+        +AssignRoles(userId, roleIds) void
+        +GetUserRoles(userId) List~Role~
+        +RemoveRole(userId, roleId) void
+    }
+
+    class DatabaseHelper {
+        <<static>>
+        +GetConnection() SqlConnection
+    }
+
+    class User {
+        +int UserId
+        +string Username
+    }
+
+    class Role {
+        +int RoleId
+        +string RoleName
+        +bool IsActive
+    }
+
+    UserRolesForm --> UserService : uses
+    UserService --> IUserRepository : uses
+    UserRepository ..|> IUserRepository : implements
+    UserRepository --> DatabaseHelper : uses
+    UserRepository --> Role : returns
+    User "1" --> "many" Role : hasRoles
+```
+
+---
+
+## UC-08: GetUserRoles
+
+```mermaid
+classDiagram
+    class UserRolesForm {
+        -UserService _userService
+        +LoadUserRoles(userId) void
+    }
+
+    class UserService {
+        -IUserRepository _userRepo
+        +GetUserRoles(userId) List~Role~
+    }
+
+    class IUserRepository {
+        <<interface>>
+        +GetUserRoles(userId) List~Role~
+    }
+
+    class UserRepository {
+        +GetUserRoles(userId) List~Role~
+        -MapRole(reader) Role
+    }
+
+    class User {
+        +int UserId
+        +string Username
+    }
+
+    class Role {
+        +int RoleId
+        +string RoleName
+        +string Description
+        +bool IsActive
+    }
+
+    UserRolesForm --> UserService : uses
+    UserService --> IUserRepository : uses
+    UserRepository ..|> IUserRepository : implements
+    UserRepository --> Role : returns
+    User "1" --> "many" Role : hasRoles
+```
+
+---
+
+## UC-09: ChangePassword
+
+```mermaid
+classDiagram
+    class UsersForm {
+        -UserService _userService
+        -IAuthenticationService _authService
+        +btnChangePassword_Click(sender, e) void
+        -ValidatePasswordInputs() bool
+    }
+
+    class UserService {
+        -IUserRepository _userRepo
+        +UpdateUser(user) void
+        +GetUserById(id) User
+    }
+
+    class IAuthenticationService {
+        <<interface>>
+        +VerifyPassword(password, hash, salt) bool
+        +HashPassword(password, out salt) string
+    }
+
+    class AuthenticationService {
+        +VerifyPassword(password, hash, salt) bool
+        +HashPassword(password, out salt) string
+        -HashPasswordWithSalt(password, salt) byte[]
+    }
+
+    class IUserRepository {
+        <<interface>>
+        +Update(user) void
+        +GetById(id) User
+    }
+
+    class UserRepository {
+        +Update(user) void
+        +GetById(id) User
+    }
+
+    class User {
+        +int UserId
+        +string PasswordHash
+        +string PasswordSalt
+        +string Username
+    }
+
+    UsersForm --> UserService : uses
+    UsersForm --> IAuthenticationService : uses
+    AuthenticationService ..|> IAuthenticationService : implements
+    UserService --> IUserRepository : uses
+    UserRepository ..|> IUserRepository : implements
+    UserRepository --> User : maps
+```
+
+---
+
+## Layer Communication Flow
+
+```
+┌──────────────┐
+│   UI LAYER   │  UsersForm / UserRolesForm
+└──────┬───────┘
+       │ uses
+       ▼
+┌──────────────┐
+│  BLL LAYER   │  UserService
+└──────┬───────┘
+       │ calls
+       ├──────────────┐
+       ▼              ▼
+┌──────────────┐  ┌──────────────┐
+│  DAO LAYER   │  │   SERVICES   │
+│ UserRepo     │  │ AuthService  │
+│ AuditRepo    │  │ LogService   │
+└──────┬───────┘  └──────────────┘
+       │ returns
+       ▼
+┌──────────────┐
+│   DOMAIN     │  User, Role
+└──────────────┘
+```
         -UserService _userService
         -IAuthorizationService _authService
         -IErrorHandlerService _errorHandler

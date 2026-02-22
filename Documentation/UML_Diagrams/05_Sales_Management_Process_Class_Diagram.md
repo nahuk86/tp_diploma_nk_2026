@@ -1,11 +1,570 @@
-# Sales Management Process - Class Diagram
+# Sales Management Process - Class Diagrams (Per Use Case)
 
-## UML Class Diagram (Mermaid Format)
+This document contains UML Class Diagrams organized per use case for all Sales Management operations.
+
+---
+
+## UC-01: CreateSale
 
 ```mermaid
 classDiagram
-    %% UI Layer
     class SalesForm {
+        -SaleService _saleService
+        -ILogService _logService
+        +btnSave_Click(sender, e) void
+        -ValidateForm() bool
+        -LoadSales() void
+    }
+
+    class SaleService {
+        -ISaleRepository _saleRepo
+        -IStockRepository _stockRepo
+        -ILogService _logService
+        +CreateSale(sale, saleLines, currentUserId) int
+        -ValidateSale(sale, saleLines) void
+        -GenerateSaleNumber() string
+        -DeductInventoryForSale(saleLines, userId, saleNumber) void
+    }
+
+    class ISaleRepository {
+        <<interface>>
+        +CreateWithLines(sale, lines) int
+    }
+
+    class SaleRepository {
+        +CreateWithLines(sale, lines) int
+        -MapSale(reader) Sale
+    }
+
+    class IStockRepository {
+        <<interface>>
+        +GetByProduct(productId) List~Stock~
+        +DeductStock(productId, warehouseId, quantity) void
+    }
+
+    class StockRepository {
+        +GetByProduct(productId) List~Stock~
+        +DeductStock(productId, warehouseId, quantity) void
+    }
+
+    class DatabaseHelper {
+        <<static>>
+        +GetConnection() SqlConnection
+    }
+
+    class Sale {
+        +int SaleId
+        +string SaleNumber
+        +DateTime SaleDate
+        +int ClientId
+        +string SellerName
+        +decimal TotalAmount
+        +bool IsActive
+        +List~SaleLine~ SaleLines
+    }
+
+    class SaleLine {
+        +int SaleLineId
+        +int SaleId
+        +int ProductId
+        +string ProductName
+        +int Quantity
+        +decimal UnitPrice
+        +decimal LineTotal
+    }
+
+    SalesForm --> SaleService : uses
+    SaleService --> ISaleRepository : uses
+    SaleService --> IStockRepository : uses
+    SaleRepository ..|> ISaleRepository : implements
+    StockRepository ..|> IStockRepository : implements
+    SaleRepository --> DatabaseHelper : uses
+    Sale "1" --* "many" SaleLine : contains
+```
+
+---
+
+## UC-02: DeleteSale
+
+```mermaid
+classDiagram
+    class SalesForm {
+        -SaleService _saleService
+        +btnDelete_Click(sender, e) void
+        -LoadSales() void
+    }
+
+    class SaleService {
+        -ISaleRepository _saleRepo
+        +DeleteSale(saleId, currentUserId) void
+    }
+
+    class ISaleRepository {
+        <<interface>>
+        +SoftDelete(id, deletedBy) void
+    }
+
+    class SaleRepository {
+        +SoftDelete(id, deletedBy) void
+    }
+
+    class Sale {
+        +int SaleId
+        +string SaleNumber
+        +bool IsActive
+    }
+
+    SalesForm --> SaleService : uses
+    SaleService --> ISaleRepository : uses
+    SaleRepository ..|> ISaleRepository : implements
+    SaleRepository --> Sale : maps
+```
+
+---
+
+## UC-03: GetAllSales
+
+```mermaid
+classDiagram
+    class SalesForm {
+        -SaleService _saleService
+        +LoadSales() void
+    }
+
+    class SaleService {
+        -ISaleRepository _saleRepo
+        +GetAllSales() List~Sale~
+    }
+
+    class ISaleRepository {
+        <<interface>>
+        +GetAll() List~Sale~
+    }
+
+    class SaleRepository {
+        +GetAll() List~Sale~
+    }
+
+    class Sale {
+        +int SaleId
+        +string SaleNumber
+        +DateTime SaleDate
+        +string SellerName
+        +decimal TotalAmount
+    }
+
+    SalesForm --> SaleService : uses
+    SaleService --> ISaleRepository : uses
+    SaleRepository ..|> ISaleRepository : implements
+    SaleRepository --> Sale : returns
+```
+
+---
+
+## UC-04: GetAllSalesWithDetails
+
+```mermaid
+classDiagram
+    class SalesForm {
+        -SaleService _saleService
+        +LoadSalesWithDetails() void
+    }
+
+    class SaleService {
+        -ISaleRepository _saleRepo
+        +GetAllSalesWithDetails() List~Sale~
+    }
+
+    class ISaleRepository {
+        <<interface>>
+        +GetAllWithDetails() List~Sale~
+    }
+
+    class SaleRepository {
+        +GetAllWithDetails() List~Sale~
+        -MapSale(reader) Sale
+        -MapSaleLine(reader) SaleLine
+    }
+
+    class Sale {
+        +int SaleId
+        +string SaleNumber
+        +int ClientId
+        +decimal TotalAmount
+        +List~SaleLine~ SaleLines
+    }
+
+    class SaleLine {
+        +int SaleLineId
+        +int ProductId
+        +string ProductName
+        +int Quantity
+        +decimal UnitPrice
+        +decimal LineTotal
+    }
+
+    SalesForm --> SaleService : uses
+    SaleService --> ISaleRepository : uses
+    SaleRepository ..|> ISaleRepository : implements
+    Sale "1" --* "many" SaleLine : contains
+```
+
+---
+
+## UC-05: GetAvailabelStockByWarehouse
+
+```mermaid
+classDiagram
+    class SalesForm {
+        -SaleService _saleService
+        +CheckStockByWarehouse(productId) void
+    }
+
+    class SaleService {
+        -IStockRepository _stockRepo
+        +GetAvailableStockByWarehouse(productId) Dictionary~int,int~
+    }
+
+    class IStockRepository {
+        <<interface>>
+        +GetByProduct(productId) List~Stock~
+    }
+
+    class StockRepository {
+        +GetByProduct(productId) List~Stock~
+        -MapStock(reader) Stock
+    }
+
+    class Stock {
+        +int StockId
+        +int ProductId
+        +int WarehouseId
+        +string WarehouseName
+        +int Quantity
+    }
+
+    SalesForm --> SaleService : uses
+    SaleService --> IStockRepository : uses
+    StockRepository ..|> IStockRepository : implements
+    StockRepository --> Stock : returns
+```
+
+---
+
+## UC-06: GetSaleById
+
+```mermaid
+classDiagram
+    class SalesForm {
+        -SaleService _saleService
+        +LoadSaleDetails(id) void
+    }
+
+    class SaleService {
+        -ISaleRepository _saleRepo
+        +GetSaleById(saleId) Sale
+    }
+
+    class ISaleRepository {
+        <<interface>>
+        +GetById(id) Sale
+    }
+
+    class SaleRepository {
+        +GetById(id) Sale
+    }
+
+    class Sale {
+        +int SaleId
+        +string SaleNumber
+        +DateTime SaleDate
+        +int ClientId
+        +string SellerName
+        +decimal TotalAmount
+    }
+
+    SalesForm --> SaleService : uses
+    SaleService --> ISaleRepository : uses
+    SaleRepository ..|> ISaleRepository : implements
+    SaleRepository --> Sale : returns
+```
+
+---
+
+## UC-07: GetSaleByIdWithLines
+
+```mermaid
+classDiagram
+    class SalesForm {
+        -SaleService _saleService
+        +LoadSaleWithLines(id) void
+    }
+
+    class SaleService {
+        -ISaleRepository _saleRepo
+        +GetSaleByIdWithLines(saleId) Sale
+    }
+
+    class ISaleRepository {
+        <<interface>>
+        +GetByIdWithLines(id) Sale
+    }
+
+    class SaleRepository {
+        +GetByIdWithLines(id) Sale
+    }
+
+    class Sale {
+        +int SaleId
+        +string SaleNumber
+        +decimal TotalAmount
+        +List~SaleLine~ SaleLines
+    }
+
+    class SaleLine {
+        +int SaleLineId
+        +int ProductId
+        +string ProductName
+        +int Quantity
+        +decimal UnitPrice
+        +decimal LineTotal
+    }
+
+    SalesForm --> SaleService : uses
+    SaleService --> ISaleRepository : uses
+    SaleRepository ..|> ISaleRepository : implements
+    Sale "1" --* "many" SaleLine : contains
+```
+
+---
+
+## UC-08: GetSaleByClient
+
+```mermaid
+classDiagram
+    class SalesForm {
+        -SaleService _saleService
+        +FilterByClient(clientId) void
+    }
+
+    class SaleService {
+        -ISaleRepository _saleRepo
+        +GetSalesByClient(clientId) List~Sale~
+    }
+
+    class ISaleRepository {
+        <<interface>>
+        +GetByClient(clientId) List~Sale~
+    }
+
+    class SaleRepository {
+        +GetByClient(clientId) List~Sale~
+    }
+
+    class Sale {
+        +int SaleId
+        +string SaleNumber
+        +DateTime SaleDate
+        +int ClientId
+        +decimal TotalAmount
+    }
+
+    SalesForm --> SaleService : uses
+    SaleService --> ISaleRepository : uses
+    SaleRepository ..|> ISaleRepository : implements
+    SaleRepository --> Sale : returns
+```
+
+---
+
+## UC-09: GetSaleByDateRange
+
+```mermaid
+classDiagram
+    class SalesForm {
+        -SaleService _saleService
+        +FilterByDateRange(from, to) void
+    }
+
+    class SaleService {
+        -ISaleRepository _saleRepo
+        +GetSalesByDateRange(startDate, endDate) List~Sale~
+    }
+
+    class ISaleRepository {
+        <<interface>>
+        +GetByDateRange(startDate, endDate) List~Sale~
+    }
+
+    class SaleRepository {
+        +GetByDateRange(startDate, endDate) List~Sale~
+    }
+
+    class Sale {
+        +int SaleId
+        +string SaleNumber
+        +DateTime SaleDate
+        +decimal TotalAmount
+    }
+
+    SalesForm --> SaleService : uses
+    SaleService --> ISaleRepository : uses
+    SaleRepository ..|> ISaleRepository : implements
+    SaleRepository --> Sale : returns
+```
+
+---
+
+## UC-10: GetSaleBySeller
+
+```mermaid
+classDiagram
+    class SalesForm {
+        -SaleService _saleService
+        +FilterBySeller(sellerName) void
+    }
+
+    class SaleService {
+        -ISaleRepository _saleRepo
+        +GetSalesBySeller(sellerName) List~Sale~
+    }
+
+    class ISaleRepository {
+        <<interface>>
+        +GetBySeller(sellerName) List~Sale~
+    }
+
+    class SaleRepository {
+        +GetBySeller(sellerName) List~Sale~
+    }
+
+    class Sale {
+        +int SaleId
+        +string SaleNumber
+        +DateTime SaleDate
+        +string SellerName
+        +decimal TotalAmount
+    }
+
+    SalesForm --> SaleService : uses
+    SaleService --> ISaleRepository : uses
+    SaleRepository ..|> ISaleRepository : implements
+    SaleRepository --> Sale : returns
+```
+
+---
+
+## UC-11: GetTotalAvailableStock
+
+```mermaid
+classDiagram
+    class SalesForm {
+        -SaleService _saleService
+        +CheckTotalStock(productId) void
+    }
+
+    class SaleService {
+        -IStockRepository _stockRepo
+        +GetTotalAvailableStock(productId) int
+    }
+
+    class IStockRepository {
+        <<interface>>
+        +GetByProduct(productId) List~Stock~
+    }
+
+    class StockRepository {
+        +GetByProduct(productId) List~Stock~
+    }
+
+    class Stock {
+        +int ProductId
+        +int WarehouseId
+        +int Quantity
+    }
+
+    SalesForm --> SaleService : uses
+    SaleService --> IStockRepository : uses
+    StockRepository ..|> IStockRepository : implements
+    StockRepository --> Stock : returns
+```
+
+---
+
+## UC-12: UpdateSale
+
+```mermaid
+classDiagram
+    class SalesForm {
+        -SaleService _saleService
+        +btnUpdate_Click(sender, e) void
+        -ValidateForm() bool
+    }
+
+    class SaleService {
+        -ISaleRepository _saleRepo
+        -ILogService _logService
+        +UpdateSale(sale, currentUserId) void
+    }
+
+    class ISaleRepository {
+        <<interface>>
+        +Update(sale) void
+    }
+
+    class SaleRepository {
+        +Update(sale) void
+    }
+
+    class DatabaseHelper {
+        <<static>>
+        +GetConnection() SqlConnection
+    }
+
+    class Sale {
+        +int SaleId
+        +string SaleNumber
+        +DateTime SaleDate
+        +string SellerName
+        +string Notes
+        +DateTime UpdatedAt
+        +int UpdatedBy
+    }
+
+    SalesForm --> SaleService : uses
+    SaleService --> ISaleRepository : uses
+    SaleRepository ..|> ISaleRepository : implements
+    SaleRepository --> DatabaseHelper : uses
+    SaleRepository --> Sale : maps
+```
+
+---
+
+## Layer Communication Flow
+
+```
+┌──────────────────┐
+│    UI LAYER      │  SalesForm
+└────────┬─────────┘
+         │ uses
+         ▼
+┌──────────────────┐
+│   BLL LAYER      │  SaleService
+└────────┬─────────┘
+         │ calls
+         ├──────────────┐
+         ▼              ▼
+┌──────────────────┐  ┌──────────────────┐
+│   DAO LAYER      │  │    SERVICES      │
+│ SaleRepository   │  │ LogService       │
+│ StockRepository  │  └──────────────────┘
+└────────┬─────────┘
+         │ returns
+         ▼
+┌──────────────────┐
+│  DOMAIN LAYER    │  Sale, SaleLine, Stock
+└──────────────────┘
+```
         -SaleService _saleService
         -ClientService _clientService
         -ProductService _productService

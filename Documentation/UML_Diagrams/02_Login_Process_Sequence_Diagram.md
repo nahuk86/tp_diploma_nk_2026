@@ -1,204 +1,167 @@
-# Login Process - Sequence Diagram
+# Login Process - Sequence Diagrams (Per Use Case)
 
-## UML Sequence Diagram (Mermaid Format)
+This document contains UML Sequence Diagrams organized per use case for all Login-related operations.
+
+---
+
+## UC-01: Authenticate
 
 ```mermaid
 sequenceDiagram
     participant User as User
-    participant UI as LoginForm<br/>(UI Layer)
-    participant Loc as ILocalizationService<br/>(Services)
-    participant Auth as AuthenticationService<br/>(Services)
-    participant UserRepo as UserRepository<br/>(DAO)
-    participant DB as DatabaseHelper<br/>(DAO)
-    participant Session as SessionContext<br/>(Services)
-    participant Log as ILogService<br/>(Services)
+    participant UI as LoginForm
+    participant Loc as ILocalizationService
+    participant Auth as AuthenticationService
+    participant UserRepo as UserRepository
+    participant DB as DatabaseHelper
+    participant Session as SessionContext
+    participant Log as ILogService
 
-    %% Form Load
     User->>UI: Open Login Form
     activate UI
     UI->>Loc: GetString("Common.Login")
-    activate Loc
     Loc-->>UI: "Iniciar Sesión"
-    deactivate Loc
     UI->>Loc: GetString("Common.Username")
-    activate Loc
     Loc-->>UI: "Usuario"
-    deactivate Loc
-    UI->>Loc: GetString("Common.Password")
-    activate Loc
-    Loc-->>UI: "Contraseña"
-    deactivate Loc
     UI-->>User: Display Login Form
     deactivate UI
 
-    %% Login Attempt
     User->>UI: Enter credentials and click Login
     activate UI
-    
     Note over UI: Validate input fields
-    alt Username is empty
-        UI->>Loc: GetString("Login.UsernameRequired")
-        activate Loc
-        Loc-->>UI: "Por favor ingrese su usuario."
-        deactivate Loc
-        UI-->>User: Show validation message
-    else Password is empty
-        UI->>Loc: GetString("Login.PasswordRequired")
-        activate Loc
-        Loc-->>UI: "Por favor ingrese su contraseña."
-        deactivate Loc
+    alt Username or Password empty
+        UI->>Loc: GetString("Login.FieldRequired")
+        Loc-->>UI: validation message
         UI-->>User: Show validation message
     else Valid input
-        Note over UI: Disable controls, set wait cursor
-        
         UI->>Auth: Authenticate(username, password)
         activate Auth
-        
-        Note over Auth: Validate credentials not empty
-        Auth->>Log: Warning("Authentication attempt...")
-        activate Log
-        deactivate Log
-        
+        Auth->>Log: Warning("Authentication attempt for: username")
         Auth->>UserRepo: GetByUsername(username)
         activate UserRepo
         UserRepo->>DB: GetConnection()
-        activate DB
         DB-->>UserRepo: SqlConnection
-        deactivate DB
-        
-        Note over UserRepo: Execute SQL:<br/>SELECT * FROM Users<br/>WHERE Username = @Username
-        UserRepo->>DB: ExecuteReader()
-        activate DB
-        DB-->>UserRepo: SqlDataReader
-        deactivate DB
-        
-        UserRepo->>UserRepo: MapUser(reader)
-        UserRepo-->>Auth: User entity
+        Note over UserRepo: SELECT * FROM Users WHERE Username=@Username
+        UserRepo-->>Auth: User entity (or null)
         deactivate UserRepo
-        
-        alt User not found
-            Auth->>Log: Warning("User not found")
-            activate Log
-            deactivate Log
+
+        alt User not found or inactive
+            Auth->>Log: Warning("User not found or inactive")
             Auth-->>UI: null
             UI->>Loc: GetString("Login.InvalidCredentials")
-            activate Loc
             Loc-->>UI: "Usuario o contraseña incorrectos."
-            deactivate Loc
-            UI-->>User: Show error message
-        else User is inactive
-            Auth->>Log: Warning("User is inactive")
-            activate Log
-            deactivate Log
-            Auth-->>UI: null
-            UI->>Loc: GetString("Login.InvalidCredentials")
-            activate Loc
-            Loc-->>UI: "Usuario o contraseña incorrectos."
-            deactivate Loc
             UI-->>User: Show error message
         else Password not initialized
-            Auth->>Log: Warning("Password not initialized")
-            activate Log
-            deactivate Log
             Auth-->>UI: null
             UI-->>User: Show initialization required message
         else Invalid password
             Auth->>Auth: VerifyPassword(password, hash, salt)
-            Note over Auth: PBKDF2 hash verification<br/>10000 iterations
-            Auth->>Log: Warning("Invalid password")
-            activate Log
-            deactivate Log
+            Note over Auth: PBKDF2 hash verification (10000 iterations)
+            Auth->>Log: Warning("Invalid password for user")
             Auth-->>UI: null
-            UI->>Loc: GetString("Login.InvalidCredentials")
-            activate Loc
-            Loc-->>UI: "Usuario o contraseña incorrectos."
-            deactivate Loc
             UI-->>User: Show error message
         else Valid credentials
-            Note over Auth: Password verified successfully
-            
+            Auth->>Auth: VerifyPassword(password, hash, salt)
             Auth->>UserRepo: UpdateLastLogin(userId)
             activate UserRepo
             UserRepo->>DB: GetConnection()
-            activate DB
             DB-->>UserRepo: SqlConnection
-            deactivate DB
-            Note over UserRepo: Execute SQL:<br/>UPDATE Users<br/>SET LastLogin = @LastLogin<br/>WHERE UserId = @UserId
-            UserRepo->>DB: ExecuteNonQuery()
-            activate DB
-            DB-->>UserRepo: Success
-            deactivate DB
+            Note over UserRepo: UPDATE Users SET LastLogin=@Now WHERE UserId=@Id
+            UserRepo-->>Auth: void
             deactivate UserRepo
-            
             Auth->>Log: Info("User authenticated successfully")
-            activate Log
-            deactivate Log
-            
             Auth-->>UI: User entity
             deactivate Auth
-            
             UI->>Session: Set CurrentUser = user
-            activate Session
             Session-->>UI: Session established
-            deactivate Session
-            
-            UI->>Log: Info("User logged in successfully")
-            activate Log
-            deactivate Log
-            
             Note over UI: Set DialogResult = OK
             UI-->>User: Close form, proceed to main form
         end
-        
-        Note over UI: Re-enable controls, restore cursor
     end
     deactivate UI
 ```
 
-## Sequence Flow Description
+---
 
-### Phase 1: Form Initialization
-1. User opens the Login Form
-2. LoginForm requests localized strings from ILocalizationService
-3. Form displays with translated labels and buttons
+## UC-02: InitializeAdminPassword
 
-### Phase 2: User Input Validation
-4. User enters username and password
-5. LoginForm validates input fields
-6. If validation fails, display localized error message
+```mermaid
+sequenceDiagram
+    participant Admin as Administrator
+    participant UI as AdminPasswordInitForm
+    participant Auth as AuthenticationService
+    participant UserRepo as UserRepository
+    participant DB as DatabaseHelper
+    participant Log as ILogService
 
-### Phase 3: Authentication Process
-7. LoginForm calls AuthenticationService.Authenticate()
-8. AuthenticationService logs the authentication attempt
-9. AuthenticationService calls UserRepository.GetByUsername()
-10. UserRepository executes SQL query to retrieve user from database
-11. UserRepository maps SQL result to User entity
+    Note over Admin,UI: First-time setup — admin password not yet initialized
+    Admin->>UI: Open Admin Password Init Form
+    activate UI
+    UI-->>Admin: Display password form
 
-### Phase 4: Credential Verification
-12. AuthenticationService checks:
-    - User exists
-    - User is active
-    - Password is initialized
-    - Password matches (PBKDF2 hash verification)
+    Admin->>UI: Enter new password and confirm password
+    Admin->>UI: Click Save
 
-### Phase 5: Success Flow
-13. If valid: Update user's last login timestamp
-14. Log successful authentication
-15. Set SessionContext.CurrentUser
-16. Close login form with DialogResult.OK
-17. Application proceeds to main form
+    UI->>UI: ValidatePasswords()
+    alt Passwords do not match
+        UI-->>Admin: Show "Passwords do not match" error
+    else Password too short
+        UI-->>Admin: Show "Password too short" error
+    else Valid password
+        UI->>Auth: InitializeAdminPassword("admin", newPassword)
+        activate Auth
+        Auth->>Auth: HashPassword(newPassword, out salt)
+        Note over Auth: Generate random 32-byte salt + PBKDF2 hash
+        Auth->>UserRepo: GetByUsername("admin")
+        activate UserRepo
+        UserRepo->>DB: GetConnection()
+        DB-->>UserRepo: SqlConnection
+        UserRepo-->>Auth: admin User entity
+        deactivate UserRepo
+        Auth->>Auth: Set user.PasswordHash = hash
+        Auth->>Auth: Set user.PasswordSalt = salt
+        Auth->>UserRepo: Update(user)
+        activate UserRepo
+        UserRepo->>DB: GetConnection()
+        DB-->>UserRepo: SqlConnection
+        Note over UserRepo: UPDATE Users SET PasswordHash=@Hash, PasswordSalt=@Salt WHERE UserId=@Id
+        UserRepo-->>Auth: void
+        deactivate UserRepo
+        Auth->>Log: Info("Admin password initialized successfully")
+        Auth-->>UI: void
+        deactivate Auth
+        UI-->>Admin: Show "Password initialized. Please log in."
+        UI->>UI: Close form → redirect to LoginForm
+    end
+    deactivate UI
+```
 
-### Phase 6: Failure Flow
-13. If invalid: Log warning with reason
-14. Return null to LoginForm
-15. Display localized error message
-16. Clear password field and refocus
+---
 
-## Security Considerations
+## Sequence Flow Summary
 
-1. **Password Hashing**: PBKDF2 with 10,000 iterations
-2. **Salt Storage**: Unique salt per user stored separately
-3. **Login Attempts**: All attempts are logged (including failures)
-4. **No Information Leakage**: Generic error message for all failures
-5. **Session Management**: Centralized through SessionContext
-6. **Audit Trail**: UpdateLastLogin tracks user activity
+### UC-01: Authenticate
+1. User opens the Login Form; localized labels are applied
+2. User enters credentials and clicks Login
+3. Form validates input fields (non-empty check)
+4. `AuthenticationService.Authenticate()` is called
+5. `UserRepository.GetByUsername()` fetches the user record
+6. Service verifies: user exists, is active, password is initialized, hash matches
+7. On success: `UpdateLastLogin()` is called, `SessionContext` is set, form closes
+8. On failure: localized error message is shown; no information leak about specific cause
+
+### UC-02: InitializeAdminPassword
+1. Administrator opens the password initialization form (first-time setup)
+2. Enters and confirms new password
+3. Form validates matching and minimum length
+4. `AuthenticationService.InitializeAdminPassword()` generates a PBKDF2 hash + salt
+5. `UserRepository.Update()` persists the new credentials
+6. Administrator is redirected to the Login Form
+
+## Security Features
+
+1. **Password Hashing**: PBKDF2 with 10,000 iterations and 32-byte random salt
+2. **Generic Error Messages**: All authentication failures return the same message
+3. **Audit Logging**: All authentication attempts are logged
+4. **Session Management**: Centralized through `SessionContext`
+5. **Last Login Tracking**: `UpdateLastLogin` records successful logins

@@ -1,6 +1,457 @@
-# Role & Permissions Management Process - Sequence Diagram (Assign Permissions)
+# Role & Permissions Management Process - Sequence Diagrams (Per Use Case)
 
-## UML Sequence Diagram (Mermaid Format)
+This document contains UML Sequence Diagrams organized per use case for all Role and Permission operations.
+
+---
+
+## UC-01: CreateRole
+
+```mermaid
+sequenceDiagram
+    participant Admin as Administrator
+    participant UI as RolesForm
+    participant BLL as RoleService
+    participant REPO as RoleRepository
+    participant DB as Database
+
+    Admin->>UI: Click "New", fill role name/description, click "Save"
+    activate UI
+    UI->>UI: ValidateForm()
+    alt Validation Fails
+        UI-->>Admin: Show validation errors
+    else Validation Passes
+        UI->>BLL: CreateRole(role)
+        activate BLL
+        BLL->>BLL: ValidateRole(role)
+        BLL->>REPO: GetByName(role.RoleName)
+        REPO->>DB: SELECT * FROM Roles WHERE RoleName=@Name
+        DB-->>REPO: null
+        REPO-->>BLL: null (unique)
+        alt Role name already exists
+            BLL-->>UI: throw InvalidOperationException
+            UI-->>Admin: Show duplicate name error
+        else Name unique
+            BLL->>REPO: Insert(role)
+            activate REPO
+            REPO->>DB: GetConnection()
+            DB-->>REPO: SqlConnection
+            Note over REPO: INSERT INTO Roles (RoleName, Description, IsActive, CreatedAt, CreatedBy) VALUES (...)
+            DB-->>REPO: roleId
+            REPO-->>BLL: roleId
+            deactivate REPO
+            BLL-->>UI: roleId
+            deactivate BLL
+            UI->>BLL: GetAllRoles()
+            BLL-->>UI: List~Role~
+            UI-->>Admin: Show success & refresh grid
+        end
+    end
+    deactivate UI
+```
+
+---
+
+## UC-02: DeleteRole
+
+```mermaid
+sequenceDiagram
+    participant Admin as Administrator
+    participant UI as RolesForm
+    participant BLL as RoleService
+    participant REPO as RoleRepository
+    participant DB as Database
+
+    Admin->>UI: Select role, click "Delete"
+    activate UI
+    UI->>UI: Confirm deletion dialog
+    alt User cancels
+        UI-->>Admin: Do nothing
+    else User confirms
+        UI->>BLL: DeleteRole(roleId)
+        activate BLL
+        BLL->>REPO: SoftDelete(id, deletedBy)
+        activate REPO
+        REPO->>DB: GetConnection()
+        DB-->>REPO: SqlConnection
+        Note over REPO: UPDATE Roles SET IsActive=0, UpdatedAt=@Now, UpdatedBy=@UserId WHERE RoleId=@Id
+        REPO-->>BLL: void
+        deactivate REPO
+        BLL-->>UI: void
+        deactivate BLL
+        UI->>BLL: GetAllRoles()
+        BLL-->>UI: List~Role~
+        UI-->>Admin: Show success & refresh grid
+    end
+    deactivate UI
+```
+
+---
+
+## UC-03: AssignPermissions
+
+```mermaid
+sequenceDiagram
+    participant Admin as Administrator
+    participant RolesUI as RolesForm
+    participant PermUI as RolePermissionsForm
+    participant BLL as RoleService
+    participant PermRepo as PermissionRepository
+    participant AuditRepo as AuditLogRepository
+    participant DB as Database
+    participant Session as SessionContext
+
+    Admin->>RolesUI: Select role, click "Manage Permissions"
+    activate RolesUI
+    RolesUI->>PermUI: Open RolePermissionsForm(roleId, roleName)
+    activate PermUI
+    PermUI->>BLL: GetAllPermissions()
+    BLL->>PermRepo: GetAll()
+    PermRepo->>DB: SELECT * FROM Permissions WHERE IsActive=1 ORDER BY Category, PermissionName
+    DB-->>PermRepo: ResultSet
+    PermRepo-->>BLL: List~Permission~
+    BLL-->>PermUI: List~Permission~
+    PermUI->>BLL: GetRolePermissions(roleId)
+    BLL->>PermRepo: GetRolePermissions(roleId)
+    PermRepo->>DB: SELECT p.* FROM Permissions p JOIN RolePermissions rp ON p.PermissionId=rp.PermissionId WHERE rp.RoleId=@RoleId
+    DB-->>PermRepo: ResultSet
+    PermRepo-->>BLL: List~Permission~ (currently assigned)
+    BLL-->>PermUI: List~Permission~
+    PermUI-->>Admin: Display CheckedListBox with all permissions; current ones checked
+    deactivate RolesUI
+
+    Admin->>PermUI: Check/uncheck permissions, click "Save"
+    PermUI->>BLL: AssignPermissions(roleId, selectedPermissionIds)
+    activate BLL
+    BLL->>Session: Get CurrentUserId
+    Session-->>BLL: userId
+    BLL->>PermRepo: GetRolePermissions(roleId)
+    PermRepo-->>BLL: old permissions (for audit)
+    BLL->>PermRepo: AssignPermissionsToRole(roleId, selectedPermissionIds)
+    activate PermRepo
+    PermRepo->>DB: BEGIN TRANSACTION
+    Note over PermRepo: DELETE FROM RolePermissions WHERE RoleId=@RoleId
+    loop For each selectedPermissionId
+        Note over PermRepo: INSERT INTO RolePermissions (RoleId, PermissionId, AssignedAt, AssignedBy) VALUES (...)
+    end
+    PermRepo->>DB: COMMIT
+    PermRepo-->>BLL: void
+    deactivate PermRepo
+    BLL->>AuditRepo: LogChange("RolePermissions", roleId, Update, oldPerms, newPerms, description, userId)
+    AuditRepo->>DB: INSERT INTO AuditLog (...)
+    DB-->>AuditRepo: Success
+    BLL-->>PermUI: void
+    deactivate BLL
+    PermUI-->>Admin: Show "Permissions saved successfully"
+    PermUI->>PermUI: Close dialog
+    deactivate PermUI
+```
+
+---
+
+## UC-04: GetActiveRoles
+
+```mermaid
+sequenceDiagram
+    participant UI as RolesForm
+    participant BLL as RoleService
+    participant REPO as RoleRepository
+    participant DB as Database
+
+    UI->>BLL: GetActiveRoles()
+    activate BLL
+    BLL->>REPO: GetAll()
+    activate REPO
+    REPO->>DB: GetConnection()
+    DB-->>REPO: SqlConnection
+    Note over REPO: SELECT * FROM Roles WHERE IsActive=1 ORDER BY RoleName
+    REPO-->>BLL: List~Role~
+    deactivate REPO
+    BLL-->>UI: List~Role~ (filtered to active only)
+    deactivate BLL
+    UI->>UI: Bind active roles to control
+```
+
+---
+
+## UC-05: GetAllPermissions
+
+```mermaid
+sequenceDiagram
+    participant UI as RolePermissionsForm
+    participant BLL as RoleService
+    participant REPO as PermissionRepository
+    participant DB as Database
+
+    UI->>BLL: GetAllPermissions()
+    activate BLL
+    BLL->>REPO: GetAll()
+    activate REPO
+    REPO->>DB: GetConnection()
+    DB-->>REPO: SqlConnection
+    Note over REPO: SELECT * FROM Permissions WHERE IsActive=1 ORDER BY Category, PermissionName
+    REPO-->>BLL: List~Permission~
+    deactivate REPO
+    BLL-->>UI: List~Permission~
+    deactivate BLL
+    UI->>UI: Group by category and render in CheckedListBox
+```
+
+---
+
+## UC-06: GetAllRoles
+
+```mermaid
+sequenceDiagram
+    participant UI as RolesForm
+    participant BLL as RoleService
+    participant REPO as RoleRepository
+    participant DB as Database
+
+    UI->>BLL: GetAllRoles()
+    activate BLL
+    BLL->>REPO: GetAll()
+    activate REPO
+    REPO->>DB: GetConnection()
+    DB-->>REPO: SqlConnection
+    Note over REPO: SELECT * FROM Roles ORDER BY RoleName
+    REPO-->>BLL: List~Role~
+    deactivate REPO
+    BLL-->>UI: List~Role~
+    deactivate BLL
+    UI->>UI: Bind to DataGridView
+```
+
+---
+
+## UC-07: GetRoleById
+
+```mermaid
+sequenceDiagram
+    participant UI as RolesForm
+    participant BLL as RoleService
+    participant REPO as RoleRepository
+    participant DB as Database
+
+    UI->>BLL: GetRoleById(roleId)
+    activate BLL
+    BLL->>REPO: GetById(id)
+    activate REPO
+    REPO->>DB: GetConnection()
+    DB-->>REPO: SqlConnection
+    Note over REPO: SELECT * FROM Roles WHERE RoleId=@Id
+    REPO-->>BLL: Role
+    deactivate REPO
+    alt Not found
+        BLL-->>UI: null
+    else Found
+        BLL-->>UI: Role
+        deactivate BLL
+        UI->>UI: Populate form fields
+    end
+```
+
+---
+
+## UC-08: GetRolePermissions
+
+```mermaid
+sequenceDiagram
+    participant UI as RolePermissionsForm
+    participant BLL as RoleService
+    participant REPO as PermissionRepository
+    participant DB as Database
+
+    UI->>BLL: GetRolePermissions(roleId)
+    activate BLL
+    BLL->>REPO: GetRolePermissions(roleId)
+    activate REPO
+    REPO->>DB: GetConnection()
+    DB-->>REPO: SqlConnection
+    Note over REPO: SELECT p.* FROM Permissions p JOIN RolePermissions rp ON p.PermissionId=rp.PermissionId WHERE rp.RoleId=@RoleId AND p.IsActive=1
+    REPO-->>BLL: List~Permission~
+    deactivate REPO
+    BLL-->>UI: List~Permission~
+    deactivate BLL
+    UI->>UI: Mark assigned permissions as checked
+```
+
+---
+
+## UC-09: UpdateRole
+
+```mermaid
+sequenceDiagram
+    participant Admin as Administrator
+    participant UI as RolesForm
+    participant BLL as RoleService
+    participant REPO as RoleRepository
+    participant DB as Database
+
+    Admin->>UI: Select role, modify fields, click "Save"
+    activate UI
+    UI->>UI: ValidateForm()
+    alt Validation Fails
+        UI-->>Admin: Show validation errors
+    else Validation Passes
+        UI->>BLL: UpdateRole(role)
+        activate BLL
+        BLL->>BLL: ValidateRole(role)
+        BLL->>REPO: GetByName(roleName)
+        REPO-->>BLL: null or same role
+        BLL->>REPO: Update(role)
+        activate REPO
+        REPO->>DB: GetConnection()
+        DB-->>REPO: SqlConnection
+        Note over REPO: UPDATE Roles SET RoleName=@N, Description=@D, IsActive=@A, UpdatedAt=@Now WHERE RoleId=@Id
+        REPO-->>BLL: void
+        deactivate REPO
+        BLL-->>UI: void
+        deactivate BLL
+        UI->>BLL: GetAllRoles()
+        BLL-->>UI: List~Role~
+        UI-->>Admin: Show success & refresh grid
+    end
+    deactivate UI
+```
+
+---
+
+## UC-10: GetUserPermissions
+
+```mermaid
+sequenceDiagram
+    participant Component as Any Component
+    participant Auth as AuthorizationService
+    participant REPO as PermissionRepository
+    participant DB as Database
+
+    Component->>Auth: GetUserPermissions(userId)
+    activate Auth
+    Auth->>REPO: GetUserPermissions(userId)
+    activate REPO
+    REPO->>DB: GetConnection()
+    DB-->>REPO: SqlConnection
+    Note over REPO: SELECT p.* FROM Permissions p JOIN RolePermissions rp ON p.PermissionId=rp.PermissionId JOIN UserRoles ur ON rp.RoleId=ur.RoleId WHERE ur.UserId=@UserId AND p.IsActive=1
+    REPO-->>Auth: List~Permission~
+    deactivate REPO
+    Auth-->>Component: List~Permission~
+    deactivate Auth
+```
+
+---
+
+## UC-11: HasAllPermissions
+
+```mermaid
+sequenceDiagram
+    participant UI as Any Form
+    participant Auth as AuthorizationService
+    participant REPO as PermissionRepository
+    participant DB as Database
+
+    UI->>Auth: HasAllPermissions(userId, ["PERM_A","PERM_B","PERM_C"])
+    activate Auth
+    Auth->>REPO: GetUserPermissions(userId)
+    REPO->>DB: SELECT...
+    DB-->>REPO: ResultSet
+    REPO-->>Auth: List~Permission~
+    Note over Auth: Check every requested permission is present in user's set
+    alt Any permission missing
+        Auth-->>UI: false
+    else All permissions found
+        Auth-->>UI: true
+    end
+    deactivate Auth
+```
+
+---
+
+## UC-12: HasAnyPermission
+
+```mermaid
+sequenceDiagram
+    participant UI as Any Form
+    participant Auth as AuthorizationService
+    participant REPO as PermissionRepository
+    participant DB as Database
+
+    UI->>Auth: HasAnyPermission(userId, ["PERM_A","PERM_B"])
+    activate Auth
+    Auth->>REPO: GetUserPermissions(userId)
+    REPO-->>Auth: List~Permission~
+    Note over Auth: Check if at least one requested permission exists in user's set
+    alt At least one found
+        Auth-->>UI: true
+    else None found
+        Auth-->>UI: false
+    end
+    deactivate Auth
+```
+
+---
+
+## UC-13: HasPermission
+
+```mermaid
+sequenceDiagram
+    participant UI as Any Form
+    participant Auth as AuthorizationService
+    participant REPO as PermissionRepository
+    participant DB as Database
+    participant Log as ILogService
+
+    UI->>Auth: HasPermission(userId, "MANAGE_PERMISSIONS")
+    activate Auth
+    Note over Auth: Check cache first
+    alt Cached result exists
+        Auth-->>UI: cached true/false
+    else Cache miss
+        Auth->>REPO: GetUserPermissions(userId)
+        activate REPO
+        REPO->>DB: GetConnection()
+        DB-->>REPO: SqlConnection
+        Note over REPO: SELECT p.* FROM Permissions p JOIN RolePermissions rp ON p.PermissionId=rp.PermissionId JOIN UserRoles ur ON rp.RoleId=ur.RoleId WHERE ur.UserId=@UserId AND p.IsActive=1
+        REPO-->>Auth: List~Permission~
+        deactivate REPO
+        Auth->>Auth: Check if "MANAGE_PERMISSIONS" in list
+        Auth->>Auth: Store in cache
+        alt Permission found
+            Auth->>Log: Info("Permission granted: MANAGE_PERMISSIONS for userId")
+            Auth-->>UI: true
+        else Not found
+            Auth->>Log: Warning("Permission denied: MANAGE_PERMISSIONS for userId")
+            Auth-->>UI: false
+        end
+    end
+    deactivate Auth
+    alt false
+        UI-->>UI: Hide button or show Access Denied
+    else true
+        UI-->>UI: Allow action
+    end
+```
+
+---
+
+## Permission Resolution Flow
+
+```
+User → UserRoles (table) → Role → RolePermissions (table) → Permission
+     ↑
+     HasPermission / HasAnyPermission / HasAllPermissions
+     (Cache → DB if miss → return result)
+```
+
+## Business Rules Summary
+
+| Use Case | Key Business Rules |
+|----------|-------------------|
+| CreateRole | Role name must be unique |
+| DeleteRole | Soft-delete only (IsActive=0) |
+| AssignPermissions | Atomic: delete all existing, then insert selected ones |
+| HasPermission | Uses cache; cache invalidated when role permissions change |
+| HasAllPermissions | Returns false if ANY required permission is missing |
+| HasAnyPermission | Returns true if AT LEAST ONE permission is present |
 
 ```mermaid
 sequenceDiagram

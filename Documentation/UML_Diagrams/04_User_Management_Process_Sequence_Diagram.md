@@ -1,6 +1,356 @@
-# User Management Process - Sequence Diagram (Create User)
+# User Management Process - Sequence Diagrams (Per Use Case)
 
-## UML Sequence Diagram (Mermaid Format)
+This document contains UML Sequence Diagrams organized per use case for all User Management operations.
+
+---
+
+## UC-01: CreateUser
+
+```mermaid
+sequenceDiagram
+    participant Admin as Administrator
+    participant UI as UsersForm
+    participant BLL as UserService
+    participant Auth as AuthenticationService
+    participant UserRepo as UserRepository
+    participant DB as Database
+    participant Session as SessionContext
+    participant Log as ILogService
+
+    Admin->>UI: Click "New" then fill form
+    activate UI
+    Admin->>UI: Click "Save"
+    UI->>UI: ValidateForm()
+    alt Validation Fails
+        UI-->>Admin: Show validation errors
+    else Validation Passes
+        UI->>BLL: CreateUser(user, password)
+        activate BLL
+        BLL->>BLL: ValidateUser(user)
+        BLL->>BLL: ValidatePassword(password)
+        BLL->>UserRepo: GetByUsername(user.Username)
+        UserRepo->>DB: SELECT * FROM Users WHERE Username=@Username
+        DB-->>UserRepo: null
+        UserRepo-->>BLL: null (no duplicate)
+        alt Username already exists
+            BLL-->>UI: throw InvalidOperationException
+            UI-->>Admin: Show error
+        else Username unique
+            BLL->>UserRepo: GetByEmail(user.Email)
+            DB-->>UserRepo: null
+            UserRepo-->>BLL: null (no duplicate)
+            alt Email already exists
+                BLL-->>UI: throw InvalidOperationException
+                UI-->>Admin: Show error
+            else Email unique
+                BLL->>Auth: HashPassword(password, out salt)
+                Note over Auth: Generate 32-byte salt + PBKDF2 hash
+                Auth-->>BLL: hash, salt
+                BLL->>Session: Get CurrentUserId
+                Session-->>BLL: currentUserId
+                BLL->>UserRepo: Insert(user)
+                activate UserRepo
+                UserRepo->>DB: BEGIN TRANSACTION
+                Note over UserRepo: INSERT INTO Users (Username, PasswordHash, PasswordSalt, FullName, Email, ...) VALUES (...)
+                DB-->>UserRepo: userId
+                UserRepo->>DB: COMMIT
+                UserRepo-->>BLL: userId
+                deactivate UserRepo
+                BLL->>Log: Info("User created: username")
+                BLL-->>UI: userId
+                deactivate BLL
+                UI->>BLL: GetAllUsers()
+                BLL-->>UI: List~User~
+                UI-->>Admin: Show success & refresh grid
+            end
+        end
+    end
+    deactivate UI
+```
+
+---
+
+## UC-02: UpdateUser
+
+```mermaid
+sequenceDiagram
+    participant Admin as Administrator
+    participant UI as UsersForm
+    participant BLL as UserService
+    participant UserRepo as UserRepository
+    participant DB as Database
+
+    Admin->>UI: Select user and modify fields
+    Admin->>UI: Click "Save"
+    activate UI
+    UI->>UI: ValidateForm()
+    alt Validation Fails
+        UI-->>Admin: Show validation errors
+    else Validation Passes
+        UI->>BLL: UpdateUser(user)
+        activate BLL
+        BLL->>BLL: ValidateUser(user)
+        BLL->>UserRepo: GetByUsername(username)
+        UserRepo-->>BLL: null or same user
+        BLL->>UserRepo: GetByEmail(email)
+        UserRepo-->>BLL: null or same user
+        BLL->>UserRepo: Update(user)
+        activate UserRepo
+        UserRepo->>DB: GetConnection()
+        DB-->>UserRepo: SqlConnection
+        Note over UserRepo: UPDATE Users SET Username=@U, FullName=@FN, Email=@E, UpdatedAt=@Now WHERE UserId=@Id
+        UserRepo-->>BLL: void
+        deactivate UserRepo
+        BLL-->>UI: void
+        deactivate BLL
+        UI->>BLL: GetAllUsers()
+        BLL-->>UI: List~User~
+        UI-->>Admin: Show success & refresh grid
+    end
+    deactivate UI
+```
+
+---
+
+## UC-03: DeleteUser
+
+```mermaid
+sequenceDiagram
+    participant Admin as Administrator
+    participant UI as UsersForm
+    participant BLL as UserService
+    participant UserRepo as UserRepository
+    participant DB as Database
+
+    Admin->>UI: Select user and click "Delete"
+    activate UI
+    UI->>UI: Confirm deletion dialog
+    Note over UI: Cannot delete own account
+    alt User cancels
+        UI-->>Admin: Do nothing
+    else User confirms
+        UI->>BLL: DeleteUser(userId)
+        activate BLL
+        BLL->>UserRepo: SoftDelete(id, deletedBy)
+        activate UserRepo
+        UserRepo->>DB: GetConnection()
+        DB-->>UserRepo: SqlConnection
+        Note over UserRepo: UPDATE Users SET IsActive=0, UpdatedAt=@Now WHERE UserId=@Id
+        UserRepo-->>BLL: void
+        deactivate UserRepo
+        BLL-->>UI: void
+        deactivate BLL
+        UI->>BLL: GetAllUsers()
+        BLL-->>UI: List~User~
+        UI-->>Admin: Show success & refresh grid
+    end
+    deactivate UI
+```
+
+---
+
+## UC-04: GetAllUsers
+
+```mermaid
+sequenceDiagram
+    participant Admin as Administrator
+    participant UI as UsersForm
+    participant BLL as UserService
+    participant UserRepo as UserRepository
+    participant DB as Database
+
+    Admin->>UI: Open Users Form
+    activate UI
+    UI->>BLL: GetAllUsers()
+    activate BLL
+    BLL->>UserRepo: GetAll()
+    activate UserRepo
+    UserRepo->>DB: GetConnection()
+    DB-->>UserRepo: SqlConnection
+    Note over UserRepo: SELECT * FROM Users ORDER BY Username
+    UserRepo-->>BLL: List~User~
+    deactivate UserRepo
+    BLL-->>UI: List~User~
+    deactivate BLL
+    UI->>UI: Bind to DataGridView
+    UI-->>Admin: Display all users
+    deactivate UI
+```
+
+---
+
+## UC-05: GetActiveUsers
+
+```mermaid
+sequenceDiagram
+    participant UI as UsersForm
+    participant BLL as UserService
+    participant UserRepo as UserRepository
+    participant DB as Database
+
+    UI->>BLL: GetActiveUsers()
+    activate BLL
+    BLL->>UserRepo: GetAllActive()
+    activate UserRepo
+    UserRepo->>DB: GetConnection()
+    DB-->>UserRepo: SqlConnection
+    Note over UserRepo: SELECT * FROM Users WHERE IsActive=1 ORDER BY FullName
+    UserRepo-->>BLL: List~User~
+    deactivate UserRepo
+    BLL-->>UI: List~User~
+    deactivate BLL
+    UI->>UI: Bind active users to DataGridView
+```
+
+---
+
+## UC-06: GetUserById
+
+```mermaid
+sequenceDiagram
+    participant UI as UsersForm
+    participant BLL as UserService
+    participant UserRepo as UserRepository
+    participant DB as Database
+
+    UI->>BLL: GetUserById(userId)
+    activate BLL
+    BLL->>UserRepo: GetById(id)
+    activate UserRepo
+    UserRepo->>DB: GetConnection()
+    DB-->>UserRepo: SqlConnection
+    Note over UserRepo: SELECT * FROM Users WHERE UserId=@Id
+    UserRepo-->>BLL: User
+    deactivate UserRepo
+    alt Not found
+        BLL-->>UI: null
+        UI-->>UI: Show not found message
+    else Found
+        BLL-->>UI: User
+        deactivate BLL
+        UI->>UI: Populate form fields
+    end
+```
+
+---
+
+## UC-07: AssignRolesToUser
+
+```mermaid
+sequenceDiagram
+    participant Admin as Administrator
+    participant UI as UserRolesForm
+    participant BLL as UserService
+    participant UserRepo as UserRepository
+    participant DB as Database
+
+    Admin->>UI: Select user, choose roles, click "Save"
+    activate UI
+    UI->>BLL: AssignRolesToUser(userId, selectedRoleIds)
+    activate BLL
+    BLL->>UserRepo: AssignRoles(userId, roleIds)
+    activate UserRepo
+    UserRepo->>DB: GetConnection()
+    DB-->>UserRepo: SqlConnection
+    Note over UserRepo: BEGIN TRANSACTION
+    Note over UserRepo: DELETE FROM UserRoles WHERE UserId=@UserId
+    loop For each roleId
+        Note over UserRepo: INSERT INTO UserRoles (UserId, RoleId, AssignedAt) VALUES (...)
+    end
+    Note over UserRepo: COMMIT
+    UserRepo-->>BLL: void
+    deactivate UserRepo
+    BLL-->>UI: void
+    deactivate BLL
+    UI->>UI: LoadUserRoles(userId)
+    UI-->>Admin: Show success message
+    deactivate UI
+```
+
+---
+
+## UC-08: GetUserRoles
+
+```mermaid
+sequenceDiagram
+    participant UI as UserRolesForm
+    participant BLL as UserService
+    participant UserRepo as UserRepository
+    participant DB as Database
+
+    UI->>BLL: GetUserRoles(userId)
+    activate BLL
+    BLL->>UserRepo: GetUserRoles(userId)
+    activate UserRepo
+    UserRepo->>DB: GetConnection()
+    DB-->>UserRepo: SqlConnection
+    Note over UserRepo: SELECT r.* FROM Roles r JOIN UserRoles ur ON r.RoleId=ur.RoleId WHERE ur.UserId=@UserId AND r.IsActive=1
+    UserRepo-->>BLL: List~Role~
+    deactivate UserRepo
+    BLL-->>UI: List~Role~
+    deactivate BLL
+    UI->>UI: Show assigned roles in list
+```
+
+---
+
+## UC-09: ChangePassword
+
+```mermaid
+sequenceDiagram
+    participant Admin as Administrator
+    participant UI as UsersForm
+    participant AUTH as AuthenticationService
+    participant BLL as UserService
+    participant UserRepo as UserRepository
+    participant DB as Database
+
+    Admin->>UI: Open change password dialog
+    Admin->>UI: Enter current + new + confirm password
+    Admin->>UI: Click Save
+    activate UI
+    UI->>UI: ValidatePasswordInputs()
+    alt New passwords don't match
+        UI-->>Admin: Show mismatch error
+    else Valid inputs
+        UI->>AUTH: VerifyPassword(currentPassword, user.Hash, user.Salt)
+        Note over AUTH: PBKDF2 verification
+        alt Current password invalid
+            AUTH-->>UI: false
+            UI-->>Admin: Show invalid current password error
+        else Current password valid
+            AUTH-->>UI: true
+            UI->>AUTH: HashPassword(newPassword, out salt)
+            Note over AUTH: Generate random salt + PBKDF2 hash
+            AUTH-->>UI: newHash, newSalt
+            UI->>BLL: UpdateUser(user with new hash/salt)
+            activate BLL
+            BLL->>UserRepo: Update(user)
+            activate UserRepo
+            UserRepo->>DB: GetConnection()
+            DB-->>UserRepo: SqlConnection
+            Note over UserRepo: UPDATE Users SET PasswordHash=@Hash, PasswordSalt=@Salt WHERE UserId=@Id
+            UserRepo-->>BLL: void
+            deactivate UserRepo
+            BLL-->>UI: void
+            deactivate BLL
+            UI-->>Admin: Show "Password changed successfully"
+        end
+    end
+    deactivate UI
+```
+
+---
+
+## Business Rules Summary
+
+| Use Case | Key Validations |
+|----------|----------------|
+| CreateUser | Username unique, email unique, password strength |
+| UpdateUser | Username unique (excluding self), email unique (excluding self) |
+| DeleteUser | Cannot delete own account; soft-delete (IsActive=0) |
+| ChangePassword | Current password verified before update |
+| AssignRolesToUser | Atomic: delete all existing roles, then insert selected ones |
 
 ```mermaid
 sequenceDiagram
