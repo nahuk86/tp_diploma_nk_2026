@@ -68,6 +68,160 @@ El sistema está organizado en capas siguiendo principios de arquitectura limpia
 - **DRY (Don't Repeat Yourself)**: Código reutilizable en SERVICES y helpers
 - **SOLID**: Principios de diseño orientado a objetos aplicados consistentemente
 
+## Patrones de Diseño
+
+El sistema aplica siete patrones de diseño clásicos (GoF + patrones de arquitectura de datos). A continuación se describe cada uno, dónde está implementado y por qué fue elegido.
+
+### 1. Strategy — Generación de Reportes
+
+**Ubicación**: `BLL/Strategies/` (`IReportStrategy`, `ReportContext`, `ReportStrategies.cs`)
+
+**Estructura**:
+```
+IReportStrategy          ← interfaz común
+├── TopProductsReportStrategy
+├── ClientPurchasesReportStrategy
+├── PriceVariationReportStrategy
+├── SellerPerformanceReportStrategy
+├── CategorySalesReportStrategy
+└── ClientProductRankingReportStrategy
+ReportContext            ← contexto que delega a la estrategia activa
+```
+
+**Descripción**: Define una familia de algoritmos de generación de reportes, encapsula cada uno en una clase concreta y los hace intercambiables. `ReportContext` mantiene la referencia a la estrategia activa y expone `ExecuteReport(parameters)`, que delega la ejecución sin conocer el algoritmo interno.
+
+**Racional**: Cada tipo de reporte tiene una lógica de consulta distinta (filtros, agrupaciones, ordenamiento). Sin Strategy, la lógica estaría concentrada en un único método con múltiples `if/switch`, violando el principio Open/Closed. Con Strategy, agregar un nuevo reporte implica únicamente crear una nueva clase que implemente `IReportStrategy`, sin modificar código existente.
+
+---
+
+### 2. Composite — Reglas de Permisos RBAC
+
+**Ubicación**: `SERVICES/BLL/Composites/` (`IPermissionRule`, `SinglePermissionRule`, `AndPermissionRule`, `OrPermissionRule`)
+
+**Estructura**:
+```
+IPermissionRule                ← componente
+├── SinglePermissionRule       ← hoja: verifica un permiso único
+├── AndPermissionRule          ← compuesto: TODOS deben cumplirse (AND lógico)
+└── OrPermissionRule           ← compuesto: AL MENOS UNO debe cumplirse (OR lógico)
+```
+
+**Descripción**: Permite construir árboles de reglas de autorización combinando condiciones simples y compuestas de forma uniforme. Un `AndPermissionRule` puede contener tanto `SinglePermissionRule` (hojas) como otros `AndPermissionRule` u `OrPermissionRule` (ramas).
+
+**Racional**: Las reglas de autorización del mundo real son jerárquicas: "el usuario debe tener (permiso A Y permiso B) O permiso C". Representar esto con booleanos simples requiere lógica condicional frágil y difícil de mantener. Composite permite expresar reglas arbitrariamente complejas de forma declarativa, extensible y testeable de forma aislada.
+
+---
+
+### 3. Decorator — Logging de Autorización
+
+**Ubicación**: `SERVICES/BLL/Decorators/LoggingAuthorizationDecorator.cs`
+
+**Estructura**:
+```
+IAuthorizationService                  ← interfaz común
+├── AuthorizationService               ← implementación concreta (componente)
+└── LoggingAuthorizationDecorator      ← decorador: envuelve AuthorizationService
+```
+
+**Descripción**: `LoggingAuthorizationDecorator` implementa `IAuthorizationService` y recibe otra instancia de `IAuthorizationService` (la implementación real) como dependencia. Cada llamada delega al componente interno y añade logging detallado (`DEBUG`) antes o después de la operación.
+
+**Racional**: El logging de decisiones de autorización es un concern transversal (cross-cutting). Sin Decorator, habría que duplicar el código de logging en cada punto de la aplicación donde se verifiquen permisos. Decorator agrega este comportamiento de forma transparente sin modificar `AuthorizationService`, respetando el principio de responsabilidad única y permitiendo activar o desactivar el logging simplemente cambiando qué implementación se inyecta.
+
+---
+
+### 4. Factory Method / Abstract Factory — Creación de Formularios
+
+**Ubicación**: `UI/Factories/` (`IModuleFactory`, `DefaultModuleFactory`)
+
+**Estructura**:
+```
+IModuleFactory                 ← Abstract Factory (interfaz)
+└── DefaultModuleFactory       ← fábrica concreta
+    └── CreateForm(moduleKey)  ← Factory Method: crea el Form correcto
+```
+
+**Descripción**: `IModuleFactory` define el contrato para crear formularios (`Form`) a partir de una clave de módulo (`"Products"`, `"Sales"`, `"Reports"`, etc.). `DefaultModuleFactory` implementa `CreateForm(moduleKey)` con un `switch` que instancia el `Form` correspondiente con todas sus dependencias configuradas.
+
+**Racional**: El MDI Container (`MainForm`) necesita abrir formularios en tiempo de ejecución según el ítem de menú que el usuario seleccione. Sin Factory, `MainForm` necesitaría conocer y depender de todas las clases concretas de Form, acoplando fuertemente la capa de presentación. Con Factory Method, `MainForm` solo conoce `IModuleFactory`, y la fábrica centraliza toda la lógica de construcción. Agregar un nuevo módulo requiere únicamente extender la fábrica, sin tocar el código del contenedor MDI.
+
+---
+
+### 5. Unit of Work — Gestión de Transacciones
+
+**Ubicación**: `DOMAIN/Contracts/IUnitOfWork.cs`, `SERVICES/DAL/UnitOfWork.cs`
+
+**Estructura**:
+```
+IUnitOfWork           ← contrato (DOMAIN)
+└── UnitOfWork        ← implementación (SERVICES/DAL)
+    ├── Begin()       → abre conexión e inicia transacción SQL
+    ├── Commit()      → confirma todos los cambios
+    └── Rollback()    → revierte en caso de error
+```
+
+**Descripción**: `UnitOfWork` encapsula una `SqlConnection` y una `SqlTransaction` compartidas. Los repositorios que participan en una operación compleja reciben la misma instancia de `UnitOfWork`, garantizando que todos operen dentro de la misma transacción de base de datos.
+
+**Racional**: Operaciones como registrar una venta involucran múltiples tablas (`Sales`, `SaleLines`, `Stock`). Sin Unit of Work, cada repositorio gestionaría su propia conexión, haciendo imposible garantizar atomicidad. Con Unit of Work, si cualquier parte de la operación falla, el `Rollback()` revierte todos los cambios, manteniendo la consistencia de los datos.
+
+---
+
+### 6. Repository — Abstracción de Acceso a Datos
+
+**Ubicación**: `DOMAIN/Contracts/IRepository<T>` + contratos específicos, `DAO/Repositories/` (implementaciones)
+
+**Estructura**:
+```
+IRepository<T>                 ← contrato genérico (DOMAIN)
+├── IProductRepository         ← contrato específico
+├── IClientRepository
+├── ISaleRepository
+├── IStockRepository
+└── ... (11 contratos totales)
+DAO/Repositories/
+├── ProductRepository          ← implementación ADO.NET
+├── ClientRepository
+└── ... (11 implementaciones)
+```
+
+**Descripción**: Cada repositorio encapsula todas las operaciones de acceso a datos para una entidad específica, exponiendo una interfaz limpia (`GetById`, `GetAll`, `Insert`, `Update`, `SoftDelete`) sin exponer detalles SQL al resto de las capas.
+
+**Racional**: Usar ADO.NET puro directamente en la capa de negocio mezclaría SQL con lógica de negocio, violando Separation of Concerns y dificultando los tests. Repository provee una abstracción sobre el almacenamiento que permite que BLL trabaje con interfaces (`IProductRepository`) sin conocer si los datos vienen de SQL Server, un mock o cualquier otra fuente. El contrato genérico `IRepository<T>` evita duplicar los métodos CRUD en cada interfaz.
+
+---
+
+### 7. Singleton — Contexto de Sesión
+
+**Ubicación**: `SERVICES/SessionContext.cs`
+
+**Estructura**:
+```csharp
+public sealed class SessionContext
+{
+    private static readonly SessionContext _instance = new SessionContext();
+    public static SessionContext Instance => _instance;
+    private SessionContext() { }   // constructor privado
+    public User CurrentUser { get; set; }
+}
+```
+
+**Descripción**: `SessionContext` garantiza que exista una única instancia durante todo el ciclo de vida de la aplicación. La instancia se crea de forma eager y thread-safe mediante un campo `static readonly`. Las capas BLL, SERVICES y UI acceden al usuario autenticado a través de `SessionContext.Instance.CurrentUser`.
+
+**Racional**: En una aplicación WinForms de escritorio, el estado de la sesión del usuario (quién está logueado, su ID, su nombre de usuario) debe ser accesible desde cualquier capa sin necesidad de pasarlo como parámetro en cada llamada. Singleton provee un punto de acceso global controlado. La instancia eager garantiza thread-safety sin el overhead de `lock`, apropiado para una aplicación de escritorio de un único usuario.
+
+---
+
+### Resumen de Patrones
+
+| Patrón | Categoría | Ubicación | Problema que resuelve |
+|--------|-----------|-----------|----------------------|
+| **Strategy** | Comportamiento | `BLL/Strategies/` | Intercambiar algoritmos de reportes sin modificar código cliente |
+| **Composite** | Estructural | `SERVICES/BLL/Composites/` | Componer reglas RBAC AND/OR de forma jerárquica y uniforme |
+| **Decorator** | Estructural | `SERVICES/BLL/Decorators/` | Añadir logging a autorización sin modificar la implementación base |
+| **Factory Method** | Creacional | `UI/Factories/` | Centralizar la creación de formularios desacoplando el MDI Container |
+| **Unit of Work** | Arquitectura de datos | `SERVICES/DAL/` | Garantizar atomicidad en operaciones multi-tabla |
+| **Repository** | Arquitectura de datos | `DOMAIN/Contracts/` + `DAO/` | Abstraer el acceso a datos y aislar SQL de la lógica de negocio |
+| **Singleton** | Creacional | `SERVICES/SessionContext.cs` | Acceso global y único al estado de la sesión del usuario |
+
 ## Proyectos de la Solución
 
 ### 1. DOMAIN
