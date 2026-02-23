@@ -201,6 +201,13 @@ Each file contains diagrams organized **per use case**, where each use case has:
 
 ---
 
+### 23. UML Use Case Diagrams — All Subsystems
+- **[23_Use_Case_Diagrams.md](./23_Use_Case_Diagrams.md)**
+  - System Overview, Login, User Management, Products, Sales, Stock Movements, Warehouses, Clients, Reports, Roles & Permissions, Localization
+  - Shows **actors** and their **use cases** per subsystem in Mermaid format
+
+---
+
 ## 🎯 How to Use
 
 ### For Developers
@@ -265,6 +272,14 @@ All diagrams follow these standards:
 - **Alt/Opt/Loop**: Control flow clearly marked
 - **Notes**: Explain complex operations
 
+### Use Case Diagrams
+- **Actors**: Identified by role (Administrador, Vendedor, Almacenista, Supervisor, Usuario, Sistema)
+- **Use Cases**: Named as verb phrases describing system functionality
+- **System Boundary**: Groups use cases within each subsystem
+- **Relationships**:
+  - `-->` actor-to-use-case association
+  - `-.->` dashed arrows for `«include»` / `«extend»` dependencies
+
 ---
 
 ## 🔄 Maintenance
@@ -292,7 +307,7 @@ All diagrams follow these standards:
 
 ---
 
-**Last Updated**: 2026-02-22  
-**Version**: 2.0  
+**Last Updated**: 2026-02-23  
+**Version**: 2.1  
 **Author**: Development Team
 
