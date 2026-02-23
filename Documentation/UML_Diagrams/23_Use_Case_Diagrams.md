@@ -1,7 +1,17 @@
 # UML Use Case Diagrams
 
 This document contains UML Use Case Diagrams in Mermaid format for all subsystems of the **tp_diploma_nk_2026** inventory management system.  
-Each diagram shows the **actors** involved and the **use cases** they can perform within each subsystem.
+Each diagram shows the **actors**, the **use cases** they can perform, and the **relationships** between use cases.
+
+## Relationship Legend
+
+| Notation | Meaning |
+|----------|---------|
+| `Actor --> UC` | Association: actor initiates the use case |
+| `UC -.->|"«include»"| UC2` | Include: UC always invokes UC2 as a mandatory sub-behavior |
+| `UC -.->|"«extend»"| UC2` | Extend: UC optionally extends UC2 with additional behavior |
+
+> **Note:** Support use cases (shaded in diagrams) are only triggered via «include» or «extend», not directly by actors.
 
 ---
 
@@ -29,11 +39,21 @@ flowchart LR
         uc1(["Autenticarse en el Sistema"])
         uc2(["Cerrar Sesión"])
         uc3(["Inicializar Contraseña de Administrador"])
+        ucV(["Verificar Credenciales\n―support―"])
+        ucU(["Registrar Último Acceso\n―support―"])
+        ucH(["Hashear Contraseña\n―support―"])
+        ucR(["Registrar Evento de Sesión\n―support―"])
     end
 
     usuario --> uc1
     usuario --> uc2
     admin --> uc3
+
+    uc1 -.->|"«include»"| ucV
+    uc1 -.->|"«include»"| ucU
+    uc1 -.->|"«include»"| ucR
+    uc2 -.->|"«include»"| ucR
+    uc3 -.->|"«include»"| ucH
 ```
 
 ---
@@ -54,6 +74,10 @@ flowchart LR
         uc7(["Asignar Roles al Usuario"])
         uc8(["Consultar Roles del Usuario"])
         uc9(["Cambiar Contraseña"])
+        ucV(["Validar Datos del Usuario\n―support―"])
+        ucP(["Verificar Contraseña Actual\n―support―"])
+        ucA(["Registrar Auditoría\n―support―"])
+        uc5 -.->|"«extend»"| uc4
     end
 
     admin --> uc1
@@ -65,6 +89,18 @@ flowchart LR
     admin --> uc7
     admin --> uc8
     admin --> uc9
+
+    uc1 -.->|"«include»"| ucV
+    uc2 -.->|"«include»"| ucV
+    uc2 -.->|"«include»"| uc6
+    uc3 -.->|"«include»"| uc6
+    uc7 -.->|"«include»"| uc8
+    uc9 -.->|"«include»"| ucP
+    uc1 -.->|"«include»"| ucA
+    uc2 -.->|"«include»"| ucA
+    uc3 -.->|"«include»"| ucA
+    uc7 -.->|"«include»"| ucA
+    uc9 -.->|"«include»"| ucA
 ```
 
 ---
@@ -86,6 +122,12 @@ flowchart LR
         uc6(["Consultar Producto por ID"])
         uc7(["Consultar Productos por Categoría"])
         uc8(["Buscar Producto"])
+        ucV(["Validar Datos del Producto\n―support―"])
+        ucS(["Verificar SKU Único\n―support―"])
+        ucA(["Registrar Auditoría\n―support―"])
+        uc5 -.->|"«extend»"| uc4
+        uc7 -.->|"«extend»"| uc5
+        uc8 -.->|"«extend»"| uc4
     end
 
     admin --> uc1
@@ -104,6 +146,16 @@ flowchart LR
     almacenista --> uc5
     almacenista --> uc7
     almacenista --> uc8
+
+    uc1 -.->|"«include»"| ucV
+    uc1 -.->|"«include»"| ucS
+    uc2 -.->|"«include»"| ucV
+    uc2 -.->|"«include»"| ucS
+    uc2 -.->|"«include»"| uc6
+    uc3 -.->|"«include»"| uc6
+    uc1 -.->|"«include»"| ucA
+    uc2 -.->|"«include»"| ucA
+    uc3 -.->|"«include»"| ucA
 ```
 
 ---
@@ -128,6 +180,16 @@ flowchart LR
         uc10(["Consultar Ventas por Vendedor"])
         uc11(["Consultar Stock Disponible por Almacén"])
         uc12(["Consultar Stock Total Disponible"])
+        ucV(["Validar Datos de Venta\n―support―"])
+        ucSt(["Verificar Stock Disponible\n―support―"])
+        ucD(["Descontar Inventario\n―support―"])
+        ucA(["Registrar Auditoría\n―support―"])
+        uc5 -.->|"«extend»"| uc4
+        uc7 -.->|"«extend»"| uc6
+        uc8 -.->|"«extend»"| uc4
+        uc9 -.->|"«extend»"| uc4
+        uc10 -.->|"«extend»"| uc4
+        uc12 -.->|"«include»"| uc11
     end
 
     vendedor --> uc1
@@ -149,6 +211,16 @@ flowchart LR
     supervisor --> uc10
     supervisor --> uc11
     supervisor --> uc12
+
+    uc1 -.->|"«include»"| ucV
+    uc1 -.->|"«include»"| ucSt
+    uc1 -.->|"«include»"| ucD
+    ucSt -.->|"«include»"| uc12
+    uc2 -.->|"«include»"| uc6
+    uc3 -.->|"«include»"| uc6
+    uc1 -.->|"«include»"| ucA
+    uc2 -.->|"«include»"| ucA
+    uc3 -.->|"«include»"| ucA
 ```
 
 ---
@@ -169,6 +241,13 @@ flowchart LR
         uc6(["Consultar Movimientos por Tipo"])
         uc7(["Actualizar Precios de Producto"])
         uc8(["Actualizar Stock por Movimiento"])
+        ucVal(["Validar Movimiento\n―support―"])
+        ucSt(["Verificar Stock Suficiente\n―support―"])
+        ucA(["Registrar Auditoría\n―support―"])
+        uc5 -.->|"«extend»"| uc2
+        uc6 -.->|"«extend»"| uc2
+        uc4 -.->|"«include»"| uc3
+        uc1 -.->|"«extend»"| uc7
     end
 
     almacenista --> uc1
@@ -184,6 +263,11 @@ flowchart LR
     supervisor --> uc4
     supervisor --> uc5
     supervisor --> uc6
+
+    uc1 -.->|"«include»"| ucVal
+    uc1 -.->|"«include»"| uc8
+    ucVal -.->|"«extend»"| ucSt
+    uc1 -.->|"«include»"| ucA
 ```
 
 ---
@@ -202,6 +286,10 @@ flowchart LR
         uc4(["Consultar Todos los Almacenes"])
         uc5(["Consultar Almacenes Activos"])
         uc6(["Consultar Almacén por ID"])
+        ucV(["Validar Datos del Almacén\n―support―"])
+        ucC(["Verificar Código Único\n―support―"])
+        ucA(["Registrar Auditoría\n―support―"])
+        uc5 -.->|"«extend»"| uc4
     end
 
     admin --> uc1
@@ -213,6 +301,16 @@ flowchart LR
     almacenista --> uc4
     almacenista --> uc5
     almacenista --> uc6
+
+    uc1 -.->|"«include»"| ucV
+    uc1 -.->|"«include»"| ucC
+    uc3 -.->|"«include»"| ucV
+    uc3 -.->|"«include»"| ucC
+    uc3 -.->|"«include»"| uc6
+    uc2 -.->|"«include»"| uc6
+    uc1 -.->|"«include»"| ucA
+    uc2 -.->|"«include»"| ucA
+    uc3 -.->|"«include»"| ucA
 ```
 
 ---
@@ -231,6 +329,10 @@ flowchart LR
         uc4(["Consultar Todos los Clientes"])
         uc5(["Consultar Clientes Activos"])
         uc6(["Consultar Cliente por ID"])
+        ucV(["Validar Datos del Cliente\n―support―"])
+        ucD(["Verificar DNI Único\n―support―"])
+        ucA(["Registrar Auditoría\n―support―"])
+        uc5 -.->|"«extend»"| uc4
     end
 
     admin --> uc1
@@ -244,6 +346,16 @@ flowchart LR
     vendedor --> uc4
     vendedor --> uc5
     vendedor --> uc6
+
+    uc1 -.->|"«include»"| ucV
+    uc1 -.->|"«include»"| ucD
+    uc3 -.->|"«include»"| ucV
+    uc3 -.->|"«include»"| ucD
+    uc3 -.->|"«include»"| uc6
+    uc2 -.->|"«include»"| uc6
+    uc1 -.->|"«include»"| ucA
+    uc2 -.->|"«include»"| ucA
+    uc3 -.->|"«include»"| ucA
 ```
 
 ---
@@ -263,6 +375,10 @@ flowchart LR
         uc5(["Generar Reporte de Ingresos por Fecha"])
         uc6(["Generar Reporte de Desempeño de Vendedores"])
         uc7(["Generar Reporte de Productos Top"])
+        ucP(["Verificar Permisos del Usuario\n―support―"])
+        ucF(["Aplicar Filtro de Fechas\n―support―"])
+        ucE(["Exportar a Excel\n―support―"])
+        ucI(["Imprimir Reporte\n―support―"])
     end
 
     supervisor --> uc1
@@ -279,6 +395,36 @@ flowchart LR
     admin --> uc5
     admin --> uc6
     admin --> uc7
+
+    uc1 -.->|"«include»"| ucP
+    uc2 -.->|"«include»"| ucP
+    uc3 -.->|"«include»"| ucP
+    uc4 -.->|"«include»"| ucP
+    uc5 -.->|"«include»"| ucP
+    uc6 -.->|"«include»"| ucP
+    uc7 -.->|"«include»"| ucP
+
+    uc1 -.->|"«include»"| ucF
+    uc2 -.->|"«include»"| ucF
+    uc3 -.->|"«include»"| ucF
+    uc5 -.->|"«include»"| ucF
+    uc6 -.->|"«include»"| ucF
+
+    uc1 -.->|"«extend»"| ucE
+    uc2 -.->|"«extend»"| ucE
+    uc3 -.->|"«extend»"| ucE
+    uc4 -.->|"«extend»"| ucE
+    uc5 -.->|"«extend»"| ucE
+    uc6 -.->|"«extend»"| ucE
+    uc7 -.->|"«extend»"| ucE
+
+    uc1 -.->|"«extend»"| ucI
+    uc2 -.->|"«extend»"| ucI
+    uc3 -.->|"«extend»"| ucI
+    uc4 -.->|"«extend»"| ucI
+    uc5 -.->|"«extend»"| ucI
+    uc6 -.->|"«extend»"| ucI
+    uc7 -.->|"«extend»"| ucI
 ```
 
 ---
@@ -303,6 +449,9 @@ flowchart LR
         uc11(["Verificar Todos los Permisos"])
         uc12(["Verificar Algún Permiso"])
         uc13(["Consultar Permisos del Usuario"])
+        ucV(["Validar Datos del Rol\n―support―"])
+        ucA(["Registrar Auditoría\n―support―"])
+        uc5 -.->|"«extend»"| uc4
     end
 
     admin --> uc1
@@ -318,6 +467,21 @@ flowchart LR
     admin --> uc11
     admin --> uc12
     admin --> uc13
+
+    uc1 -.->|"«include»"| ucV
+    uc3 -.->|"«include»"| ucV
+    uc3 -.->|"«include»"| uc6
+    uc2 -.->|"«include»"| uc6
+    uc7 -.->|"«include»"| uc6
+    uc7 -.->|"«include»"| uc8
+    uc7 -.->|"«include»"| uc9
+    uc11 -.->|"«include»"| uc10
+    uc12 -.->|"«include»"| uc10
+    uc10 -.->|"«include»"| uc13
+    uc1 -.->|"«include»"| ucA
+    uc2 -.->|"«include»"| ucA
+    uc3 -.->|"«include»"| ucA
+    uc7 -.->|"«include»"| ucA
 ```
 
 ---
@@ -340,7 +504,10 @@ flowchart LR
     sistema --> uc2
     sistema --> uc4
     usuario --> uc3
+
+    uc2 -.->|"«include»"| uc1
     uc3 -.->|"«include»"| uc4
+    uc4 -.->|"«include»"| uc1
 ```
 
 ---
@@ -376,8 +543,10 @@ flowchart TB
             reportsmgmt(["Generar Reportes"])
         end
         subgraph CROSS["🔧 Servicios Transversales"]
+            authn(["Validar Sesión de Usuario"])
+            authz(["Verificar Permisos de Acceso"])
+            logging(["Registrar Auditoría"])
             localization(["Localización"])
-            logging(["Registro de Auditoría"])
         end
     end
 
@@ -400,10 +569,36 @@ flowchart TB
     supervisor --> salesmgmt
     sistema --> localization
     sistema --> logging
+
+    usermgmt -.->|"«include»"| authn
+    rolesmgmt -.->|"«include»"| authn
+    whmgmt -.->|"«include»"| authn
+    prodmgmt -.->|"«include»"| authn
+    clientmgmt -.->|"«include»"| authn
+    salesmgmt -.->|"«include»"| authn
+    movmgmt -.->|"«include»"| authn
+    reportsmgmt -.->|"«include»"| authn
+
+    usermgmt -.->|"«include»"| authz
+    rolesmgmt -.->|"«include»"| authz
+    whmgmt -.->|"«include»"| authz
+    prodmgmt -.->|"«include»"| authz
+    clientmgmt -.->|"«include»"| authz
+    salesmgmt -.->|"«include»"| authz
+    movmgmt -.->|"«include»"| authz
+    reportsmgmt -.->|"«include»"| authz
+
+    salesmgmt -.->|"«include»"| prodmgmt
+    salesmgmt -.->|"«include»"| clientmgmt
+    movmgmt -.->|"«include»"| prodmgmt
+    movmgmt -.->|"«include»"| whmgmt
+    reportsmgmt -.->|"«include»"| salesmgmt
+    reportsmgmt -.->|"«include»"| prodmgmt
+    reportsmgmt -.->|"«include»"| clientmgmt
 ```
 
 ---
 
 **Last Updated**: 2026-02-23  
-**Version**: 1.0  
+**Version**: 2.0  
 **Author**: Development Team
