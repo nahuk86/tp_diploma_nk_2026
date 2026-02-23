@@ -8,15 +8,15 @@ This document provides a quick reference to all UML diagrams created for the tp_
 
 ## 🎯 Diagrams Overview
 
-| # | Process | Class Diagram | Sequence Diagram | Lines |
-|---|---------|---------------|------------------|-------|
-| 1 | Login | ✅ 01 | ✅ 02 | 402 |
-| 2 | User Management | ✅ 03 | ✅ 04 | 540 |
-| 3 | Sales Management | ✅ 05 | ✅ 06 | 626 |
-| 4 | Stock Movement | ✅ 07 | ✅ 08 | 769 |
-| 5 | Reports Management | ✅ 09 | ✅ 10 | 697 |
-| 6 | Role & Permissions | ✅ 11 | ✅ 12 | 791 |
-| **TOTAL** | **6 Processes** | **6 Diagrams** | **6 Diagrams** | **3,774 lines** |
+| # | Process | Class Diagram | Sequence Diagram | Use Case Diagram | Lines |
+|---|---------|---------------|------------------|-----------------|-------|
+| 1 | Login | ✅ 01 | ✅ 02 | ✅ 23 | 402 |
+| 2 | User Management | ✅ 03 | ✅ 04 | ✅ 23 | 540 |
+| 3 | Sales Management | ✅ 05 | ✅ 06 | ✅ 23 | 626 |
+| 4 | Stock Movement | ✅ 07 | ✅ 08 | ✅ 23 | 769 |
+| 5 | Reports Management | ✅ 09 | ✅ 10 | ✅ 23 | 697 |
+| 6 | Role & Permissions | ✅ 11 | ✅ 12 | ✅ 23 | 791 |
+| **TOTAL** | **6 Processes** | **6 Diagrams** | **6 Diagrams** | **1 Diagram** | **~4,100+ lines** |
 
 ---
 
@@ -233,6 +233,14 @@ All processes utilize:
 - Transaction boundaries
 - Notes explaining complex operations
 
+### ✅ Use Case Diagrams Include:
+- Actors with descriptive names and roles
+- Use cases named as verb phrases
+- System boundary per subsystem
+- Actor-to-use case associations
+- «include» dependencies where applicable
+- System overview diagram covering all subsystems
+
 ### ✅ UML Compliance:
 - Follows UML 2.0 standards
 - Mermaid syntax validated
@@ -277,7 +285,8 @@ Documentation/
     ├── 09_Reports_Management_Process_Class_Diagram.md
     ├── 10_Reports_Management_Process_Sequence_Diagram.md
     ├── 11_Role_Permissions_Process_Class_Diagram.md
-    └── 12_Role_Permissions_Process_Sequence_Diagram.md
+    ├── 12_Role_Permissions_Process_Sequence_Diagram.md
+    └── 23_Use_Case_Diagrams.md (Use Case Diagrams - all subsystems)
 ```
 
 ---
@@ -312,6 +321,7 @@ Start with:
 - [x] 6 major processes identified
 - [x] 6 class diagrams created
 - [x] 6 sequence diagrams created
+- [x] Use case diagrams created (file 23)
 - [x] All diagrams include methods & attributes
 - [x] Layer communication shown in all diagrams
 - [x] UML format compliance verified
@@ -324,16 +334,16 @@ Start with:
 
 ## 📊 Statistics
 
-- **Total Files**: 13 (12 diagrams + README)
-- **Total Lines**: 3,774
+- **Total Files**: 14 (12 class/sequence diagrams + 1 use case diagram file + README)
+- **Total Lines**: ~4,100+
 - **Classes Documented**: 50+
 - **Interfaces Documented**: 15+
 - **Processes Covered**: 6 major business processes
 - **Format**: Mermaid (UML-compliant)
-- **Diagrams per Process**: 2 (Class + Sequence)
+- **Diagrams per Process**: 3 (Class + Sequence + Use Case)
 
 ---
 
 **Created**: 2026-02-17  
-**Version**: 1.0  
+**Version**: 2.0  
 **Status**: ✅ Complete
