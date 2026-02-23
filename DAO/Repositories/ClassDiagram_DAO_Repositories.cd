@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="DAO.Repositories.ClientRepository" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BBQAAEAAAAEAAAAAAAAAAAQAAAEAAAAAAgAABAAAAIA=</HashCode>
+      <FileName>Repositories\ClientRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DAO.Repositories.ProductRepository" BaseTypeListCollapsed="true">
+    <Position X="6.25" Y="1" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AASAAEAAAAEAAAAAgAAAAAQAAAEAAEAAAgCAAAAgAIA=</HashCode>
+      <FileName>Repositories\ProductRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DAO.Repositories.ReportRepository" BaseTypeListCollapsed="true">
+    <Position X="8.25" Y="1" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAQAAABAAABAAAAAAAAAAAIAAAEEAAABA=</HashCode>
+      <FileName>Repositories\ReportRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DAO.Repositories.SaleRepository" BaseTypeListCollapsed="true">
+    <Position X="2.25" Y="1" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AgSAAEgAQAEAAAAAAAAASQRAAAEAAEAAAhAAIAAAAIA=</HashCode>
+      <FileName>Repositories\SaleRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DAO.Repositories.StockMovementRepository" BaseTypeListCollapsed="true">
+    <Position X="11" Y="1" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AgAAAEAEAAQAAEAAAAAAACAAAAAAAAECAgAAQAAAAIA=</HashCode>
+      <FileName>Repositories\StockMovementRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DAO.Repositories.StockRepository" BaseTypeListCollapsed="true">
+    <Position X="13.5" Y="1" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAACAAAIBAUAABAAAAAAAAgAAAAAAAIA=</HashCode>
+      <FileName>Repositories\StockRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DAO.Repositories.WarehouseRepository" BaseTypeListCollapsed="true">
+    <Position X="4.25" Y="1" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAQAAEAAAAEAAAAAAAAAAAQAAAEBAAAIIgAAAAAAAIA=</HashCode>
+      <FileName>Repositories\WarehouseRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

@@ -22,7 +22,7 @@
         "Entry"
         {
         "MsmKey" = "8:_1A36F4AA034032F2B9232EB57D1AFEC7"
-        "OwnerKey" = "8:_55A46DF85BDE45389C40A6DC387EBB33"
+        "OwnerKey" = "8:_7D7AF37B0AF0F31AD5D1A48F0204F139"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -39,13 +39,31 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_29BD7EBCC7EC4468924A1F31D220F91E"
-        "OwnerKey" = "8:_UNDEFINED"
+        "MsmKey" = "8:_1A36F4AA034032F2B9232EB57D1AFEC7"
+        "OwnerKey" = "8:_55A46DF85BDE45389C40A6DC387EBB33"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_3E8FD072CDB54FE9AE68512C450A59D9"
+        "MsmKey" = "8:_2443748F842456CAA270D1150B38208A"
+        "OwnerKey" = "8:_7D8F417FA54749A698054423423F8E6E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_2443748F842456CAA270D1150B38208A"
+        "OwnerKey" = "8:_9714612FD092CD2C091CF330071DE9AD"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_2443748F842456CAA270D1150B38208A"
+        "OwnerKey" = "8:_9D0D7C11F3BF326CC81320C1E7F245AE"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_29BD7EBCC7EC4468924A1F31D220F91E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -93,12 +111,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_7D7AF37B0AF0F31AD5D1A48F0204F139"
-        "OwnerKey" = "8:_1A36F4AA034032F2B9232EB57D1AFEC7"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_7D8F417FA54749A698054423423F8E6E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -111,7 +123,25 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_9714612FD092CD2C091CF330071DE9AD"
+        "OwnerKey" = "8:_7D8F417FA54749A698054423423F8E6E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_9D0D7C11F3BF326CC81320C1E7F245AE"
+        "OwnerKey" = "8:_7D8F417FA54749A698054423423F8E6E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_AF80B231122B499AB5DFABC6EF537ACB"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_E1A55FB1F36547C1808062737E7CD317"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -119,12 +149,6 @@
         {
         "MsmKey" = "8:_E270CD4FC6774365B9947C2B811148EF"
         "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_69AC2FFE8AD772FB855069836B90F98B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -148,13 +172,37 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_7D7AF37B0AF0F31AD5D1A48F0204F139"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_1A36F4AA034032F2B9232EB57D1AFEC7"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_7D7AF37B0AF0F31AD5D1A48F0204F139"
+        "OwnerKey" = "8:_69AC2FFE8AD772FB855069836B90F98B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_9714612FD092CD2C091CF330071DE9AD"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_9D0D7C11F3BF326CC81320C1E7F245AE"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_2443748F842456CAA270D1150B38208A"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -227,6 +275,14 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+            }
         }
     }
     "Deployable"
@@ -307,12 +363,23 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_29BD7EBCC7EC4468924A1F31D220F91E"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_2443748F842456CAA270D1150B38208A"
             {
-            "SourcePath" = "8:..\\UI\\Translations\\README.md"
-            "TargetName" = "8:README.md"
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Microsoft.Web.WebView2.Core, Version=1.0.2739.15, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_2443748F842456CAA270D1150B38208A"
+                    {
+                    "Name" = "8:Microsoft.Web.WebView2.Core.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:Microsoft.Web.WebView2.Core.dll"
+            "TargetName" = "8:"
             "Tag" = "8:"
-            "Folder" = "8:_A2172656EECA423CA46AB3565E5F4551"
+            "Folder" = "8:_DDF15CFD862D497CADF98891F3E62D53"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -324,15 +391,15 @@
             "PackageAs" = "3:1"
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3E8FD072CDB54FE9AE68512C450A59D9"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_29BD7EBCC7EC4468924A1F31D220F91E"
             {
-            "SourcePath" = "8:..\\..\\..\\..\\Downloads\\4014657-buy-cell-online-phone-store_112888.ico"
-            "TargetName" = "8:4014657-buy-cell-online-phone-store_112888.ico"
+            "SourcePath" = "8:..\\UI\\Translations\\README.md"
+            "TargetName" = "8:README.md"
             "Tag" = "8:"
-            "Folder" = "8:_DDF15CFD862D497CADF98891F3E62D53"
+            "Folder" = "8:_A2172656EECA423CA46AB3565E5F4551"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -511,10 +578,92 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_9714612FD092CD2C091CF330071DE9AD"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Microsoft.Web.WebView2.Wpf, Version=1.0.2739.15, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_9714612FD092CD2C091CF330071DE9AD"
+                    {
+                    "Name" = "8:Microsoft.Web.WebView2.Wpf.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:Microsoft.Web.WebView2.Wpf.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_DDF15CFD862D497CADF98891F3E62D53"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_9D0D7C11F3BF326CC81320C1E7F245AE"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Microsoft.Web.WebView2.WinForms, Version=1.0.2739.15, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_9D0D7C11F3BF326CC81320C1E7F245AE"
+                    {
+                    "Name" = "8:Microsoft.Web.WebView2.WinForms.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:Microsoft.Web.WebView2.WinForms.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_DDF15CFD862D497CADF98891F3E62D53"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AF80B231122B499AB5DFABC6EF537ACB"
             {
             "SourcePath" = "8:..\\UI\\Translations\\README.md"
             "TargetName" = "8:README.md"
+            "Tag" = "8:"
+            "Folder" = "8:_DDF15CFD862D497CADF98891F3E62D53"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E1A55FB1F36547C1808062737E7CD317"
+            {
+            "SourcePath" = "8:..\\..\\..\\..\\OneDrive\\Desktop\\Diploma\\4014657-buy-cell-online-phone-store_112888.ico"
+            "TargetName" = "8:4014657-buy-cell-online-phone-store_112888.ico"
             "Tag" = "8:"
             "Folder" = "8:_DDF15CFD862D497CADF98891F3E62D53"
             "Condition" = "8:"
@@ -750,7 +899,7 @@
             "Target" = "8:_7D8F417FA54749A698054423423F8E6E"
             "Folder" = "8:_725243407BD8469CA5542F6BBE02AC61"
             "WorkingFolder" = "8:_DDF15CFD862D497CADF98891F3E62D53"
-            "Icon" = "8:_3E8FD072CDB54FE9AE68512C450A59D9"
+            "Icon" = "8:_E1A55FB1F36547C1808062737E7CD317"
             "Feature" = "8:"
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_B8C46462E3F54BFE9BC5664B5D122B7E"
@@ -764,7 +913,7 @@
             "Target" = "8:_7D8F417FA54749A698054423423F8E6E"
             "Folder" = "8:_DCD96620592747C59B0E66BE6ED5B946"
             "WorkingFolder" = "8:_DDF15CFD862D497CADF98891F3E62D53"
-            "Icon" = "8:_3E8FD072CDB54FE9AE68512C450A59D9"
+            "Icon" = "8:_E1A55FB1F36547C1808062737E7CD317"
             "Feature" = "8:"
             }
         }

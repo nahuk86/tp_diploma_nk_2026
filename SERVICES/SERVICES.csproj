@@ -94,6 +94,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="BLL\Services\ClassDiagram_Services_BLL_Services.cd" />
+    <None Include="DOMAIN\Entities\ClassDiagram_Services_Domain_Entities.cd" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="DOMAIN.Entities.AuditLog">
+    <Position X="2.25" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AARAAAAAAAAAAAAAAAAAEAgAAACAAAAAAAAQAQIAACQ=</HashCode>
+      <FileName>DOMAIN\Entities\AuditLog.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DOMAIN.Entities.Permission">
+    <Position X="4.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAACAECAEAAAAAAAAAAAAAgAACAAAAAA=</HashCode>
+      <FileName>DOMAIN\Entities\Permission.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DOMAIN.Entities.Role">
+    <Position X="7.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAIAAAAgCAAAECAAAAAAAAAAAAAAAAAAEAAAAAE=</HashCode>
+      <FileName>DOMAIN\Entities\Role.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DOMAIN.Entities.User">
+    <Position X="6" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EACAEAAAACACCIAAESAAAAgAAAAAAAAAAAAAAAAAAAE=</HashCode>
+      <FileName>DOMAIN\Entities\User.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

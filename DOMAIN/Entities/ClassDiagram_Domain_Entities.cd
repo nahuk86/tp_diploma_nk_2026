@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="DOMAIN.Entities.Client">
+    <Position X="2" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAAACAAEkCAAgAAAAIEAAAAAAAAAAgAAAAE=</HashCode>
+      <FileName>Entities\Client.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DOMAIN.Entities.Product">
+    <Position X="3.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>MAAAEAAAAAAgCAAAECBAAAQAAAAAAAAAAAAAEAAACAE=</HashCode>
+      <FileName>Entities\Product.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DOMAIN.Entities.Sale">
+    <Position X="5.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgEAAAEAAQCAAAkCAAAAAAAAAEAAAAAAAAACEAEAE=</HashCode>
+      <FileName>Entities\Sale.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DOMAIN.Entities.SaleLine">
+    <Position X="7.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>MAAAAAAAAAAAACAAAAAAAAAAAAQAAAAAAAAAkAAIEAA=</HashCode>
+      <FileName>Entities\SaleLine.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DOMAIN.Entities.Stock">
+    <Position X="9" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAEAAABAAiAAAAAAAAAAEAAAAAAAAAAAAIgAAIAAA=</HashCode>
+      <FileName>Entities\Stock.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DOMAIN.Entities.StockMovement">
+    <Position X="10.75" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAgDAQAAAAEAAIUACIAAAAAAgAAAAAAAAAAAAAAACE=</HashCode>
+      <FileName>Entities\StockMovement.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DOMAIN.Entities.StockMovementLine">
+    <Position X="2" Y="5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>MAAABAAAAAAgAAAAAAAAAAAAAAgAAAAAAAAAgAAIAAA=</HashCode>
+      <FileName>Entities\StockMovementLine.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DOMAIN.Entities.Warehouse">
+    <Position X="4" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAABAAACAAAECAgAAQAAAAAAAACAAAAAAAAAAE=</HashCode>
+      <FileName>Entities\Warehouse.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
