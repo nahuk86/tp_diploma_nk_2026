@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using DOMAIN.Contracts;
 using DOMAIN.Entities;
 using DOMAIN.Enums;
@@ -11,6 +12,14 @@ namespace BLL.Services
 {
     public class SaleService
     {
+        /// <summary>
+        /// Semáforo estático que garantiza que solo un hilo a la vez pueda
+        /// ejecutar la sección crítica de creación de venta y descuento de stock,
+        /// evitando condiciones de carrera entre usuarios concurrentes.
+        /// Su tiempo de vida es el de la aplicación, por lo que no requiere disposición explícita.
+        /// </summary>
+        private static readonly SemaphoreSlim _saleLock = new SemaphoreSlim(1, 1);
+
         private readonly ISaleRepository _saleRepo;
         private readonly IClientRepository _clientRepo;
         private readonly IProductRepository _productRepo;
@@ -169,7 +178,9 @@ namespace BLL.Services
         }
 
         /// <summary>
-        /// Crea una nueva venta con sus líneas de detalle y descuenta el inventario
+        /// Crea una nueva venta con sus líneas de detalle y descuenta el inventario.
+        /// El acceso a la sección crítica de validación de stock y creación de la venta
+        /// está protegido por un semáforo para evitar condiciones de carrera entre hilos.
         /// </summary>
         /// <param name="sale">Datos de la venta</param>
         /// <param name="saleLines">Líneas de detalle de la venta</param>
@@ -177,9 +188,13 @@ namespace BLL.Services
         /// <returns>Identificador de la venta creada</returns>
         public int CreateSale(Sale sale, List<SaleLine> saleLines, int currentUserId)
         {
+            bool lockAcquired = false;
             try
             {
-                // Validate sale
+                _saleLock.Wait();
+                lockAcquired = true;
+
+                // Validate sale (includes stock availability check)
                 ValidateSale(sale, saleLines);
 
                 // Set audit fields
@@ -211,6 +226,11 @@ namespace BLL.Services
             {
                 _logService.Error("Error creating sale", ex);
                 throw;
+            }
+            finally
+            {
+                if (lockAcquired)
+                    _saleLock.Release();
             }
         }
 
