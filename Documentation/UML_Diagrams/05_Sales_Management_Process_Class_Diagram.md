@@ -17,6 +17,7 @@ classDiagram
     }
 
     class SaleService {
+        -_saleLock$ SemaphoreSlim
         -ISaleRepository _saleRepo
         -IStockRepository _stockRepo
         -ILogService _logService
@@ -615,6 +616,7 @@ classDiagram
 
     %% BLL Layer
     class SaleService {
+        -_saleLock$ SemaphoreSlim
         -ISaleRepository _saleRepo
         -IClientRepository _clientRepo
         -IProductRepository _productRepo
@@ -891,3 +893,4 @@ classDiagram
 5. **Audit Trail**: All operations logged with user context
 6. **Total Calculation**: Automatically sum line totals
 7. **Client Association**: Every sale must be associated with a client
+8. **Concurrency Control**: SemaphoreSlim (_saleLock) serializes concurrent CreateSale calls to prevent stock overselling

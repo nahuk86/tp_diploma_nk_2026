@@ -183,6 +183,7 @@ flowchart LR
         ucV(["Validar Datos de Venta\n―support―"])
         ucSt(["Verificar Stock Disponible\n―support―"])
         ucD(["Descontar Inventario\n―support―"])
+        ucL(["Serializar Acceso Concurrente\n―support―"])
         ucA(["Registrar Auditoría\n―support―"])
         uc5 -.->|"«extend»"| uc4
         uc7 -.->|"«extend»"| uc6
@@ -215,6 +216,7 @@ flowchart LR
     uc1 -.->|"«include»"| ucV
     uc1 -.->|"«include»"| ucSt
     uc1 -.->|"«include»"| ucD
+    uc1 -.->|"«include»"| ucL
     ucSt -.->|"«include»"| uc12
     uc2 -.->|"«include»"| uc6
     uc3 -.->|"«include»"| uc6
@@ -599,6 +601,6 @@ flowchart TB
 
 ---
 
-**Last Updated**: 2026-02-23  
-**Version**: 2.0  
+**Last Updated**: 2026-02-26  
+**Version**: 2.1  
 **Author**: Development Team
