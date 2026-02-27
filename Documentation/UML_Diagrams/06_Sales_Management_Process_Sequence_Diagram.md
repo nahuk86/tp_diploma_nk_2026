@@ -23,6 +23,8 @@ sequenceDiagram
     else Validation Passes
         UI->>SaleSvc: CreateSale(sale, saleLines, currentUserId)
         activate SaleSvc
+        SaleSvc->>SaleSvc: _saleLock.Wait() [acquire semaphore]
+        Note over SaleSvc: Critical section: only one thread<br/>may execute from here at a time
         SaleSvc->>SaleSvc: ValidateSale(sale, saleLines)
         SaleSvc->>SaleSvc: GenerateSaleNumber()
         Note over SaleSvc: Format: SALE-{yyyyMMdd}-{seq}
@@ -49,6 +51,7 @@ sequenceDiagram
             SaleSvc->>StockRepo: UpdateStock(productId, warehouseId, newQuantity, userId)
             StockRepo->>DB: UPDATE Stock SET Quantity=@NewQty, LastUpdated=@Now WHERE ProductId=@PId AND WarehouseId=@WId
         end
+        SaleSvc->>SaleSvc: _saleLock.Release() [release semaphore - finally block]
         SaleSvc-->>UI: saleId
         deactivate SaleSvc
         UI->>SaleSvc: GetAllSalesWithDetails()
@@ -368,7 +371,7 @@ sequenceDiagram
 
 | Use Case | Key Business Rules |
 |----------|-------------------|
-| CreateSale | Sale number auto-generated; stock validated before save; atomic transaction |
+| CreateSale | Sale number auto-generated; stock validated before save; atomic transaction; SemaphoreSlim prevents concurrent overselling |
 | DeleteSale | Soft-delete only (IsActive=0) |
 | UpdateSale | Header fields only; lines managed separately |
 | GetAvailabelStockByWarehouse | Only returns warehouses with Quantity > 0 |
@@ -477,6 +480,10 @@ sequenceDiagram
         UI->>SaleSvc: CreateSale(sale, saleLines, currentUserId)
         activate SaleSvc
         
+        %% Acquire semaphore lock to prevent race conditions
+        SaleSvc->>SaleSvc: _saleLock.Wait() [acquire semaphore]
+        Note over SaleSvc: Critical section: only one thread at a time<br/>may validate stock and create the sale,<br/>preventing concurrent stock overselling
+
         %% Validate business rules
         SaleSvc->>SaleSvc: ValidateSale(sale, saleLines)
         Note over SaleSvc: Check:<br/>- Client exists<br/>- Seller name not empty<br/>- Sale lines count > 0<br/>- All quantities > 0
@@ -552,6 +559,9 @@ sequenceDiagram
         SaleSvc->>Log: Info($"Sale {saleNumber} created successfully")
         activate Log
         deactivate Log
+        
+        %% Release semaphore lock (always executed in finally block)
+        SaleSvc->>SaleSvc: _saleLock.Release() [release semaphore - finally block]
         
         SaleSvc-->>UI: saleId
         deactivate SaleSvc
@@ -651,10 +661,11 @@ sequenceDiagram
 5. **Client Association**: Every sale must have a valid client
 6. **Audit Trail**: All operations logged with user and timestamp
 7. **Negative Stock Prevention**: Transaction rollback if stock goes negative
+8. **Concurrency Control**: `_saleLock` (SemaphoreSlim(1,1)) serializes concurrent CreateSale calls; only one thread can execute the critical section (stock check + sale insert + stock deduction) at a time, preventing race conditions and overselling
 
 ## Error Handling
 
 1. **Insufficient Stock**: Rollback transaction, display error to user
 2. **Database Errors**: Rollback all changes, log error, display message
 3. **Validation Errors**: Prevent save, highlight invalid fields
-4. **Concurrency**: Database transaction isolation handles concurrent updates
+4. **Concurrency**: SemaphoreSlim lock in SaleService ensures serialized execution; `_saleLock.Release()` is always called in the `finally` block to guarantee the semaphore is released even when exceptions occur

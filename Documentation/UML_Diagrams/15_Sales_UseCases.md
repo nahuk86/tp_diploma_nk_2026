@@ -37,6 +37,7 @@ classDiagram
     }
 
     class SaleService {
+        -_saleLock$ SemaphoreSlim
         -ISaleRepository _saleRepository
         -IStockRepository _stockRepository
         -IProductRepository _productRepository
@@ -122,6 +123,8 @@ sequenceDiagram
     else Validation passes
         UI->>SVC: CreateSale(sale, lines)
         activate SVC
+        SVC->>SVC: _saleLock.Wait() [acquire semaphore]
+        Note over SVC: Critical section: only one thread<br/>may validate stock and create the sale
         SVC->>SVC: ValidateSale(sale, lines)
         loop For each sale line
             SVC->>STREPO: GetCurrentStock(productId, warehouseId)
@@ -145,6 +148,7 @@ sequenceDiagram
             SVC->>STREPO: UpdateStock(productId, warehouseId, -qty, userId)
             STREPO-->>SVC: void
         end
+        SVC->>SVC: _saleLock.Release() [release semaphore - finally block]
         SVC-->>UI: saleId
         deactivate SVC
         UI->>UI: LoadSales()
