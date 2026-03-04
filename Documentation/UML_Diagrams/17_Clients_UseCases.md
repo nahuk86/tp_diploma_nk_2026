@@ -11,22 +11,13 @@ This document contains UML Class Diagrams and Sequence Diagrams for all Client-r
 ```mermaid
 classDiagram
     class ClientsForm {
-        -IClientService _clientService
+        -ClientService _clientService
         -ILogService _logService
         +btnSave_Click(sender, e) void
         -ValidateInputs() bool
         -LoadClients() void
     }
 
-    class IClientService {
-        <<interface>>
-        +CreateClient(client) int
-        +UpdateClient(client) void
-        +DeleteClient(id, deletedBy) void
-        +GetAllClients() List~Client~
-        +GetActiveClients() List~Client~
-        +GetClientById(id) Client
-    }
 
     class ClientService {
         -IClientRepository _clientRepository
@@ -68,9 +59,8 @@ classDiagram
         +int CreatedBy
     }
 
-    ClientsForm --> IClientService : uses
+    ClientsForm --> ClientService : uses
     ClientsForm --> ILogService : uses
-    ClientService ..|> IClientService : implements
     ClientService --> IClientRepository : uses
     ClientService --> ILogService : uses
     ClientRepository ..|> IClientRepository : implements
@@ -124,15 +114,11 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class ClientsForm {
-        -IClientService _clientService
+        -ClientService _clientService
         +btnDelete_Click(sender, e) void
         -LoadClients() void
     }
 
-    class IClientService {
-        <<interface>>
-        +DeleteClient(id, deletedBy) void
-    }
 
     class ClientService {
         -IClientRepository _clientRepository
@@ -156,8 +142,7 @@ classDiagram
         +bool IsActive
     }
 
-    ClientsForm --> IClientService : uses
-    ClientService ..|> IClientService : implements
+    ClientsForm --> ClientService : uses
     ClientService --> IClientRepository : uses
     ClientRepository ..|> IClientRepository : implements
     ClientRepository --> Client : maps
@@ -201,14 +186,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class ClientsForm {
-        -IClientService _clientService
+        -ClientService _clientService
         +LoadActiveClients() void
     }
 
-    class IClientService {
-        <<interface>>
-        +GetActiveClients() List~Client~
-    }
 
     class ClientService {
         -IClientRepository _clientRepository
@@ -233,8 +214,7 @@ classDiagram
         +bool IsActive
     }
 
-    ClientsForm --> IClientService : uses
-    ClientService ..|> IClientService : implements
+    ClientsForm --> ClientService : uses
     ClientService --> IClientRepository : uses
     ClientRepository ..|> IClientRepository : implements
     ClientRepository --> Client : returns
@@ -272,14 +252,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class ClientsForm {
-        -IClientService _clientService
+        -ClientService _clientService
         +LoadAllClients() void
     }
 
-    class IClientService {
-        <<interface>>
-        +GetAllClients() List~Client~
-    }
 
     class ClientService {
         -IClientRepository _clientRepository
@@ -304,8 +280,7 @@ classDiagram
         +bool IsActive
     }
 
-    ClientsForm --> IClientService : uses
-    ClientService ..|> IClientService : implements
+    ClientsForm --> ClientService : uses
     ClientService --> IClientRepository : uses
     ClientRepository ..|> IClientRepository : implements
     ClientRepository --> Client : returns
@@ -343,14 +318,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class ClientsForm {
-        -IClientService _clientService
+        -ClientService _clientService
         +LoadClientDetails(id) void
     }
 
-    class IClientService {
-        <<interface>>
-        +GetClientById(id) Client
-    }
 
     class ClientService {
         -IClientRepository _clientRepository
@@ -377,8 +348,7 @@ classDiagram
         +bool IsActive
     }
 
-    ClientsForm --> IClientService : uses
-    ClientService ..|> IClientService : implements
+    ClientsForm --> ClientService : uses
     ClientService --> IClientRepository : uses
     ClientRepository ..|> IClientRepository : implements
     ClientRepository --> Client : returns
@@ -421,16 +391,12 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class ClientsForm {
-        -IClientService _clientService
+        -ClientService _clientService
         +btnUpdate_Click(sender, e) void
         -ValidateInputs() bool
         -LoadClients() void
     }
 
-    class IClientService {
-        <<interface>>
-        +UpdateClient(client) void
-    }
 
     class ClientService {
         -IClientRepository _clientRepository
@@ -467,8 +433,7 @@ classDiagram
         +int UpdatedBy
     }
 
-    ClientsForm --> IClientService : uses
-    ClientService ..|> IClientService : implements
+    ClientsForm --> ClientService : uses
     ClientService --> IClientRepository : uses
     ClientRepository ..|> IClientRepository : implements
     ClientRepository --> DatabaseHelper : uses

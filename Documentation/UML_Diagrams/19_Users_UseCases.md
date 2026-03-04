@@ -11,18 +11,12 @@ This document contains UML Class Diagrams and Sequence Diagrams for all User-rel
 ```mermaid
 classDiagram
     class UserRolesForm {
-        -IUserService _userService
-        -IRoleService _roleService
+        -UserService _userService
+        -RoleService _roleService
         -ILogService _logService
         +btnAssignRoles_Click(sender, e) void
         -LoadUserRoles(userId) void
         -LoadAllRoles() void
-    }
-
-    class IUserService {
-        <<interface>>
-        +AssignRoles(userId, roleIds) void
-        +GetUserRoles(userId) List~Role~
     }
 
     class UserService {
@@ -63,8 +57,7 @@ classDiagram
         +bool IsActive
     }
 
-    UserRolesForm --> IUserService : uses
-    UserService ..|> IUserService : implements
+    UserRolesForm --> UserService : uses
     UserService --> IUserRepository : uses
     UserRepository ..|> IUserRepository : implements
     UserRepository --> DatabaseHelper : uses
@@ -111,16 +104,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class UsersForm {
-        -IUserService _userService
+        -UserService _userService
         -IAuthenticationService _authService
         +btnChangePassword_Click(sender, e) void
         -ValidatePasswordInputs() bool
-    }
-
-    class IUserService {
-        <<interface>>
-        +UpdateUser(user) void
-        +GetUserById(id) User
     }
 
     class IAuthenticationService {
@@ -158,7 +145,7 @@ classDiagram
         +string Email
     }
 
-    UsersForm --> IUserService : uses
+    UsersForm --> UserService : uses
     UsersForm --> IAuthenticationService : uses
     AuthenticationService ..|> IAuthenticationService : implements
     AuthenticationService --> IUserRepository : uses
@@ -218,17 +205,12 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class UsersForm {
-        -IUserService _userService
+        -UserService _userService
         -IAuthenticationService _authService
         -ILogService _logService
         +btnSave_Click(sender, e) void
         -ValidateInputs() bool
         -LoadUsers() void
-    }
-
-    class IUserService {
-        <<interface>>
-        +CreateUser(user) int
     }
 
     class UserService {
@@ -274,8 +256,7 @@ classDiagram
         +int CreatedBy
     }
 
-    UsersForm --> IUserService : uses
-    UserService ..|> IUserService : implements
+    UsersForm --> UserService : uses
     UserService --> IUserRepository : uses
     UserService --> IAuthenticationService : uses
     UserRepository ..|> IUserRepository : implements
@@ -332,14 +313,9 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class UsersForm {
-        -IUserService _userService
+        -UserService _userService
         +btnDelete_Click(sender, e) void
         -LoadUsers() void
-    }
-
-    class IUserService {
-        <<interface>>
-        +DeleteUser(id, deletedBy) void
     }
 
     class UserService {
@@ -364,8 +340,7 @@ classDiagram
         +bool IsActive
     }
 
-    UsersForm --> IUserService : uses
-    UserService ..|> IUserService : implements
+    UsersForm --> UserService : uses
     UserService --> IUserRepository : uses
     UserRepository ..|> IUserRepository : implements
     UserRepository --> User : maps
@@ -410,13 +385,8 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class UsersForm {
-        -IUserService _userService
+        -UserService _userService
         +LoadActiveUsers() void
-    }
-
-    class IUserService {
-        <<interface>>
-        +GetActiveUsers() List~User~
     }
 
     class UserService {
@@ -442,8 +412,7 @@ classDiagram
         +DateTime LastLogin
     }
 
-    UsersForm --> IUserService : uses
-    UserService ..|> IUserService : implements
+    UsersForm --> UserService : uses
     UserService --> IUserRepository : uses
     UserRepository ..|> IUserRepository : implements
     UserRepository --> User : returns
@@ -481,13 +450,8 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class UsersForm {
-        -IUserService _userService
+        -UserService _userService
         +LoadAllUsers() void
-    }
-
-    class IUserService {
-        <<interface>>
-        +GetAllUsers() List~User~
     }
 
     class UserService {
@@ -512,8 +476,7 @@ classDiagram
         +bool IsActive
     }
 
-    UsersForm --> IUserService : uses
-    UserService ..|> IUserService : implements
+    UsersForm --> UserService : uses
     UserService --> IUserRepository : uses
     UserRepository ..|> IUserRepository : implements
     UserRepository --> User : returns
@@ -551,13 +514,8 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class UsersForm {
-        -IUserService _userService
+        -UserService _userService
         +LoadUserDetails(id) void
-    }
-
-    class IUserService {
-        <<interface>>
-        +GetUserById(id) User
     }
 
     class UserService {
@@ -584,8 +542,7 @@ classDiagram
         +DateTime LastLogin
     }
 
-    UsersForm --> IUserService : uses
-    UserService ..|> IUserService : implements
+    UsersForm --> UserService : uses
     UserService --> IUserRepository : uses
     UserRepository ..|> IUserRepository : implements
     UserRepository --> User : returns
@@ -628,13 +585,8 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class UserRolesForm {
-        -IUserService _userService
+        -UserService _userService
         +LoadUserRoles(userId) void
-    }
-
-    class IUserService {
-        <<interface>>
-        +GetUserRoles(userId) List~Role~
     }
 
     class UserService {
@@ -664,8 +616,7 @@ classDiagram
         +bool IsActive
     }
 
-    UserRolesForm --> IUserService : uses
-    UserService ..|> IUserService : implements
+    UserRolesForm --> UserService : uses
     UserService --> IUserRepository : uses
     UserRepository ..|> IUserRepository : implements
     UserRepository --> Role : returns
@@ -704,15 +655,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class UsersForm {
-        -IUserService _userService
+        -UserService _userService
         +btnUpdate_Click(sender, e) void
         -ValidateInputs() bool
         -LoadUsers() void
-    }
-
-    class IUserService {
-        <<interface>>
-        +UpdateUser(user) void
     }
 
     class UserService {
@@ -748,8 +694,7 @@ classDiagram
         +int UpdatedBy
     }
 
-    UsersForm --> IUserService : uses
-    UserService ..|> IUserService : implements
+    UsersForm --> UserService : uses
     UserService --> IUserRepository : uses
     UserRepository ..|> IUserRepository : implements
     UserRepository --> DatabaseHelper : uses

@@ -11,30 +11,15 @@ This document contains UML Class Diagrams and Sequence Diagrams for all Sales-re
 ```mermaid
 classDiagram
     class SalesForm {
-        -ISaleService _saleService
-        -IClientService _clientService
-        -IProductService _productService
+        -SaleService _saleService
+        -ClientService _clientService
+        -ProductService _productService
         -ILogService _logService
         +btnSave_Click(sender, e) void
         -ValidateSale() bool
         -LoadSales() void
     }
 
-    class ISaleService {
-        <<interface>>
-        +CreateSale(sale, lines) int
-        +UpdateSale(sale) void
-        +DeleteSale(id, deletedBy) void
-        +GetAllSales() List~Sale~
-        +GetAllSalesWithDetails() List~Sale~
-        +GetSaleById(id) Sale
-        +GetSaleByIdWithLines(id) Sale
-        +GetSalesBySeller(seller) List~Sale~
-        +GetSalesByClient(clientId) List~Sale~
-        +GetSalesByDateRange(from, to) List~Sale~
-        +GetAvailableStockByWarehouse(productId) Dictionary~int,int~
-        +GetTotalAvailableStock(productId) int
-    }
 
     class SaleService {
         -_saleLock$ SemaphoreSlim
@@ -97,8 +82,7 @@ classDiagram
         +decimal LineTotal
     }
 
-    SalesForm --> ISaleService : uses
-    SaleService ..|> ISaleService : implements
+    SalesForm --> SaleService : uses
     SaleService --> ISaleRepository : uses
     SaleService --> IStockRepository : uses
     SaleRepository ..|> ISaleRepository : implements
@@ -165,15 +149,11 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class SalesForm {
-        -ISaleService _saleService
+        -SaleService _saleService
         +btnDelete_Click(sender, e) void
         -LoadSales() void
     }
 
-    class ISaleService {
-        <<interface>>
-        +DeleteSale(id, deletedBy) void
-    }
 
     class SaleService {
         -ISaleRepository _saleRepository
@@ -196,8 +176,7 @@ classDiagram
         +bool IsActive
     }
 
-    SalesForm --> ISaleService : uses
-    SaleService ..|> ISaleService : implements
+    SalesForm --> SaleService : uses
     SaleService --> ISaleRepository : uses
     SaleRepository ..|> ISaleRepository : implements
     SaleRepository --> Sale : maps
@@ -241,14 +220,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class SalesForm {
-        -ISaleService _saleService
+        -SaleService _saleService
         +LoadSales() void
     }
 
-    class ISaleService {
-        <<interface>>
-        +GetAllSales() List~Sale~
-    }
 
     class SaleService {
         -ISaleRepository _saleRepository
@@ -273,8 +248,7 @@ classDiagram
         +decimal TotalAmount
     }
 
-    SalesForm --> ISaleService : uses
-    SaleService ..|> ISaleService : implements
+    SalesForm --> SaleService : uses
     SaleService --> ISaleRepository : uses
     SaleRepository ..|> ISaleRepository : implements
     SaleRepository --> Sale : returns
@@ -312,14 +286,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class SalesForm {
-        -ISaleService _saleService
+        -SaleService _saleService
         +LoadSalesWithDetails() void
     }
 
-    class ISaleService {
-        <<interface>>
-        +GetAllSalesWithDetails() List~Sale~
-    }
 
     class SaleService {
         -ISaleRepository _saleRepository
@@ -355,8 +325,7 @@ classDiagram
         +decimal LineTotal
     }
 
-    SalesForm --> ISaleService : uses
-    SaleService ..|> ISaleService : implements
+    SalesForm --> SaleService : uses
     SaleService --> ISaleRepository : uses
     SaleRepository ..|> ISaleRepository : implements
     Sale "1" --* "many" SaleLine : contains
@@ -394,14 +363,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class SalesForm {
-        -ISaleService _saleService
+        -SaleService _saleService
         +LoadStockByWarehouse(productId) void
     }
 
-    class ISaleService {
-        <<interface>>
-        +GetAvailableStockByWarehouse(productId) Dictionary~int,int~
-    }
 
     class SaleService {
         -IStockRepository _stockRepository
@@ -426,8 +391,7 @@ classDiagram
         +int Quantity
     }
 
-    SalesForm --> ISaleService : uses
-    SaleService ..|> ISaleService : implements
+    SalesForm --> SaleService : uses
     SaleService --> IStockRepository : uses
     StockRepository ..|> IStockRepository : implements
     StockRepository --> Stock : returns
@@ -467,14 +431,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class SalesForm {
-        -ISaleService _saleService
+        -SaleService _saleService
         +LoadSaleDetails(id) void
     }
 
-    class ISaleService {
-        <<interface>>
-        +GetSaleById(id) Sale
-    }
 
     class SaleService {
         -ISaleRepository _saleRepository
@@ -499,8 +459,7 @@ classDiagram
         +decimal TotalAmount
     }
 
-    SalesForm --> ISaleService : uses
-    SaleService ..|> ISaleService : implements
+    SalesForm --> SaleService : uses
     SaleService --> ISaleRepository : uses
     SaleRepository ..|> ISaleRepository : implements
     SaleRepository --> Sale : returns
@@ -538,14 +497,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class SalesForm {
-        -ISaleService _saleService
+        -SaleService _saleService
         +LoadSaleWithLines(id) void
     }
 
-    class ISaleService {
-        <<interface>>
-        +GetSaleByIdWithLines(id) Sale
-    }
 
     class SaleService {
         -ISaleRepository _saleRepository
@@ -577,8 +532,7 @@ classDiagram
         +decimal LineTotal
     }
 
-    SalesForm --> ISaleService : uses
-    SaleService ..|> ISaleService : implements
+    SalesForm --> SaleService : uses
     SaleService --> ISaleRepository : uses
     SaleRepository ..|> ISaleRepository : implements
     Sale "1" --* "many" SaleLine : contains
@@ -616,14 +570,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class SalesForm {
-        -ISaleService _saleService
+        -SaleService _saleService
         +FilterByClient(clientId) void
     }
 
-    class ISaleService {
-        <<interface>>
-        +GetSalesByClient(clientId) List~Sale~
-    }
 
     class SaleService {
         -ISaleRepository _saleRepository
@@ -647,8 +597,7 @@ classDiagram
         +decimal TotalAmount
     }
 
-    SalesForm --> ISaleService : uses
-    SaleService ..|> ISaleService : implements
+    SalesForm --> SaleService : uses
     SaleService --> ISaleRepository : uses
     SaleRepository ..|> ISaleRepository : implements
     SaleRepository --> Sale : returns
@@ -687,14 +636,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class SalesForm {
-        -ISaleService _saleService
+        -SaleService _saleService
         +FilterByDateRange(from, to) void
     }
 
-    class ISaleService {
-        <<interface>>
-        +GetSalesByDateRange(from, to) List~Sale~
-    }
 
     class SaleService {
         -ISaleRepository _saleRepository
@@ -717,8 +662,7 @@ classDiagram
         +decimal TotalAmount
     }
 
-    SalesForm --> ISaleService : uses
-    SaleService ..|> ISaleService : implements
+    SalesForm --> SaleService : uses
     SaleService --> ISaleRepository : uses
     SaleRepository ..|> ISaleRepository : implements
     SaleRepository --> Sale : returns
@@ -757,14 +701,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class SalesForm {
-        -ISaleService _saleService
+        -SaleService _saleService
         +FilterBySeller(sellerName) void
     }
 
-    class ISaleService {
-        <<interface>>
-        +GetSalesBySeller(sellerName) List~Sale~
-    }
 
     class SaleService {
         -ISaleRepository _saleRepository
@@ -788,8 +728,7 @@ classDiagram
         +decimal TotalAmount
     }
 
-    SalesForm --> ISaleService : uses
-    SaleService ..|> ISaleService : implements
+    SalesForm --> SaleService : uses
     SaleService --> ISaleRepository : uses
     SaleRepository ..|> ISaleRepository : implements
     SaleRepository --> Sale : returns
@@ -828,14 +767,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class SalesForm {
-        -ISaleService _saleService
+        -SaleService _saleService
         +CheckTotalStock(productId) void
     }
 
-    class ISaleService {
-        <<interface>>
-        +GetTotalAvailableStock(productId) int
-    }
 
     class SaleService {
         -IStockRepository _stockRepository
@@ -860,8 +795,7 @@ classDiagram
         +int Quantity
     }
 
-    SalesForm --> ISaleService : uses
-    SaleService ..|> ISaleService : implements
+    SalesForm --> SaleService : uses
     SaleService --> IStockRepository : uses
     StockRepository ..|> IStockRepository : implements
     StockRepository --> Stock : returns
@@ -900,17 +834,12 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class SalesForm {
-        -ISaleService _saleService
+        -SaleService _saleService
         +btnUpdate_Click(sender, e) void
         -ValidateSale() bool
         -LoadSales() void
     }
 
-    class ISaleService {
-        <<interface>>
-        +UpdateSale(sale) void
-        +GetSaleById(id) Sale
-    }
 
     class SaleService {
         -ISaleRepository _saleRepository
@@ -945,8 +874,7 @@ classDiagram
         +int UpdatedBy
     }
 
-    SalesForm --> ISaleService : uses
-    SaleService ..|> ISaleService : implements
+    SalesForm --> SaleService : uses
     SaleService --> ISaleRepository : uses
     SaleRepository ..|> ISaleRepository : implements
     SaleRepository --> DatabaseHelper : uses

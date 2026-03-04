@@ -11,22 +11,12 @@ This document contains UML Class Diagrams and Sequence Diagrams for all Report-r
 ```mermaid
 classDiagram
     class ReportsForm {
-        -IReportService _reportService
+        -ReportService _reportService
         -IAuthorizationService _authService
         -ILogService _logService
         +LoadCategorySalesReport(from, to) void
     }
 
-    class IReportService {
-        <<interface>>
-        +GetCategorySalesReport(from, to) List~CategorySalesReportDTO~
-        +GetTopProductsReport(top, from, to) List~TopProductsReportDTO~
-        +GetClientPurchasesReport(clientId, from, to) List~ClientPurchasesReportDTO~
-        +GetPriceVariationReport(productId, from, to) List~PriceVariationReportDTO~
-        +GetRevenueByDateReport(from, to, groupBy) List~RevenueByDateReportDTO~
-        +GetSellerPerformanceReport(from, to) List~SellerPerformanceReportDTO~
-        +GetClientProductRankingReport(clientId) List~ClientProductRankingReportDTO~
-    }
 
     class ReportService {
         -IReportRepository _reportRepository
@@ -57,8 +47,7 @@ classDiagram
         +int NumberOfSales
     }
 
-    ReportsForm --> IReportService : uses
-    ReportService ..|> IReportService : implements
+    ReportsForm --> ReportService : uses
     ReportService --> IReportRepository : uses
     ReportRepository ..|> IReportRepository : implements
     ReportRepository --> DatabaseHelper : uses
@@ -99,14 +88,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class ReportsForm {
-        -IReportService _reportService
+        -ReportService _reportService
         +LoadClientProductRankingReport(clientId) void
     }
 
-    class IReportService {
-        <<interface>>
-        +GetClientProductRankingReport(clientId) List~ClientProductRankingReportDTO~
-    }
 
     class ReportService {
         -IReportRepository _reportRepository
@@ -133,8 +118,7 @@ classDiagram
         +int Rank
     }
 
-    ReportsForm --> IReportService : uses
-    ReportService ..|> IReportService : implements
+    ReportsForm --> ReportService : uses
     ReportService --> IReportRepository : uses
     ReportRepository ..|> IReportRepository : implements
     ReportRepository --> ClientProductRankingReportDTO : returns
@@ -173,14 +157,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class ReportsForm {
-        -IReportService _reportService
+        -ReportService _reportService
         +LoadClientPurchasesReport(clientId, from, to) void
     }
 
-    class IReportService {
-        <<interface>>
-        +GetClientPurchasesReport(clientId, from, to) List~ClientPurchasesReportDTO~
-    }
 
     class ReportService {
         -IReportRepository _reportRepository
@@ -206,8 +186,7 @@ classDiagram
         +string SellerName
     }
 
-    ReportsForm --> IReportService : uses
-    ReportService ..|> IReportService : implements
+    ReportsForm --> ReportService : uses
     ReportService --> IReportRepository : uses
     ReportRepository ..|> IReportRepository : implements
     ReportRepository --> ClientPurchasesReportDTO : returns
@@ -246,14 +225,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class ReportsForm {
-        -IReportService _reportService
+        -ReportService _reportService
         +LoadPriceVariationReport(productId, from, to) void
     }
 
-    class IReportService {
-        <<interface>>
-        +GetPriceVariationReport(productId, from, to) List~PriceVariationReportDTO~
-    }
 
     class ReportService {
         -IReportRepository _reportRepository
@@ -281,8 +256,7 @@ classDiagram
         +string ChangedBy
     }
 
-    ReportsForm --> IReportService : uses
-    ReportService ..|> IReportService : implements
+    ReportsForm --> ReportService : uses
     ReportService --> IReportRepository : uses
     ReportRepository ..|> IReportRepository : implements
     ReportRepository --> PriceVariationReportDTO : returns
@@ -321,14 +295,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class ReportsForm {
-        -IReportService _reportService
+        -ReportService _reportService
         +LoadRevenueByDateReport(from, to, groupBy) void
     }
 
-    class IReportService {
-        <<interface>>
-        +GetRevenueByDateReport(from, to, groupBy) List~RevenueByDateReportDTO~
-    }
 
     class ReportService {
         -IReportRepository _reportRepository
@@ -352,8 +322,7 @@ classDiagram
         +int TotalItemsSold
     }
 
-    ReportsForm --> IReportService : uses
-    ReportService ..|> IReportService : implements
+    ReportsForm --> ReportService : uses
     ReportService --> IReportRepository : uses
     ReportRepository ..|> IReportRepository : implements
     ReportRepository --> RevenueByDateReportDTO : returns
@@ -393,14 +362,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class ReportsForm {
-        -IReportService _reportService
+        -ReportService _reportService
         +LoadSellerPerformanceReport(from, to) void
     }
 
-    class IReportService {
-        <<interface>>
-        +GetSellerPerformanceReport(from, to) List~SellerPerformanceReportDTO~
-    }
 
     class ReportService {
         -IReportRepository _reportRepository
@@ -425,8 +390,7 @@ classDiagram
         +int UniqueClientsServed
     }
 
-    ReportsForm --> IReportService : uses
-    ReportService ..|> IReportService : implements
+    ReportsForm --> ReportService : uses
     ReportService --> IReportRepository : uses
     ReportRepository ..|> IReportRepository : implements
     ReportRepository --> SellerPerformanceReportDTO : returns
@@ -465,14 +429,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class ReportsForm {
-        -IReportService _reportService
+        -ReportService _reportService
         +LoadTopProductsReport(top, from, to) void
     }
 
-    class IReportService {
-        <<interface>>
-        +GetTopProductsReport(top, from, to) List~TopProductsReportDTO~
-    }
 
     class ReportService {
         -IReportRepository _reportRepository
@@ -499,8 +459,7 @@ classDiagram
         +int Rank
     }
 
-    ReportsForm --> IReportService : uses
-    ReportService ..|> IReportService : implements
+    ReportsForm --> ReportService : uses
     ReportService --> IReportRepository : uses
     ReportRepository ..|> IReportRepository : implements
     ReportRepository --> TopProductsReportDTO : returns
