@@ -11,26 +11,15 @@ This document contains UML Class Diagrams and Sequence Diagrams for all Stock Mo
 ```mermaid
 classDiagram
     class StockMovementForm {
-        -IStockMovementService _movementService
-        -IWarehouseService _warehouseService
-        -IProductService _productService
+        -StockMovementService _movementService
+        -WarehouseService _warehouseService
+        -ProductService _productService
         -ILogService _logService
         +btnSave_Click(sender, e) void
         -ValidateMovement() bool
         -LoadMovements() void
     }
 
-    class IStockMovementService {
-        <<interface>>
-        +CreateMovement(movement, lines) int
-        +GetAllMovements() List~StockMovement~
-        +GetMovementById(id) StockMovement
-        +GetMovementsByType(type) List~StockMovement~
-        +GetMovementsByDateRange(from, to) List~StockMovement~
-        +GetMovementLines(movementId) List~StockMovementLine~
-        +UpdateProductPrices(movementId) void
-        +UpdateStockForMovement(movementId) void
-    }
 
     class StockMovementService {
         -IStockMovementRepository _movementRepository
@@ -103,8 +92,7 @@ classDiagram
         Adjustment
     }
 
-    StockMovementForm --> IStockMovementService : uses
-    StockMovementService ..|> IStockMovementService : implements
+    StockMovementForm --> StockMovementService : uses
     StockMovementService --> IStockMovementRepository : uses
     StockMovementService --> IStockRepository : uses
     StockMovementRepository ..|> IStockMovementRepository : implements
@@ -172,14 +160,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class StockMovementForm {
-        -IStockMovementService _movementService
+        -StockMovementService _movementService
         +LoadMovements() void
     }
 
-    class IStockMovementService {
-        <<interface>>
-        +GetAllMovements() List~StockMovement~
-    }
 
     class StockMovementService {
         -IStockMovementRepository _movementRepository
@@ -203,8 +187,7 @@ classDiagram
         +string Reason
     }
 
-    StockMovementForm --> IStockMovementService : uses
-    StockMovementService ..|> IStockMovementService : implements
+    StockMovementForm --> StockMovementService : uses
     StockMovementService --> IStockMovementRepository : uses
     StockMovementRepository ..|> IStockMovementRepository : implements
     StockMovementRepository --> StockMovement : returns
@@ -242,14 +225,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class StockMovementForm {
-        -IStockMovementService _movementService
+        -StockMovementService _movementService
         +LoadMovementDetails(id) void
     }
 
-    class IStockMovementService {
-        <<interface>>
-        +GetMovementById(id) StockMovement
-    }
 
     class StockMovementService {
         -IStockMovementRepository _movementRepository
@@ -276,8 +255,7 @@ classDiagram
         +string Notes
     }
 
-    StockMovementForm --> IStockMovementService : uses
-    StockMovementService ..|> IStockMovementService : implements
+    StockMovementForm --> StockMovementService : uses
     StockMovementService --> IStockMovementRepository : uses
     StockMovementRepository ..|> IStockMovementRepository : implements
     StockMovementRepository --> StockMovement : returns
@@ -320,14 +298,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class StockMovementForm {
-        -IStockMovementService _movementService
+        -StockMovementService _movementService
         +LoadMovementLines(movementId) void
     }
 
-    class IStockMovementService {
-        <<interface>>
-        +GetMovementLines(movementId) List~StockMovementLine~
-    }
 
     class StockMovementService {
         -IStockMovementRepository _movementRepository
@@ -353,8 +327,7 @@ classDiagram
         +decimal UnitPrice
     }
 
-    StockMovementForm --> IStockMovementService : uses
-    StockMovementService ..|> IStockMovementService : implements
+    StockMovementForm --> StockMovementService : uses
     StockMovementService --> IStockMovementRepository : uses
     StockMovementRepository ..|> IStockMovementRepository : implements
     StockMovementRepository --> StockMovementLine : returns
@@ -392,14 +365,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class StockMovementForm {
-        -IStockMovementService _movementService
+        -StockMovementService _movementService
         +FilterByDateRange(from, to) void
     }
 
-    class IStockMovementService {
-        <<interface>>
-        +GetMovementsByDateRange(from, to) List~StockMovement~
-    }
 
     class StockMovementService {
         -IStockMovementRepository _movementRepository
@@ -422,8 +391,7 @@ classDiagram
         +DateTime MovementDate
     }
 
-    StockMovementForm --> IStockMovementService : uses
-    StockMovementService ..|> IStockMovementService : implements
+    StockMovementForm --> StockMovementService : uses
     StockMovementService --> IStockMovementRepository : uses
     StockMovementRepository ..|> IStockMovementRepository : implements
     StockMovementRepository --> StockMovement : returns
@@ -462,14 +430,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class StockMovementForm {
-        -IStockMovementService _movementService
+        -StockMovementService _movementService
         +FilterByType(type) void
     }
 
-    class IStockMovementService {
-        <<interface>>
-        +GetMovementsByType(type) List~StockMovement~
-    }
 
     class StockMovementService {
         -IStockMovementRepository _movementRepository
@@ -500,8 +464,7 @@ classDiagram
         Adjustment
     }
 
-    StockMovementForm --> IStockMovementService : uses
-    StockMovementService ..|> IStockMovementService : implements
+    StockMovementForm --> StockMovementService : uses
     StockMovementService --> IStockMovementRepository : uses
     StockMovementRepository ..|> IStockMovementRepository : implements
     StockMovementRepository --> StockMovement : returns
@@ -548,11 +511,6 @@ classDiagram
         +CheckPriceUpdates(movementId) bool
     }
 
-    class IStockMovementService {
-        <<interface>>
-        +UpdateProductPrices(movementId) void
-        +CheckPriceUpdates(movementId) bool
-    }
 
     class IStockMovementRepository {
         <<interface>>
@@ -588,7 +546,6 @@ classDiagram
         +decimal UnitPrice
     }
 
-    StockMovementService ..|> IStockMovementService : implements
     StockMovementService --> IStockMovementRepository : uses
     StockMovementService --> IProductRepository : uses
     StockMovementRepository ..|> IStockMovementRepository : implements
@@ -642,10 +599,6 @@ classDiagram
         +UpdateStockForMovement(movementId) void
     }
 
-    class IStockMovementService {
-        <<interface>>
-        +UpdateStockForMovement(movementId) void
-    }
 
     class IStockMovementRepository {
         <<interface>>
@@ -684,7 +637,6 @@ classDiagram
         +DateTime LastUpdated
     }
 
-    StockMovementService ..|> IStockMovementService : implements
     StockMovementService --> IStockMovementRepository : uses
     StockMovementService --> IStockRepository : uses
     StockMovementRepository ..|> IStockMovementRepository : implements

@@ -11,22 +11,13 @@ This document contains UML Class Diagrams and Sequence Diagrams for all Warehous
 ```mermaid
 classDiagram
     class WarehousesForm {
-        -IWarehouseService _warehouseService
+        -WarehouseService _warehouseService
         -ILogService _logService
         +btnSave_Click(sender, e) void
         -ValidateInputs() bool
         -LoadWarehouses() void
     }
 
-    class IWarehouseService {
-        <<interface>>
-        +CreateWarehouse(warehouse) int
-        +UpdateWarehouse(warehouse) void
-        +DeleteWarehouse(id, deletedBy) void
-        +GetAllWarehouses() List~Warehouse~
-        +GetActiveWarehouses() List~Warehouse~
-        +GetWarehouseById(id) Warehouse
-    }
 
     class WarehouseService {
         -IWarehouseRepository _warehouseRepository
@@ -65,9 +56,8 @@ classDiagram
         +int CreatedBy
     }
 
-    WarehousesForm --> IWarehouseService : uses
+    WarehousesForm --> WarehouseService : uses
     WarehousesForm --> ILogService : uses
-    WarehouseService ..|> IWarehouseService : implements
     WarehouseService --> IWarehouseRepository : uses
     WarehouseService --> ILogService : uses
     WarehouseRepository ..|> IWarehouseRepository : implements
@@ -120,15 +110,11 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class WarehousesForm {
-        -IWarehouseService _warehouseService
+        -WarehouseService _warehouseService
         +btnDelete_Click(sender, e) void
         -LoadWarehouses() void
     }
 
-    class IWarehouseService {
-        <<interface>>
-        +DeleteWarehouse(id, deletedBy) void
-    }
 
     class WarehouseService {
         -IWarehouseRepository _warehouseRepository
@@ -152,8 +138,7 @@ classDiagram
         +bool IsActive
     }
 
-    WarehousesForm --> IWarehouseService : uses
-    WarehouseService ..|> IWarehouseService : implements
+    WarehousesForm --> WarehouseService : uses
     WarehouseService --> IWarehouseRepository : uses
     WarehouseRepository ..|> IWarehouseRepository : implements
     WarehouseRepository --> Warehouse : maps
@@ -197,14 +182,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class WarehousesForm {
-        -IWarehouseService _warehouseService
+        -WarehouseService _warehouseService
         +LoadActiveWarehouses() void
     }
 
-    class IWarehouseService {
-        <<interface>>
-        +GetActiveWarehouses() List~Warehouse~
-    }
 
     class WarehouseService {
         -IWarehouseRepository _warehouseRepository
@@ -228,8 +209,7 @@ classDiagram
         +bool IsActive
     }
 
-    WarehousesForm --> IWarehouseService : uses
-    WarehouseService ..|> IWarehouseService : implements
+    WarehousesForm --> WarehouseService : uses
     WarehouseService --> IWarehouseRepository : uses
     WarehouseRepository ..|> IWarehouseRepository : implements
     WarehouseRepository --> Warehouse : returns
@@ -267,14 +247,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class WarehousesForm {
-        -IWarehouseService _warehouseService
+        -WarehouseService _warehouseService
         +LoadAllWarehouses() void
     }
 
-    class IWarehouseService {
-        <<interface>>
-        +GetAllWarehouses() List~Warehouse~
-    }
 
     class WarehouseService {
         -IWarehouseRepository _warehouseRepository
@@ -298,8 +274,7 @@ classDiagram
         +bool IsActive
     }
 
-    WarehousesForm --> IWarehouseService : uses
-    WarehouseService ..|> IWarehouseService : implements
+    WarehousesForm --> WarehouseService : uses
     WarehouseService --> IWarehouseRepository : uses
     WarehouseRepository ..|> IWarehouseRepository : implements
     WarehouseRepository --> Warehouse : returns
@@ -337,14 +312,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class WarehousesForm {
-        -IWarehouseService _warehouseService
+        -WarehouseService _warehouseService
         +LoadWarehouseDetails(id) void
     }
 
-    class IWarehouseService {
-        <<interface>>
-        +GetWarehouseById(id) Warehouse
-    }
 
     class WarehouseService {
         -IWarehouseRepository _warehouseRepository
@@ -369,8 +340,7 @@ classDiagram
         +DateTime CreatedAt
     }
 
-    WarehousesForm --> IWarehouseService : uses
-    WarehouseService ..|> IWarehouseService : implements
+    WarehousesForm --> WarehouseService : uses
     WarehouseService --> IWarehouseRepository : uses
     WarehouseRepository ..|> IWarehouseRepository : implements
     WarehouseRepository --> Warehouse : returns
@@ -413,16 +383,12 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class WarehousesForm {
-        -IWarehouseService _warehouseService
+        -WarehouseService _warehouseService
         +btnUpdate_Click(sender, e) void
         -ValidateInputs() bool
         -LoadWarehouses() void
     }
 
-    class IWarehouseService {
-        <<interface>>
-        +UpdateWarehouse(warehouse) void
-    }
 
     class WarehouseService {
         -IWarehouseRepository _warehouseRepository
@@ -457,8 +423,7 @@ classDiagram
         +int UpdatedBy
     }
 
-    WarehousesForm --> IWarehouseService : uses
-    WarehouseService ..|> IWarehouseService : implements
+    WarehousesForm --> WarehouseService : uses
     WarehouseService --> IWarehouseRepository : uses
     WarehouseRepository ..|> IWarehouseRepository : implements
     WarehouseRepository --> DatabaseHelper : uses

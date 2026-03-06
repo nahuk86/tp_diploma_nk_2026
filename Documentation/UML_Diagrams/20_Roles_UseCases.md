@@ -11,24 +11,11 @@ This document contains UML Class Diagrams and Sequence Diagrams for all Role-rel
 ```mermaid
 classDiagram
     class RolesForm {
-        -IRoleService _roleService
+        -RoleService _roleService
         -ILogService _logService
         +btnSave_Click(sender, e) void
         -ValidateInputs() bool
         -LoadRoles() void
-    }
-
-    class IRoleService {
-        <<interface>>
-        +CreateRole(role) int
-        +UpdateRole(role) void
-        +DeleteRole(id, deletedBy) void
-        +GetAllRoles() List~Role~
-        +GetActiveRoles() List~Role~
-        +GetRoleById(id) Role
-        +GetRolePermissions(roleId) List~Permission~
-        +AssignPermission(roleId, permissionId, assignedBy) void
-        +RemovePermission(roleId, permissionId) void
     }
 
     class RoleService {
@@ -67,9 +54,8 @@ classDiagram
         +int CreatedBy
     }
 
-    RolesForm --> IRoleService : uses
+    RolesForm --> RoleService : uses
     RolesForm --> ILogService : uses
-    RoleService ..|> IRoleService : implements
     RoleService --> IRoleRepository : uses
     RoleService --> ILogService : uses
     RoleRepository ..|> IRoleRepository : implements
@@ -123,14 +109,9 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class RolesForm {
-        -IRoleService _roleService
+        -RoleService _roleService
         +btnDelete_Click(sender, e) void
         -LoadRoles() void
-    }
-
-    class IRoleService {
-        <<interface>>
-        +DeleteRole(id, deletedBy) void
     }
 
     class RoleService {
@@ -154,8 +135,7 @@ classDiagram
         +bool IsActive
     }
 
-    RolesForm --> IRoleService : uses
-    RoleService ..|> IRoleService : implements
+    RolesForm --> RoleService : uses
     RoleService --> IRoleRepository : uses
     RoleRepository ..|> IRoleRepository : implements
     RoleRepository --> Role : maps
@@ -199,19 +179,12 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class RolePermissionsForm {
-        -IRoleService _roleService
+        -RoleService _roleService
         -IPermissionRepository _permissionRepo
         -ILogService _logService
         +btnAssignPermissions_Click(sender, e) void
         -LoadRolePermissions(roleId) void
         -LoadAllPermissions() void
-    }
-
-    class IRoleService {
-        <<interface>>
-        +AssignPermission(roleId, permissionId, assignedBy) void
-        +RemovePermission(roleId, permissionId) void
-        +GetRolePermissions(roleId) List~Permission~
     }
 
     class RoleService {
@@ -249,8 +222,7 @@ classDiagram
         +bool IsActive
     }
 
-    RolePermissionsForm --> IRoleService : uses
-    RoleService ..|> IRoleService : implements
+    RolePermissionsForm --> RoleService : uses
     RoleService --> IRoleRepository : uses
     RoleRepository ..|> IRoleRepository : implements
     RoleRepository --> DatabaseHelper : uses
@@ -291,13 +263,8 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class RolesForm {
-        -IRoleService _roleService
+        -RoleService _roleService
         +LoadActiveRoles() void
-    }
-
-    class IRoleService {
-        <<interface>>
-        +GetActiveRoles() List~Role~
     }
 
     class RoleService {
@@ -321,8 +288,7 @@ classDiagram
         +bool IsActive
     }
 
-    RolesForm --> IRoleService : uses
-    RoleService ..|> IRoleService : implements
+    RolesForm --> RoleService : uses
     RoleService --> IRoleRepository : uses
     RoleRepository ..|> IRoleRepository : implements
     RoleRepository --> Role : returns
@@ -428,13 +394,8 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class RolesForm {
-        -IRoleService _roleService
+        -RoleService _roleService
         +LoadAllRoles() void
-    }
-
-    class IRoleService {
-        <<interface>>
-        +GetAllRoles() List~Role~
     }
 
     class RoleService {
@@ -458,8 +419,7 @@ classDiagram
         +bool IsActive
     }
 
-    RolesForm --> IRoleService : uses
-    RoleService ..|> IRoleService : implements
+    RolesForm --> RoleService : uses
     RoleService --> IRoleRepository : uses
     RoleRepository ..|> IRoleRepository : implements
     RoleRepository --> Role : returns
@@ -497,13 +457,8 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class RolesForm {
-        -IRoleService _roleService
+        -RoleService _roleService
         +LoadRoleDetails(id) void
-    }
-
-    class IRoleService {
-        <<interface>>
-        +GetRoleById(id) Role
     }
 
     class RoleService {
@@ -528,8 +483,7 @@ classDiagram
         +DateTime CreatedAt
     }
 
-    RolesForm --> IRoleService : uses
-    RoleService ..|> IRoleService : implements
+    RolesForm --> RoleService : uses
     RoleService --> IRoleRepository : uses
     RoleRepository ..|> IRoleRepository : implements
     RoleRepository --> Role : returns
@@ -572,13 +526,8 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class RolePermissionsForm {
-        -IRoleService _roleService
+        -RoleService _roleService
         +LoadRolePermissions(roleId) void
-    }
-
-    class IRoleService {
-        <<interface>>
-        +GetRolePermissions(roleId) List~Permission~
     }
 
     class RoleService {
@@ -607,8 +556,7 @@ classDiagram
         +string Module
     }
 
-    RolePermissionsForm --> IRoleService : uses
-    RoleService ..|> IRoleService : implements
+    RolePermissionsForm --> RoleService : uses
     RoleService --> IRoleRepository : uses
     RoleRepository ..|> IRoleRepository : implements
     Role "1" --> "many" Permission : hasPermissions
@@ -646,15 +594,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
     class RolesForm {
-        -IRoleService _roleService
+        -RoleService _roleService
         +btnUpdate_Click(sender, e) void
         -ValidateInputs() bool
         -LoadRoles() void
-    }
-
-    class IRoleService {
-        <<interface>>
-        +UpdateRole(role) void
     }
 
     class RoleService {
@@ -689,8 +632,7 @@ classDiagram
         +int UpdatedBy
     }
 
-    RolesForm --> IRoleService : uses
-    RoleService ..|> IRoleService : implements
+    RolesForm --> RoleService : uses
     RoleService --> IRoleRepository : uses
     RoleRepository ..|> IRoleRepository : implements
     RoleRepository --> DatabaseHelper : uses
