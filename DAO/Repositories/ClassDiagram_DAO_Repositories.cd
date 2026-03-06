@@ -17,7 +17,7 @@
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="DAO.Repositories.ReportRepository" BaseTypeListCollapsed="true">
-    <Position X="8.25" Y="1" Width="2.5" />
+    <Position X="3.25" Y="6" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAABAAAAAAAAQAAABAAABAAAAAAAAAAAIAAAEEAAABA=</HashCode>
       <FileName>Repositories\ReportRepository.cs</FileName>
@@ -33,7 +33,7 @@
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="DAO.Repositories.StockMovementRepository" BaseTypeListCollapsed="true">
-    <Position X="11" Y="1" Width="2.25" />
+    <Position X="6" Y="5.25" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AgAAAEAEAAQAAEAAAAAAACAAAAAAAAECAgAAQAAAAIA=</HashCode>
       <FileName>Repositories\StockMovementRepository.cs</FileName>
@@ -41,7 +41,7 @@
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="DAO.Repositories.StockRepository" BaseTypeListCollapsed="true">
-    <Position X="13.5" Y="1" Width="2.25" />
+    <Position X="0.5" Y="6" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAACAAAIBAUAABAAAAAAAAgAAAAAAAIA=</HashCode>
       <FileName>Repositories\StockRepository.cs</FileName>
