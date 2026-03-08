@@ -8,10 +8,10 @@ namespace SERVICES.Implementations
 {
     public class AuthenticationService : IAuthenticationService
     {
-        private readonly DOMAIN.Contracts.IUserRepository _userRepository;
+        private readonly DAL.Contracts.IUserRepository _userRepository;
         private readonly ILogService _logService;
 
-        public AuthenticationService(DOMAIN.Contracts.IUserRepository userRepository, ILogService logService)
+        public AuthenticationService(DAL.Contracts.IUserRepository userRepository, ILogService logService)
         {
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
             _logService = logService ?? throw new ArgumentNullException(nameof(logService));

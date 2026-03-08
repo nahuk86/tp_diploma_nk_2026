@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DAO.Contracts;
-using DOMAIN.Contracts;
+using DAL.Contracts;
 using DOMAIN.Entities;
 using DOMAIN.Enums;
 using SERVICES;

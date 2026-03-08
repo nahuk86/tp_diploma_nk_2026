@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using DOMAIN.Contracts;
+using DAL.Contracts;
 using DOMAIN.Entities;
 
 namespace DAO.Contracts

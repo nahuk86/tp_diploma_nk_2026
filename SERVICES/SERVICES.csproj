@@ -48,13 +48,13 @@
     <Compile Include="DOMAIN\Entities\Role.cs" />
     <Compile Include="DOMAIN\Entities\Permission.cs" />
     <Compile Include="DOMAIN\Entities\AuditLog.cs" />
-    <!-- DOMAIN: Contracts -->
-    <Compile Include="DOMAIN\Contracts\IRepository.cs" />
-    <Compile Include="DOMAIN\Contracts\IUserRepository.cs" />
-    <Compile Include="DOMAIN\Contracts\IRoleRepository.cs" />
-    <Compile Include="DOMAIN\Contracts\IPermissionRepository.cs" />
-    <Compile Include="DOMAIN\Contracts\IAuditLogRepository.cs" />
-    <Compile Include="DOMAIN\Contracts\IUnitOfWork.cs" />
+    <!-- DAL: Contracts -->
+    <Compile Include="DAL\Contracts\IRepository.cs" />
+    <Compile Include="DAL\Contracts\IUserRepository.cs" />
+    <Compile Include="DAL\Contracts\IRoleRepository.cs" />
+    <Compile Include="DAL\Contracts\IPermissionRepository.cs" />
+    <Compile Include="DAL\Contracts\IAuditLogRepository.cs" />
+    <Compile Include="DAL\Contracts\IUnitOfWork.cs" />
     <!-- DOMAIN: Enums -->
     <Compile Include="DOMAIN\Enums\LogLevel.cs" />
     <Compile Include="DOMAIN\Enums\AuditAction.cs" />

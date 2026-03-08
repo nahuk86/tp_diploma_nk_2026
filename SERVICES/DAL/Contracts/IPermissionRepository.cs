@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using DOMAIN.Entities;
 
-namespace DOMAIN.Contracts
+namespace DAL.Contracts
 {
     public interface IPermissionRepository : IRepository<Permission>
     {

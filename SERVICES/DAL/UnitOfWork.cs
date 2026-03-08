@@ -1,7 +1,7 @@
 using System;
 using System.Configuration;
 using System.Data.SqlClient;
-using DOMAIN.Contracts;
+using DAL.Contracts;
 
 namespace SERVICES.DAL
 {

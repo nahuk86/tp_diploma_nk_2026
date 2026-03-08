@@ -1,7 +1,7 @@
 using System;
 using System.Data.SqlClient;
 
-namespace DOMAIN.Contracts
+namespace DAL.Contracts
 {
     /// <summary>
     /// Interfaz del patrón Unit of Work.
