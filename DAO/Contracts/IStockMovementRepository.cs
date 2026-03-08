@@ -1,8 +1,9 @@
+using System;
 using System.Collections.Generic;
 using DOMAIN.Entities;
 using DOMAIN.Enums;
 
-namespace DOMAIN.Contracts
+namespace DAO.Contracts
 {
     public interface IStockMovementRepository
     {
@@ -29,7 +30,7 @@ namespace DOMAIN.Contracts
         /// <summary>
         /// Obtiene los movimientos de stock dentro de un rango de fechas
         /// </summary>
-        List<StockMovement> GetByDateRange(System.DateTime startDate, System.DateTime endDate);
+        List<StockMovement> GetByDateRange(DateTime startDate, DateTime endDate);
         
         /// <summary>
         /// Inserta un nuevo movimiento de stock y retorna su identificador

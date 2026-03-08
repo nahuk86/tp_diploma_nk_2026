@@ -57,13 +57,7 @@
     <Compile Include="Entities\Reports\RevenueByDateReportDTO.cs" />
     <Compile Include="Entities\Reports\ClientProductRankingReportDTO.cs" />
     <Compile Include="Enums\MovementType.cs" />
-    <Compile Include="Contracts\IProductRepository.cs" />
-    <Compile Include="Contracts\IWarehouseRepository.cs" />
-    <Compile Include="Contracts\IClientRepository.cs" />
-    <Compile Include="Contracts\ISaleRepository.cs" />
-    <Compile Include="Contracts\IStockRepository.cs" />
-    <Compile Include="Contracts\IStockMovementRepository.cs" />
-    <Compile Include="Contracts\IReportRepository.cs" />
+
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

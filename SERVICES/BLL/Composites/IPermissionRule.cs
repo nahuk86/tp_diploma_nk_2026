@@ -1,4 +1,4 @@
-using DOMAIN.Contracts;
+using DAL.Contracts;
 
 namespace SERVICES.BLL.Composites
 {

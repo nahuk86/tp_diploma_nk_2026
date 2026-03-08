@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using DAO.Helpers;
-using DOMAIN.Contracts;
+using DAL.Contracts;
 using DOMAIN.Entities;
 using SERVICES;
 

@@ -29,18 +29,18 @@ namespace UI.Forms
 
             // Initialize services
             _logService = new FileLogService();
+            _localizationService = LocalizationService.Instance;
+            _errorHandler = new ErrorHandlerService(_logService, _localizationService);
             var userRepo = new UserRepository();
             var auditRepo = new AuditLogRepository();
             var authService = new AuthenticationService(userRepo, _logService);
-            _userService = new UserService(userRepo, auditRepo, _logService, authService);
+            _userService = new UserService(userRepo, auditRepo, _logService, authService, _errorHandler);
             
             var roleRepo = new RoleRepository();
             var permissionRepo = new PermissionRepository();
-            _roleService = new RoleService(roleRepo, permissionRepo, auditRepo, _logService);
+            _roleService = new RoleService(roleRepo, permissionRepo, auditRepo, _logService, _errorHandler);
             
             _authorizationService = new AuthorizationService(permissionRepo, _logService);
-            _localizationService = LocalizationService.Instance;
-            _errorHandler = new ErrorHandlerService(_logService, _localizationService);
 
             ApplyLocalization();
             ConfigurePermissions();

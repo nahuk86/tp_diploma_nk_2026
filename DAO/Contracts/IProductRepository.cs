@@ -1,7 +1,8 @@
 using System.Collections.Generic;
+using DAL.Contracts;
 using DOMAIN.Entities;
 
-namespace DOMAIN.Contracts
+namespace DAO.Contracts
 {
     public interface IProductRepository : IRepository<Product>
     {

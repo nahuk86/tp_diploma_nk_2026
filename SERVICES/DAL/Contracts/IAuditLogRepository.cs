@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using DOMAIN.Entities;
 using DOMAIN.Enums;
 
-namespace DOMAIN.Contracts
+namespace DAL.Contracts
 {
     public interface IAuditLogRepository
     {

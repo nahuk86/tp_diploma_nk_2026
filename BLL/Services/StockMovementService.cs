@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DOMAIN.Contracts;
+using DAO.Contracts;
+using DAL.Contracts;
 using DOMAIN.Entities;
 using DOMAIN.Enums;
 using SERVICES;
@@ -17,6 +18,7 @@ namespace BLL.Services
         private readonly IWarehouseRepository _warehouseRepo;
         private readonly IAuditLogRepository _auditRepo;
         private readonly ILogService _logService;
+        private readonly IErrorHandlerService _errorHandlerService;
 
         /// <summary>
         /// Inicializa el servicio de movimientos de inventario con sus dependencias
@@ -27,13 +29,15 @@ namespace BLL.Services
         /// <param name="warehouseRepo">Repositorio de almacenes</param>
         /// <param name="auditRepo">Repositorio de auditoría</param>
         /// <param name="logService">Servicio de registro de eventos</param>
+        /// <param name="errorHandlerService">Servicio de manejo de excepciones</param>
         public StockMovementService(
             IStockMovementRepository movementRepo,
             IStockRepository stockRepo,
             IProductRepository productRepo,
             IWarehouseRepository warehouseRepo,
             IAuditLogRepository auditRepo,
-            ILogService logService)
+            ILogService logService,
+            IErrorHandlerService errorHandlerService)
         {
             _movementRepo = movementRepo ?? throw new ArgumentNullException(nameof(movementRepo));
             _stockRepo = stockRepo ?? throw new ArgumentNullException(nameof(stockRepo));
@@ -41,6 +45,7 @@ namespace BLL.Services
             _warehouseRepo = warehouseRepo ?? throw new ArgumentNullException(nameof(warehouseRepo));
             _auditRepo = auditRepo ?? throw new ArgumentNullException(nameof(auditRepo));
             _logService = logService ?? throw new ArgumentNullException(nameof(logService));
+            _errorHandlerService = errorHandlerService ?? throw new ArgumentNullException(nameof(errorHandlerService));
         }
 
         /// <summary>
@@ -55,7 +60,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error("Error retrieving all stock movements", ex);
+                _errorHandlerService.HandleError(ex, "Error retrieving all stock movements");
                 throw;
             }
         }
@@ -73,7 +78,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error retrieving stock movement {movementId}", ex);
+                _errorHandlerService.HandleError(ex, $"Error retrieving stock movement {movementId}");
                 throw;
             }
         }
@@ -91,7 +96,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error retrieving movements by type: {movementType}", ex);
+                _errorHandlerService.HandleError(ex, $"Error retrieving movements by type: {movementType}");
                 throw;
             }
         }
@@ -110,7 +115,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error retrieving movements by date range", ex);
+                _errorHandlerService.HandleError(ex, $"Error retrieving movements by date range");
                 throw;
             }
         }
@@ -128,7 +133,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error retrieving movement lines for movement {movementId}", ex);
+                _errorHandlerService.HandleError(ex, $"Error retrieving movement lines for movement {movementId}");
                 throw;
             }
         }
@@ -173,7 +178,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error creating stock movement", ex);
+                _errorHandlerService.HandleError(ex, $"Error creating stock movement");
                 throw;
             }
         }

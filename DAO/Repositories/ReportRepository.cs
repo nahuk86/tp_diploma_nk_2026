@@ -4,7 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using DAO.Helpers;
-using DOMAIN.Contracts;
+using DAO.Contracts;
 using DOMAIN.Entities.Reports;
 using DOMAIN.Enums;
 

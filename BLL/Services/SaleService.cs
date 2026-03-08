@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using DOMAIN.Contracts;
+using DAO.Contracts;
+using DAL.Contracts;
 using DOMAIN.Entities;
 using DOMAIN.Enums;
 using SERVICES;
@@ -26,6 +27,7 @@ namespace BLL.Services
         private readonly IStockRepository _stockRepo;
         private readonly IAuditLogRepository _auditRepo;
         private readonly ILogService _logService;
+        private readonly IErrorHandlerService _errorHandlerService;
 
         /// <summary>
         /// Inicializa el servicio de ventas con sus dependencias
@@ -36,13 +38,15 @@ namespace BLL.Services
         /// <param name="stockRepo">Repositorio de inventario</param>
         /// <param name="auditRepo">Repositorio de auditoría</param>
         /// <param name="logService">Servicio de registro de eventos</param>
+        /// <param name="errorHandlerService">Servicio de manejo de excepciones</param>
         public SaleService(
             ISaleRepository saleRepo,
             IClientRepository clientRepo,
             IProductRepository productRepo,
             IStockRepository stockRepo,
             IAuditLogRepository auditRepo,
-            ILogService logService)
+            ILogService logService,
+            IErrorHandlerService errorHandlerService)
         {
             _saleRepo = saleRepo ?? throw new ArgumentNullException(nameof(saleRepo));
             _clientRepo = clientRepo ?? throw new ArgumentNullException(nameof(clientRepo));
@@ -50,6 +54,7 @@ namespace BLL.Services
             _stockRepo = stockRepo ?? throw new ArgumentNullException(nameof(stockRepo));
             _auditRepo = auditRepo ?? throw new ArgumentNullException(nameof(auditRepo));
             _logService = logService ?? throw new ArgumentNullException(nameof(logService));
+            _errorHandlerService = errorHandlerService ?? throw new ArgumentNullException(nameof(errorHandlerService));
         }
 
         /// <summary>
@@ -64,7 +69,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error("Error retrieving all sales", ex);
+                _errorHandlerService.HandleError(ex, "Error retrieving all sales");
                 throw;
             }
         }
@@ -81,7 +86,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error("Error retrieving all sales with details", ex);
+                _errorHandlerService.HandleError(ex, "Error retrieving all sales with details");
                 throw;
             }
         }
@@ -99,7 +104,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error retrieving sale {saleId}", ex);
+                _errorHandlerService.HandleError(ex, $"Error retrieving sale {saleId}");
                 throw;
             }
         }
@@ -117,7 +122,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error retrieving sale {saleId} with lines", ex);
+                _errorHandlerService.HandleError(ex, $"Error retrieving sale {saleId} with lines");
                 throw;
             }
         }
@@ -135,7 +140,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error retrieving sales by seller: {sellerName}", ex);
+                _errorHandlerService.HandleError(ex, $"Error retrieving sales by seller: {sellerName}");
                 throw;
             }
         }
@@ -153,7 +158,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error retrieving sales for client {clientId}", ex);
+                _errorHandlerService.HandleError(ex, $"Error retrieving sales for client {clientId}");
                 throw;
             }
         }
@@ -172,7 +177,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error retrieving sales for date range {startDate} to {endDate}", ex);
+                _errorHandlerService.HandleError(ex, $"Error retrieving sales for date range {startDate} to {endDate}");
                 throw;
             }
         }
@@ -224,7 +229,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error("Error creating sale", ex);
+                _errorHandlerService.HandleError(ex, "Error creating sale");
                 throw;
             }
             finally
@@ -267,7 +272,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error updating sale {sale.SaleId}", ex);
+                _errorHandlerService.HandleError(ex, $"Error updating sale {sale.SaleId}");
                 throw;
             }
         }
@@ -297,7 +302,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error deleting sale {saleId}", ex);
+                _errorHandlerService.HandleError(ex, $"Error deleting sale {saleId}");
                 throw;
             }
         }
@@ -323,7 +328,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error retrieving stock for product {productId}", ex);
+                _errorHandlerService.HandleError(ex, $"Error retrieving stock for product {productId}");
                 throw;
             }
         }
@@ -342,7 +347,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error retrieving total stock for product {productId}", ex);
+                _errorHandlerService.HandleError(ex, $"Error retrieving total stock for product {productId}");
                 throw;
             }
         }

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DOMAIN.Contracts;
+using DAL.Contracts;
 using DOMAIN.Entities;
 using DOMAIN.Enums;
 using SERVICES;
@@ -15,6 +15,7 @@ namespace BLL.Services
         private readonly IAuditLogRepository _auditRepo;
         private readonly ILogService _logService;
         private readonly IAuthenticationService _authService;
+        private readonly IErrorHandlerService _errorHandlerService;
 
         /// <summary>
         /// Inicializa el servicio de usuarios con sus dependencias
@@ -23,12 +24,14 @@ namespace BLL.Services
         /// <param name="auditRepo">Repositorio de auditoría</param>
         /// <param name="logService">Servicio de registro de eventos</param>
         /// <param name="authService">Servicio de autenticación</param>
-        public UserService(IUserRepository userRepo, IAuditLogRepository auditRepo, ILogService logService, IAuthenticationService authService)
+        /// <param name="errorHandlerService">Servicio de manejo de excepciones</param>
+        public UserService(IUserRepository userRepo, IAuditLogRepository auditRepo, ILogService logService, IAuthenticationService authService, IErrorHandlerService errorHandlerService)
         {
             _userRepo = userRepo ?? throw new ArgumentNullException(nameof(userRepo));
             _auditRepo = auditRepo ?? throw new ArgumentNullException(nameof(auditRepo));
             _logService = logService ?? throw new ArgumentNullException(nameof(logService));
             _authService = authService ?? throw new ArgumentNullException(nameof(authService));
+            _errorHandlerService = errorHandlerService ?? throw new ArgumentNullException(nameof(errorHandlerService));
         }
 
         /// <summary>
@@ -43,7 +46,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error("Error retrieving all users", ex);
+                _errorHandlerService.HandleError(ex, "Error retrieving all users");
                 throw;
             }
         }
@@ -60,7 +63,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error("Error retrieving active users", ex);
+                _errorHandlerService.HandleError(ex, "Error retrieving active users");
                 throw;
             }
         }
@@ -78,7 +81,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error retrieving user {userId}", ex);
+                _errorHandlerService.HandleError(ex, $"Error retrieving user {userId}");
                 throw;
             }
         }
@@ -133,7 +136,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error creating user: {user.Username}", ex);
+                _errorHandlerService.HandleError(ex, $"Error creating user: {user.Username}");
                 throw;
             }
         }
@@ -193,7 +196,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error updating user: {user.UserId}", ex);
+                _errorHandlerService.HandleError(ex, $"Error updating user: {user.UserId}");
                 throw;
             }
         }
@@ -228,7 +231,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error deleting user: {userId}", ex);
+                _errorHandlerService.HandleError(ex, $"Error deleting user: {userId}");
                 throw;
             }
         }
@@ -267,7 +270,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error changing password for user: {userId}", ex);
+                _errorHandlerService.HandleError(ex, $"Error changing password for user: {userId}");
                 throw;
             }
         }
@@ -291,7 +294,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error assigning roles to user: {userId}", ex);
+                _errorHandlerService.HandleError(ex, $"Error assigning roles to user: {userId}");
                 throw;
             }
         }
@@ -309,7 +312,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error retrieving roles for user: {userId}", ex);
+                _errorHandlerService.HandleError(ex, $"Error retrieving roles for user: {userId}");
                 throw;
             }
         }

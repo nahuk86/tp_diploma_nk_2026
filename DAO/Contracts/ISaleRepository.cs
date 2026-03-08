@@ -1,7 +1,9 @@
-using DOMAIN.Entities;
+using System;
 using System.Collections.Generic;
+using DAL.Contracts;
+using DOMAIN.Entities;
 
-namespace DOMAIN.Contracts
+namespace DAO.Contracts
 {
     public interface ISaleRepository : IRepository<Sale>
     {
@@ -28,7 +30,7 @@ namespace DOMAIN.Contracts
         /// <summary>
         /// Obtiene las ventas dentro de un rango de fechas
         /// </summary>
-        List<Sale> GetByDateRange(System.DateTime startDate, System.DateTime endDate);
+        List<Sale> GetByDateRange(DateTime startDate, DateTime endDate);
         
         /// <summary>
         /// Crea una venta completa con sus líneas de detalle en una transacción

@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using DOMAIN.Contracts;
+using DAO.Contracts;
 using DOMAIN.Entities.Reports;
 using SERVICES.Interfaces;
 
@@ -10,16 +10,19 @@ namespace BLL.Services
     {
         private readonly IReportRepository _reportRepo;
         private readonly ILogService _logService;
+        private readonly IErrorHandlerService _errorHandlerService;
 
         /// <summary>
         /// Inicializa el servicio de reportes con sus dependencias
         /// </summary>
         /// <param name="reportRepo">Repositorio de reportes</param>
         /// <param name="logService">Servicio de registro de eventos</param>
-        public ReportService(IReportRepository reportRepo, ILogService logService)
+        /// <param name="errorHandlerService">Servicio de manejo de excepciones</param>
+        public ReportService(IReportRepository reportRepo, ILogService logService, IErrorHandlerService errorHandlerService)
         {
             _reportRepo = reportRepo ?? throw new ArgumentNullException(nameof(reportRepo));
             _logService = logService ?? throw new ArgumentNullException(nameof(logService));
+            _errorHandlerService = errorHandlerService ?? throw new ArgumentNullException(nameof(errorHandlerService));
         }
 
         // Report 1: Top Products
@@ -46,7 +49,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error("Error generating Top Products Report", ex);
+                _errorHandlerService.HandleError(ex, "Error generating Top Products Report");
                 throw;
             }
         }
@@ -73,7 +76,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error("Error generating Client Purchases Report", ex);
+                _errorHandlerService.HandleError(ex, "Error generating Client Purchases Report");
                 throw;
             }
         }
@@ -100,7 +103,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error("Error generating Price Variation Report", ex);
+                _errorHandlerService.HandleError(ex, "Error generating Price Variation Report");
                 throw;
             }
         }
@@ -127,7 +130,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error("Error generating Seller Performance Report", ex);
+                _errorHandlerService.HandleError(ex, "Error generating Seller Performance Report");
                 throw;
             }
         }
@@ -152,7 +155,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error("Error generating Category Sales Report", ex);
+                _errorHandlerService.HandleError(ex, "Error generating Category Sales Report");
                 throw;
             }
         }
@@ -179,7 +182,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error("Error generating Revenue by Date Report", ex);
+                _errorHandlerService.HandleError(ex, "Error generating Revenue by Date Report");
                 throw;
             }
         }
@@ -208,7 +211,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error("Error generating Client Product Ranking Report", ex);
+                _errorHandlerService.HandleError(ex, "Error generating Client Product Ranking Report");
                 throw;
             }
         }

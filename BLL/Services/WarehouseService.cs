@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
-using DOMAIN.Contracts;
+using DAO.Contracts;
+using DAL.Contracts;
 using DOMAIN.Entities;
 using DOMAIN.Enums;
 using SERVICES;
@@ -13,6 +14,7 @@ namespace BLL.Services
         private readonly IWarehouseRepository _warehouseRepo;
         private readonly IAuditLogRepository _auditRepo;
         private readonly ILogService _logService;
+        private readonly IErrorHandlerService _errorHandlerService;
 
         /// <summary>
         /// Inicializa el servicio de almacenes con sus dependencias
@@ -20,11 +22,13 @@ namespace BLL.Services
         /// <param name="warehouseRepo">Repositorio de almacenes</param>
         /// <param name="auditRepo">Repositorio de auditoría</param>
         /// <param name="logService">Servicio de registro de eventos</param>
-        public WarehouseService(IWarehouseRepository warehouseRepo, IAuditLogRepository auditRepo, ILogService logService)
+        /// <param name="errorHandlerService">Servicio de manejo de excepciones</param>
+        public WarehouseService(IWarehouseRepository warehouseRepo, IAuditLogRepository auditRepo, ILogService logService, IErrorHandlerService errorHandlerService)
         {
             _warehouseRepo = warehouseRepo ?? throw new ArgumentNullException(nameof(warehouseRepo));
             _auditRepo = auditRepo ?? throw new ArgumentNullException(nameof(auditRepo));
             _logService = logService ?? throw new ArgumentNullException(nameof(logService));
+            _errorHandlerService = errorHandlerService ?? throw new ArgumentNullException(nameof(errorHandlerService));
         }
 
         /// <summary>
@@ -39,7 +43,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error("Error retrieving all warehouses", ex);
+                _errorHandlerService.HandleError(ex, "Error retrieving all warehouses");
                 throw;
             }
         }
@@ -56,7 +60,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error("Error retrieving active warehouses", ex);
+                _errorHandlerService.HandleError(ex, "Error retrieving active warehouses");
                 throw;
             }
         }
@@ -74,7 +78,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error retrieving warehouse {warehouseId}", ex);
+                _errorHandlerService.HandleError(ex, $"Error retrieving warehouse {warehouseId}");
                 throw;
             }
         }
@@ -115,7 +119,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error creating warehouse: {warehouse.Code}", ex);
+                _errorHandlerService.HandleError(ex, $"Error creating warehouse: {warehouse.Code}");
                 throw;
             }
         }
@@ -159,7 +163,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error updating warehouse: {warehouse.WarehouseId}", ex);
+                _errorHandlerService.HandleError(ex, $"Error updating warehouse: {warehouse.WarehouseId}");
                 throw;
             }
         }
@@ -188,7 +192,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error deleting warehouse: {warehouseId}", ex);
+                _errorHandlerService.HandleError(ex, $"Error deleting warehouse: {warehouseId}");
                 throw;
             }
         }

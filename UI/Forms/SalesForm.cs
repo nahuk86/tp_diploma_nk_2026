@@ -37,6 +37,8 @@ namespace UI.Forms
 
             // Initialize services
             _logService = new FileLogService();
+            _localizationService = LocalizationService.Instance;
+            _errorHandler = new ErrorHandlerService(_logService, _localizationService);
             var saleRepo = new SaleRepository();
             var clientRepo = new ClientRepository();
             var productRepo = new ProductRepository();
@@ -44,15 +46,13 @@ namespace UI.Forms
             var warehouseRepo = new WarehouseRepository();
             var auditRepo = new AuditLogRepository();
             
-            _saleService = new SaleService(saleRepo, clientRepo, productRepo, stockRepo, auditRepo, _logService);
-            _clientService = new ClientService(clientRepo, auditRepo, _logService);
-            _productService = new ProductService(productRepo, auditRepo, _logService);
-            _warehouseService = new WarehouseService(warehouseRepo, auditRepo, _logService);
+            _saleService = new SaleService(saleRepo, clientRepo, productRepo, stockRepo, auditRepo, _logService, _errorHandler);
+            _clientService = new ClientService(clientRepo, auditRepo, _logService, _errorHandler);
+            _productService = new ProductService(productRepo, auditRepo, _logService, _errorHandler);
+            _warehouseService = new WarehouseService(warehouseRepo, auditRepo, _logService, _errorHandler);
             
             var permissionRepo = new PermissionRepository();
             _authorizationService = new AuthorizationService(permissionRepo, _logService);
-            _localizationService = LocalizationService.Instance;
-            _errorHandler = new ErrorHandlerService(_logService, _localizationService);
 
             _productStockCache = new Dictionary<int, Dictionary<int, int>>();
 
