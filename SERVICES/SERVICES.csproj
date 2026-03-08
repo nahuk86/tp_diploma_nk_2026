@@ -73,6 +73,7 @@
     <Compile Include="BLL\Interfaces\IAuthorizationService.cs" />
     <Compile Include="BLL\Interfaces\ILocalizationService.cs" />
     <Compile Include="BLL\Interfaces\IErrorHandlerService.cs" />
+    <Compile Include="BLL\Interfaces\ITestingService.cs" />
     <!-- BLL: Services -->
     <Compile Include="BLL\Services\FileLogService.cs" />
     <Compile Include="BLL\Services\AuthenticationService.cs" />
@@ -81,6 +82,7 @@
     <Compile Include="BLL\Services\ErrorHandlerService.cs" />
     <Compile Include="BLL\Services\UserService.cs" />
     <Compile Include="BLL\Services\RoleService.cs" />
+    <Compile Include="BLL\Services\TestingService.cs" />
     <!-- BLL: Composites (Composite pattern) -->
     <Compile Include="BLL\Composites\IPermissionRule.cs" />
     <Compile Include="BLL\Composites\SinglePermissionRule.cs" />
