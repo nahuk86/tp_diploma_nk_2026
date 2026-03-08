@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using DAO.Contracts;
+using DOMAIN.Contracts;
 using DOMAIN.Entities;
 using DOMAIN.Enums;
 using SERVICES;
