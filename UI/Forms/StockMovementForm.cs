@@ -35,20 +35,20 @@ namespace UI.Forms
 
             // Initialize services
             _logService = new FileLogService();
+            _localizationService = LocalizationService.Instance;
+            _errorHandler = new ErrorHandlerService(_logService, _localizationService);
             var movementRepo = new StockMovementRepository();
             var stockRepo = new StockRepository();
             var productRepo = new ProductRepository();
             var warehouseRepo = new WarehouseRepository();
             var auditRepo = new AuditLogRepository();
             
-            _movementService = new StockMovementService(movementRepo, stockRepo, productRepo, warehouseRepo, auditRepo, _logService);
-            _productService = new ProductService(productRepo, auditRepo, _logService);
-            _warehouseService = new WarehouseService(warehouseRepo, auditRepo, _logService);
+            _movementService = new StockMovementService(movementRepo, stockRepo, productRepo, warehouseRepo, auditRepo, _logService, _errorHandler);
+            _productService = new ProductService(productRepo, auditRepo, _logService, _errorHandler);
+            _warehouseService = new WarehouseService(warehouseRepo, auditRepo, _logService, _errorHandler);
             
             var permissionRepo = new PermissionRepository();
             _authorizationService = new AuthorizationService(permissionRepo, _logService);
-            _localizationService = LocalizationService.Instance;
-            _errorHandler = new ErrorHandlerService(_logService, _localizationService);
 
             InitializeForm();
         }

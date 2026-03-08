@@ -42,6 +42,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Contracts\IClientRepository.cs" />
+    <Compile Include="Contracts\IProductRepository.cs" />
+    <Compile Include="Contracts\IWarehouseRepository.cs" />
+    <Compile Include="Contracts\ISaleRepository.cs" />
+    <Compile Include="Contracts\IStockRepository.cs" />
+    <Compile Include="Contracts\IStockMovementRepository.cs" />
+    <Compile Include="Contracts\IReportRepository.cs" />
     <Compile Include="Repositories\ProductRepository.cs" />
     <Compile Include="Repositories\WarehouseRepository.cs" />
     <Compile Include="Repositories\ClientRepository.cs" />

@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using DOMAIN.Contracts;
+using DAO.Contracts;
 using DOMAIN.Entities;
 using DOMAIN.Enums;
 using SERVICES;
@@ -13,6 +13,7 @@ namespace BLL.Services
         private readonly IClientRepository _clientRepo;
         private readonly IAuditLogRepository _auditRepo;
         private readonly ILogService _logService;
+        private readonly IErrorHandlerService _errorHandlerService;
 
         /// <summary>
         /// Inicializa el servicio de clientes con sus dependencias
@@ -20,11 +21,13 @@ namespace BLL.Services
         /// <param name="clientRepo">Repositorio de clientes</param>
         /// <param name="auditRepo">Repositorio de auditoría</param>
         /// <param name="logService">Servicio de registro de eventos</param>
-        public ClientService(IClientRepository clientRepo, IAuditLogRepository auditRepo, ILogService logService)
+        /// <param name="errorHandlerService">Servicio de manejo de excepciones</param>
+        public ClientService(IClientRepository clientRepo, IAuditLogRepository auditRepo, ILogService logService, IErrorHandlerService errorHandlerService)
         {
             _clientRepo = clientRepo ?? throw new ArgumentNullException(nameof(clientRepo));
             _auditRepo = auditRepo ?? throw new ArgumentNullException(nameof(auditRepo));
             _logService = logService ?? throw new ArgumentNullException(nameof(logService));
+            _errorHandlerService = errorHandlerService ?? throw new ArgumentNullException(nameof(errorHandlerService));
         }
 
         /// <summary>
@@ -39,7 +42,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error("Error retrieving all clients", ex);
+                _errorHandlerService.HandleError(ex, "Error retrieving all clients");
                 throw;
             }
         }
@@ -56,7 +59,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error("Error retrieving active clients", ex);
+                _errorHandlerService.HandleError(ex, "Error retrieving active clients");
                 throw;
             }
         }
@@ -74,7 +77,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error retrieving client {clientId}", ex);
+                _errorHandlerService.HandleError(ex, $"Error retrieving client {clientId}");
                 throw;
             }
         }
@@ -115,7 +118,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error creating client: {client.DNI}", ex);
+                _errorHandlerService.HandleError(ex, $"Error creating client: {client.DNI}");
                 throw;
             }
         }
@@ -162,7 +165,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error updating client: {client.ClientId}", ex);
+                _errorHandlerService.HandleError(ex, $"Error updating client: {client.ClientId}");
                 throw;
             }
         }
@@ -191,7 +194,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error deleting client: {clientId}", ex);
+                _errorHandlerService.HandleError(ex, $"Error deleting client: {clientId}");
                 throw;
             }
         }

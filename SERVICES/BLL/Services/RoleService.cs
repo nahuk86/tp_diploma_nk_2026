@@ -15,6 +15,7 @@ namespace BLL.Services
         private readonly IPermissionRepository _permissionRepo;
         private readonly IAuditLogRepository _auditRepo;
         private readonly ILogService _logService;
+        private readonly IErrorHandlerService _errorHandlerService;
 
         // System role names that cannot be deleted
         private static readonly string[] SystemRoleNames = { "Admin", "User" };
@@ -26,12 +27,14 @@ namespace BLL.Services
         /// <param name="permissionRepo">Repositorio de permisos</param>
         /// <param name="auditRepo">Repositorio de auditoría</param>
         /// <param name="logService">Servicio de registro de eventos</param>
-        public RoleService(IRoleRepository roleRepo, IPermissionRepository permissionRepo, IAuditLogRepository auditRepo, ILogService logService)
+        /// <param name="errorHandlerService">Servicio de manejo de excepciones</param>
+        public RoleService(IRoleRepository roleRepo, IPermissionRepository permissionRepo, IAuditLogRepository auditRepo, ILogService logService, IErrorHandlerService errorHandlerService)
         {
             _roleRepo = roleRepo ?? throw new ArgumentNullException(nameof(roleRepo));
             _permissionRepo = permissionRepo ?? throw new ArgumentNullException(nameof(permissionRepo));
             _auditRepo = auditRepo ?? throw new ArgumentNullException(nameof(auditRepo));
             _logService = logService ?? throw new ArgumentNullException(nameof(logService));
+            _errorHandlerService = errorHandlerService ?? throw new ArgumentNullException(nameof(errorHandlerService));
         }
 
         /// <summary>
@@ -46,7 +49,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error("Error retrieving all roles", ex);
+                _errorHandlerService.HandleError(ex, "Error retrieving all roles");
                 throw;
             }
         }
@@ -63,7 +66,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error("Error retrieving active roles", ex);
+                _errorHandlerService.HandleError(ex, "Error retrieving active roles");
                 throw;
             }
         }
@@ -81,7 +84,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error retrieving role {roleId}", ex);
+                _errorHandlerService.HandleError(ex, $"Error retrieving role {roleId}");
                 throw;
             }
         }
@@ -99,7 +102,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error retrieving permissions for role {roleId}", ex);
+                _errorHandlerService.HandleError(ex, $"Error retrieving permissions for role {roleId}");
                 throw;
             }
         }
@@ -116,7 +119,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error("Error retrieving all permissions", ex);
+                _errorHandlerService.HandleError(ex, "Error retrieving all permissions");
                 throw;
             }
         }
@@ -157,7 +160,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error creating role: {role?.RoleName}", ex);
+                _errorHandlerService.HandleError(ex, $"Error creating role: {role?.RoleName}");
                 throw;
             }
         }
@@ -202,7 +205,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error updating role: {role.RoleId}", ex);
+                _errorHandlerService.HandleError(ex, $"Error updating role: {role.RoleId}");
                 throw;
             }
         }
@@ -237,7 +240,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error deleting role: {roleId}", ex);
+                _errorHandlerService.HandleError(ex, $"Error deleting role: {roleId}");
                 throw;
             }
         }
@@ -274,7 +277,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error assigning permissions to role: {roleId}", ex);
+                _errorHandlerService.HandleError(ex, $"Error assigning permissions to role: {roleId}");
                 throw;
             }
         }

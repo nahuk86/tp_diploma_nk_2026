@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using DOMAIN.Entities;
 
-namespace DOMAIN.Contracts
+namespace DAO.Contracts
 {
     public interface IStockRepository
     {

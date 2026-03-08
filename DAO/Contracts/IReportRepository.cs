@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using DOMAIN.Entities.Reports;
 
-namespace DOMAIN.Contracts
+namespace DAO.Contracts
 {
     public interface IReportRepository
     {

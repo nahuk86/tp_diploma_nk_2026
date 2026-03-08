@@ -1,6 +1,6 @@
 using System;
 using System.Collections;
-using DOMAIN.Contracts;
+using DAO.Contracts;
 using SERVICES.Interfaces;
 
 namespace BLL.Strategies

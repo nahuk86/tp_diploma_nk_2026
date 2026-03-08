@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using DOMAIN.Contracts;
+using DAO.Contracts;
 using DOMAIN.Entities;
 using DOMAIN.Enums;
 using SERVICES;
@@ -13,6 +13,7 @@ namespace BLL.Services
         private readonly IProductRepository _productRepo;
         private readonly IAuditLogRepository _auditRepo;
         private readonly ILogService _logService;
+        private readonly IErrorHandlerService _errorHandlerService;
 
         /// <summary>
         /// Inicializa el servicio de productos con sus dependencias
@@ -20,11 +21,13 @@ namespace BLL.Services
         /// <param name="productRepo">Repositorio de productos</param>
         /// <param name="auditRepo">Repositorio de auditoría</param>
         /// <param name="logService">Servicio de registro de eventos</param>
-        public ProductService(IProductRepository productRepo, IAuditLogRepository auditRepo, ILogService logService)
+        /// <param name="errorHandlerService">Servicio de manejo de excepciones</param>
+        public ProductService(IProductRepository productRepo, IAuditLogRepository auditRepo, ILogService logService, IErrorHandlerService errorHandlerService)
         {
             _productRepo = productRepo ?? throw new ArgumentNullException(nameof(productRepo));
             _auditRepo = auditRepo ?? throw new ArgumentNullException(nameof(auditRepo));
             _logService = logService ?? throw new ArgumentNullException(nameof(logService));
+            _errorHandlerService = errorHandlerService ?? throw new ArgumentNullException(nameof(errorHandlerService));
         }
 
         /// <summary>
@@ -39,7 +42,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error("Error retrieving all products", ex);
+                _errorHandlerService.HandleError(ex, "Error retrieving all products");
                 throw;
             }
         }
@@ -56,7 +59,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error("Error retrieving active products", ex);
+                _errorHandlerService.HandleError(ex, "Error retrieving active products");
                 throw;
             }
         }
@@ -74,7 +77,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error retrieving product {productId}", ex);
+                _errorHandlerService.HandleError(ex, $"Error retrieving product {productId}");
                 throw;
             }
         }
@@ -95,7 +98,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error searching products with term: {searchTerm}", ex);
+                _errorHandlerService.HandleError(ex, $"Error searching products with term: {searchTerm}");
                 throw;
             }
         }
@@ -113,7 +116,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error retrieving products by category: {category}", ex);
+                _errorHandlerService.HandleError(ex, $"Error retrieving products by category: {category}");
                 throw;
             }
         }
@@ -154,7 +157,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error creating product: {product.SKU}", ex);
+                _errorHandlerService.HandleError(ex, $"Error creating product: {product.SKU}");
                 throw;
             }
         }
@@ -201,7 +204,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error updating product: {product.ProductId}", ex);
+                _errorHandlerService.HandleError(ex, $"Error updating product: {product.ProductId}");
                 throw;
             }
         }
@@ -230,7 +233,7 @@ namespace BLL.Services
             }
             catch (Exception ex)
             {
-                _logService.Error($"Error deleting product: {productId}", ex);
+                _errorHandlerService.HandleError(ex, $"Error deleting product: {productId}");
                 throw;
             }
         }

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using DAO.Helpers;
-using DOMAIN.Contracts;
+using DAO.Contracts;
 using DOMAIN.Entities;
 
 namespace DAO.Repositories
