@@ -1,6 +1,7 @@
 using System;
 using System.Security.Cryptography;
 using System.Text;
+using DAL.Contracts;
 using DOMAIN.Entities;
 using SERVICES.Interfaces;
 
@@ -8,10 +9,10 @@ namespace SERVICES.Implementations
 {
     public class AuthenticationService : IAuthenticationService
     {
-        private readonly DAL.Contracts.IUserRepository _userRepository;
+        private readonly IUserRepository _userRepository;
         private readonly ILogService _logService;
 
-        public AuthenticationService(DAL.Contracts.IUserRepository userRepository, ILogService logService)
+        public AuthenticationService(IUserRepository userRepository, ILogService logService)
         {
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
             _logService = logService ?? throw new ArgumentNullException(nameof(logService));
